@@ -148,20 +148,22 @@
   });
 
   // ---------- Registro de respostas ----------
-  function record(id, ok, answer) {
-    var snap = { result: JSON.stringify(state.results[id] || null), review: JSON.stringify(state.review[id] || null), mastered: state.mastered };
+  function record(id, ok, answer, how) {
+    var snap = { result: JSON.stringify(state.results[id] || null), review: JSON.stringify(state.review[id] || null), mastered: state.mastered,
+      adapt: JSON.stringify({ t: state.recentTap || [], y: state.recentType || [], a: !!state.advanced }) };
+    adapt(ok, how);
     var r = state.results[id] || (state.results[id] = { seen: 0, right: 0, wrong: 0 });
     r.seen++; r.at = today();
     var rv = state.review[id];
     if (ok) {
-      r.right++;
+      r.right++; r.streak = (r.streak || 0) + 1;
       if (rv && rv.due <= today()) {
         rv.box++;
         if (rv.box >= 3) { delete state.review[id]; state.mastered++; }
         else rv.due = addDays(rv.box === 1 ? 3 : 7);
       }
     } else {
-      r.wrong++; r.last = answer;
+      r.wrong++; r.last = answer; r.streak = 0;
       state.review[id] = { box: 0, due: addDays(1), since: (rv && rv.since) || today() };
     }
     state.days[today()] = (state.days[today()] || 0) + 1;
@@ -172,7 +174,9 @@
     var r = JSON.parse(snap.result), rv = JSON.parse(snap.review);
     if (r) state.results[id] = r; else delete state.results[id];
     if (rv) state.review[id] = rv; else delete state.review[id];
-    state.mastered = snap.mastered; save(); updateDot();
+    state.mastered = snap.mastered;
+    if (snap.adapt) { var a = JSON.parse(snap.adapt); state.recentTap = a.t; state.recentType = a.y; state.advanced = a.a; }
+    save(); updateDot();
   }
   function dueIds() { var t = today(); return Object.keys(state.review).filter(function (id) { return ITEMS[id] && state.review[id].due <= t; }); }
   function pendingIds() { return Object.keys(state.review).filter(function (id) { return ITEMS[id]; }); }
@@ -486,13 +490,35 @@
     for (var i = 0; i < S.ids.length; i++) { var l = S.log[i]; h += '<i class="' + (l ? (l.ok ? "ok" : "bad") : (i === S.i ? "now" : "")) + '"></i>'; }
     return h + '</div>';
   }
-  function mode() { return state.inputMode === "type" ? "type" : "tap"; }
+  // Modo de resposta automático: opções para aprender, digitação para provar que fixou.
+  function adapt(ok, how) {
+    if (how === "tap") {
+      var t = (state.recentTap || []).concat([ok]).slice(-20); state.recentTap = t;
+      if (!state.advanced && t.length >= 20 && t.filter(Boolean).length >= 18) { state.advanced = true; state.recentType = []; }
+    } else if (how === "type") {
+      var y = (state.recentType || []).concat([ok]).slice(-10); state.recentType = y;
+      if (state.advanced && y.length >= 10 && y.filter(Boolean).length < 6) { state.advanced = false; state.recentTap = []; }
+    }
+  }
+  function itemStreak(id) {
+    var r = state.results[id]; if (!r) return null;
+    if (typeof r.streak === "number") return r.streak;
+    return r.right > 0 && r.right >= r.wrong ? 1 : 0;
+  }
+  function modeFor(id) {
+    var st = itemStreak(id);
+    if (st === null) return state.advanced ? { m: "type", why: "Você está indo muito bem: agora sem opções" } : { m: "tap" };
+    if (st >= 1) return { m: "type", why: "Você já acertou esta: agora sem opções" };
+    return { m: "tap" };
+  }
   function renderQuiz() {
-    var S = view.session, id = S.ids[S.i], ref = ITEMS[id], it = ref.item, sec = ref.section, m = mode();
+    var S = view.session, id = S.ids[S.i], ref = ITEMS[id], it = ref.item, sec = ref.section;
+    if (S.modeAt !== S.i) { S.mode = modeFor(id); S.modeAt = S.i; }
+    var m = S.mode.m;
     var isMix = S.section && S.section.type === "mix";
     var ctx = S.kind === "review" ? "Revisão: " + ref.week.title + ", " + sec.title : isMix ? S.section.title + ": " + ref.week.title + ", " + sec.title : ref.week.title + ", " + sec.title;
     var html = '<div class="qtop"><button class="icon-btn" id="close" aria-label="Sair e continuar depois">' + I.x + '</button>' + progressBar(S) +
-      '<span class="count">' + (S.i + 1) + '/' + S.ids.length + '</span></div><div class="qctx">' + esc(ctx) + '</div>';
+      '<span class="count">' + (S.i + 1) + '/' + S.ids.length + '</span></div><div class="qctx">' + esc(ctx) + (S.mode.why && S.phase === "ask" ? '<span class="mode-tag">' + svg('<path d="M4 20h4L19 9l-4-4L4 16z"/>', 2.4) + esc(S.mode.why) + '</span>' : "") + '</div>';
     var ask = S.phase === "ask", dock = "";
     S.tiles = S.tiles || [];
     if (sec.type === "fill") {
@@ -531,13 +557,12 @@
           '<div class="actions"><button class="btn btn-soft" id="g-bad">Errei</button><button class="btn btn-primary" id="g-ok">Acertei</button></div></div>';
       }
     }
-    if (ask) html += '<div class="center"><button class="text-btn mode-switch" id="mode">' + (m === "tap" ? "Prefiro digitar" : "Responder com opções") + '</button></div>';
     if (S.phase === "fb") dock = feedbackHtml(S, it, sec);
     app.innerHTML = html + '<div class="dock' + (S.phase === "fb" ? " fb" : "") + '">' + dock + '</div>';
     bindQuiz(S, id, it, sec, m);
   }
   function feedbackHtml(S, it, sec) {
-    var canOverride = !S.ok && S.answer && S.answer !== "(não soube)" && (mode() === "type" || sec.type === "translate" || sec.type === "listen");
+    var canOverride = !S.ok && S.answer && S.answer !== "(não soube)" && (S.mode.m === "type" || sec.type === "translate" || sec.type === "listen");
     var h = '<div class="sheet ' + (S.ok ? "ok" : "bad") + '"><div class="verdict"><span class="mark">' + (S.ok ? I.check : I.x) + '</span>' +
       (S.ok ? PRAISE[pickN++ % PRAISE.length] : "Resposta certa:") + '</div>';
     if (!S.ok && S.answer && S.answer !== "(não soube)") h += '<div class="yours">Você respondeu <s>' + esc(S.answer) + '</s></div>';
@@ -548,11 +573,9 @@
   }
   function bindQuiz(S, id, it, sec, m) {
     document.getElementById("close").onclick = function () { speechStop(); toast("Progresso salvo. Continue quando quiser"); go({ name: "home" }); };
-    var modeBtn = document.getElementById("mode");
-    if (modeBtn) modeBtn.onclick = function () { state.inputMode = m === "tap" ? "type" : "tap"; save(); S.pick = null; S.tiles = []; render(); };
     var commit = function (ok, answer) {
       S.answer = answer; S.ok = ok; var before = state.days[today()] || 0;
-      S.snap = record(id, ok, answer);
+      S.snap = record(id, ok, answer, m);
       S.log.push({ id: id, ok: ok }); S.phase = "fb"; persist(S);
       if (before < goal() && state.days[today()] >= goal()) { celebrate(); toast("Meta do dia batida!"); }
       render();
@@ -589,7 +612,7 @@
     } else {
       document.getElementById("next").onclick = advance;
       var ov = document.getElementById("override");
-      if (ov) ov.onclick = function () { undo(id, S.snap); S.snap = record(id, true, S.answer); S.ok = true; S.log[S.log.length - 1].ok = true; persist(S); render(); };
+      if (ov) ov.onclick = function () { undo(id, S.snap); S.snap = record(id, true, S.answer, S.mode.m); S.ok = true; S.log[S.log.length - 1].ok = true; persist(S); render(); };
     }
   }
   function speechStop() { try { speechSynthesis.cancel(); } catch (e) {} }
