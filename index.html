@@ -243,6 +243,55 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 /* Backup */
 .backup { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); }
 .backup h2 { font-size: 19px; margin-bottom: 6px; }
+/* ===== Percurso (início) ===== */
+.bar-top { position: sticky; top: 0; z-index: 6; display: flex; align-items: center; justify-content: space-between;
+  margin: -12px -20px 8px; padding: 10px 20px; background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.bar-top .wordmark { font-size: 26px; }
+.due-pill { display: flex; align-items: center; gap: 5px; height: 34px; padding: 0 12px 0 9px; border: 0; border-radius: 99px; background: var(--sign); color: var(--sign-ink); font-weight: 800; font-size: 15px; cursor: pointer; }
+.due-pill svg { width: 17px; height: 17px; }
+.nudge { display: block; width: 100%; border: 0; border-radius: 14px; background: var(--sign-soft); color: var(--ink); font-weight: 600; font-size: 14px; padding: 10px 14px; margin-bottom: 12px; text-align: left; cursor: pointer; }
+.module { --m-dark: color-mix(in srgb, var(--m) 72%, #000); --m-soft: color-mix(in srgb, var(--m) 22%, transparent); margin-bottom: 6px; }
+.banner { position: sticky; top: 56px; z-index: 5; display: flex; align-items: center; gap: 12px; background: var(--m); color: #fff;
+  border-radius: 18px; padding: 13px 16px; box-shadow: 0 4px 0 var(--m-dark); }
+.b-label { font-size: 13px; font-weight: 600; opacity: .85; }
+.b-title { font-family: var(--display); font-weight: 700; font-size: 19px; line-height: 1.15; letter-spacing: -.015em; }
+.b-lock { display: grid; opacity: .8; } .b-lock svg { width: 22px; height: 22px; }
+.module.is-locked .banner { background: var(--sunk); color: var(--muted); box-shadow: 0 4px 0 var(--line); }
+.path { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 34px 0 40px; }
+.step.open { z-index: 4; }
+.step.is-next { margin-top: 30px; }
+.step { position: relative; display: flex; flex-direction: column; align-items: center; transform: translateX(var(--x)); }
+.node { position: relative; width: 70px; height: 66px; border: 0; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+  background: var(--m); color: #fff; box-shadow: 0 7px 0 var(--m-dark); transition: transform .08s, box-shadow .08s; }
+.node svg { width: 30px; height: 30px; }
+.node:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--m-dark); }
+.node.locked { background: var(--sunk); color: var(--muted); box-shadow: 0 7px 0 var(--line); }
+.ring { position: absolute; inset: -11px; border-radius: 50%; border: 5px solid var(--m-soft); pointer-events: none; animation: ring 2.4s ease-in-out infinite; }
+@keyframes ring { 50% { transform: scale(1.06); border-color: color-mix(in srgb, var(--m) 35%, transparent); } }
+.go-tag { position: absolute; bottom: calc(100% + 16px); white-space: nowrap; background: var(--surface); color: var(--m); border: 2px solid var(--line);
+  font-weight: 800; font-size: 14px; padding: 5px 12px; border-radius: 11px; z-index: 2; animation: bob 1.8s ease-in-out infinite; }
+.go-tag::after { content: ""; position: absolute; left: 50%; top: 100%; width: 10px; height: 10px; background: var(--surface); border: 2px solid var(--line);
+  border-top: 0; border-left: 0; transform: translate(-50%, -5px) rotate(45deg); }
+@keyframes bob { 50% { transform: translateY(-4px); } }
+.trophy { width: 62px; height: 62px; border-radius: 20px; display: grid; place-items: center; background: var(--sunk); color: var(--muted); box-shadow: 0 6px 0 var(--line); }
+.trophy svg { width: 30px; height: 30px; }
+.trophy.won { background: var(--sign); color: var(--sign-ink); box-shadow: 0 6px 0 #C99A00; }
+.bubble { position: absolute; top: calc(100% + 18px); left: 50%; width: min(300px, calc(100vw - 40px)); z-index: 4;
+  transform: translateX(calc(-50% - var(--x))); background: var(--m); color: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 10px 30px rgba(19,23,41,.18);
+  animation: pop .16s ease-out; }
+.bubble::before { content: ""; position: absolute; top: -7px; left: calc(50% + var(--x)); width: 16px; height: 16px; background: inherit; transform: translateX(-50%) rotate(45deg); border-radius: 3px; }
+@keyframes pop { from { opacity: 0; transform: translateX(calc(-50% - var(--x))) translateY(-6px); } }
+.module.is-locked .bubble, .bubble:has(.off) { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+.bub-title { font-family: var(--display); font-weight: 700; font-size: 19px; letter-spacing: -.01em; }
+.bub-sub { font-size: 15px; opacity: .9; margin: 2px 0 12px; }
+.bub-btn { width: 100%; border: 0; border-radius: 14px; padding: 13px; font-weight: 800; font-size: 16px; background: #fff; color: var(--m); box-shadow: 0 4px 0 rgba(0,0,0,.18); cursor: pointer; }
+.bub-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.18); }
+.bub-btn.off { background: var(--sunk); color: var(--muted); box-shadow: none; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.stats div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; font-size: 14px; color: var(--muted); }
+.stats b { display: block; font-family: var(--display); font-size: 28px; color: var(--ink); letter-spacing: -.03em; line-height: 1.1; }
+@media (prefers-color-scheme: dark) { .bubble { box-shadow: none; } .bub-btn { background: #fff; } }
 .foot { text-align: center; color: var(--muted); font-size: 13px; margin-top: 24px; }
 </style>
 </head>
@@ -251,7 +300,7 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 <nav class="tabbar" id="tabbar" aria-label="Navegação">
   <button class="tab" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg><span>Início</span></button>
   <button class="tab" data-tab="review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg><span>Revisão</span><span class="dot" id="dot" hidden></span></button>
-  <button class="tab" data-tab="errors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16l-7-4-7 4z"/></svg><span>Erros</span></button>
+  <button class="tab" data-tab="errors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg><span>Progresso</span></button>
 </nav>
 <div class="toast" id="toast" role="status"></div>
 <script src="content.js"></script>

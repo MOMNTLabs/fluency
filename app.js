@@ -171,7 +171,7 @@
 
   // ---------- Navegação ----------
   var view = { name: "home" };
-  function go(v) { view = v; render(); window.scrollTo(0, 0); }
+  function go(v) { if (v.name === "home" && view.name !== "home") scrolledOnce = false; view = v; render(); if (v.name !== "home") window.scrollTo(0, 0); }
   document.getElementById("tabbar").addEventListener("click", function (e) {
     var t = e.target.closest(".tab"); if (t) go({ name: t.getAttribute("data-tab") });
   });
@@ -190,68 +190,88 @@
   }
   function bindBack(to) { var b = document.getElementById("back"); if (b) b.onclick = function () { go({ name: to || "home" }); }; }
 
-  // ---------- Início ----------
+  // ---------- Início: o percurso ----------
+  // Uma cor por módulo, em ciclo. Discretas no conjunto, vivas o bastante para dar ritmo ao caminho.
+  var MOD_COLORS = ["#4361EE", "#12A594", "#8B5CF6", "#F08C2E", "#E5508F", "#2B9AD8"];
+  function modColor(w) { return MOD_COLORS[w.idx % MOD_COLORS.length]; }
+  var TYPE_ICON = {
+    summary: '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/>',
+    fill: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+    translate: '<path d="M4 6h9M8.5 4v2M6 6c.5 3 2.5 5.5 5 6.5M11 6c-.8 3.5-3 6-6 7"/><path d="M13 20l3.5-8 3.5 8M14.2 17.5h4.6"/>',
+    mix: '<path d="M4 7h3.5c2 0 3 1 4.5 3.5S14.5 17 16.5 17H20M4 17h3.5c1.3 0 2.2-.5 3-1.5M13.5 8.5c.8-1 1.7-1.5 3-1.5H20"/><path d="M17.5 4.5L20 7l-2.5 2.5M17.5 14.5L20 17l-2.5 2.5"/>',
+    reading: '<path d="M4 13a8 8 0 0 1 16 0"/><rect x="3.5" y="13" width="4" height="6.5" rx="1.5"/><rect x="16.5" y="13" width="4" height="6.5" rx="1.5"/>',
+    vocab: '<rect x="7" y="3.5" width="12" height="15" rx="2"/><path d="M5 7.5v11a2 2 0 0 0 2 2h9"/>'
+  };
+  var TROPHY = '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/>';
+  function nodeAvailable(w, s) {
+    if (!unlocked(w)) return false;
+    var d = state.sections[s.id]; if (d && d.done) return true;
+    var first = w.sections.filter(function (x) { return !(state.sections[x.id] && state.sections[x.id].done); })[0];
+    return first === s;
+  }
+  var ZIG = [0, -1, -2, -1, 0, 1, 2, 1];
+  var bubble = null, scrolledOnce = false;
+
   function renderHome() {
-    var due = dueIds().length, answered = 0;
-    for (var k in state.results) answered += state.results[k].seen;
-    var h = new Date().getHours();
-    var hi = h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
-    var html = '<div class="brand"><div class="wordmark">Fluency<i></i></div><div class="brand-right">' +
+    var due = dueIds().length, cur = currentModule();
+    var html = '<header class="bar-top"><div class="wordmark">Fluency<i></i></div><div class="brand-right">' +
+      (due ? '<button class="due-pill" id="due" aria-label="Revisão de hoje">' + svg('<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>', 2.4) + due + '</button>' : "") +
       '<button class="offline ' + offline.state + '" id="offline" aria-label="Status offline">' + offlineIcon() + '</button>' +
-      '<div class="streak" title="Dias seguidos de estudo">' + I.flame + streak() + '</div></div></div>' +
-      '<div class="hello">' + hi + '!</div><div class="date">' + longDate() + '</div>' +
-      '<div class="meter"><div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div><div><b>' + pendingIds().length + '</b>em revisão</div></div>';
-    if (due) {
-      html += '<button class="due" id="due"><span class="n">' + due + '</span><span><h3>Revisão de hoje</h3><p>' +
-        (due === 1 ? "Uma questão que você errou antes" : "Questões que você errou antes") + '</p></span><span class="go">' + I.next + '</span></button>';
-    }
-    var cur = currentModule(), doneCount = WEEKS.filter(complete).length;
-    html += routeHtml(cur, true);
-    html += '<section class="week" id="all"><div class="all-head"><h2 class="sub-h">Todos os módulos</h2><span class="frac">' + doneCount + ' de ' + WEEKS.length + ' concluídos</span></div>' +
-      '<div class="overall"><i style="width:' + Math.round(doneCount / WEEKS.length * 100) + '%"></i></div>';
+      '<div class="streak" title="Dias seguidos de estudo">' + I.flame + streak() + '</div></div></header>';
+    if (needsBackup()) html += '<button class="nudge" id="bk-tip">Faça o backup da semana na aba Progresso</button>';
     WEEKS.forEach(function (w) {
-      var p = weekProgress(w), isCur = w === cur, isDone = complete(w), isOpen = unlocked(w), exp = expanded[w.id] && isOpen && !isCur;
-      var cls = isCur ? "current" : isDone ? "done" : isOpen ? "" : "locked-row";
-      var right = isDone ? '<span class="state ok">' + I.done + '</span>' : isCur ? '<span class="frac">' + p.done + '/' + p.total + '</span>' :
-        isOpen ? '<span class="frac">' + p.done + '/' + p.total + '</span>' : '<span class="state">' + I.lock + '</span>';
-      var meta = isCur ? "Em andamento" : isDone ? "Concluído" : isOpen ? p.done + " de " + p.total + " seções" :
-        w.idx === cur.idx + 1 ? "Conclua o " + cur.title + " para liberar" : "Bloqueado";
-      html += '<button class="week-row ' + cls + '" data-week="' + w.id + '"' + (isOpen && !isCur ? ' aria-expanded="' + !!exp + '"' : "") + '>' +
-        '<span class="mod-num">' + w.num + '</span><span class="grow"><h3>' + esc(w.subtitle) + '</h3><span class="meta">' + meta + '</span></span>' + right + '</button>';
-      if (exp) html += routeHtml(w, false);
+      var open = unlocked(w), done = complete(w), col = modColor(w);
+      var p = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) p++; });
+      html += '<section class="module' + (open ? "" : " is-locked") + '" style="--m:' + col + '" id="mod-' + w.id + '">' +
+        '<div class="banner"><div class="grow"><div class="b-label">' + esc(w.title) + (done ? ", concluído" : open ? ", " + p + " de " + w.sections.length : "") + '</div>' +
+        '<div class="b-title">' + esc(w.subtitle) + '</div></div>' +
+        (open ? "" : '<span class="b-lock">' + I.lock + '</span>') + '</div><div class="path">';
+      w.sections.forEach(function (s, i) {
+        var d = state.sections[s.id], isDone = d && d.done, avail = nodeAvailable(w, s), isNext = avail && !isDone;
+        var x = ZIG[(i + w.idx * 3) % ZIG.length] * 46;
+        var cls = isDone ? "done" : isNext ? "next" : "locked";
+        html += '<div class="step' + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
+          (isNext ? '<div class="go-tag">' + (w.sections.indexOf(s) === 0 && w.idx === 0 && !Object.keys(state.results).length ? "Começar" : "Continuar") + '</div>' : "") +
+          '<button class="node ' + cls + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
+          (isNext ? '<span class="ring"></span>' : "") + svg(TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + '</button>';
+        if (bubble === s.id) html += bubbleHtml(w, s, avail, d);
+        html += '</div>';
+      });
+      var lastX = ZIG[(w.sections.length + w.idx * 3) % ZIG.length] * 46;
+      html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? "won" : "") + '" aria-label="Fim do ' + esc(w.title) + '">' + svg(TROPHY, 2.1) + '</div></div>';
+      html += '</div></section>';
     });
-    html += '</section>';
-    if (needsBackup()) html += '<button class="tip tip-btn" id="bk-tip">Faça o backup da semana: um toque na aba Erros.</button>';
-    else html += '<div class="tip">Depois de cada rodada, escreva no bloco de notas duas frases suas para cada erro, usando a forma certa.</div>';
+    html += '<p class="foot">Fim do curso. Novos módulos podem chegar em atualizações.</p>';
     app.innerHTML = html;
-    app.querySelectorAll("[data-sec]").forEach(function (b) { b.onclick = function () { openSection(b.getAttribute("data-sec")); }; });
-    app.querySelectorAll("[data-week]").forEach(function (b) { b.onclick = function () {
-      var w = WEEKS.filter(function (x) { return x.id === b.getAttribute("data-week"); })[0];
-      if (w === cur) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
-      if (!unlocked(w)) { toast("Conclua o " + cur.title + " para liberar"); return; }
-      expanded[w.id] = !expanded[w.id]; render();
+    app.querySelectorAll("[data-node]").forEach(function (b) { b.onclick = function (e) {
+      e.stopPropagation(); var id = b.getAttribute("data-node"); bubble = bubble === id ? null : id; renderKeepScroll();
     }; });
+    app.querySelectorAll("[data-start]").forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); var id = b.getAttribute("data-start"); bubble = null; openSection(id); }; });
     var r = document.getElementById("due"); if (r) r.onclick = function () { go({ name: "review" }); };
     var bt = document.getElementById("bk-tip"); if (bt) bt.onclick = function () { go({ name: "errors" }); };
     document.getElementById("offline").onclick = function () { toast(offlineMessage()); };
+    if (!scrolledOnce) {
+      scrolledOnce = true;
+      var target = app.querySelector(".node.next") || app.querySelector("#mod-" + cur.id);
+      if (target) requestAnimationFrame(function () {
+        var y = target.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.42;
+        window.scrollTo(0, Math.max(0, y));
+      });
+    }
   }
-  var expanded = {};
-  function weekProgress(w) {
-    var d = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) d++; });
-    return { done: d, total: w.sections.length };
-  }
-  function routeHtml(w, withHead) {
-    var nextFound = false, html = '<section class="week">';
-    if (withHead) html += '<div class="week-head"><div class="muted small">' + esc(w.title) + (complete(w) ? ", concluído" : "") + '</div><h2>' + esc(w.subtitle) + '</h2></div>';
-    html += '<ol class="route">';
-    w.sections.forEach(function (s, i) {
-      var d = state.sections[s.id], done = d && d.done, cls = done ? "done" : (!nextFound ? "next" : "");
-      if (!done && !nextFound) nextFound = true;
-      var meta = done ? (d.total ? "Feito, " + d.score + " de " + d.total : "Feito") : esc(s.subtitle || "");
-      html += '<li class="stop ' + cls + '"><button data-sec="' + s.id + '"><span class="pin">' + (done ? I.done : i + 1) + '</span>' +
-        '<span class="body"><h3>' + esc(s.title) + '</h3><div class="meta">' + meta + '</div></span></button></li>';
-    });
-    return html + '</ol></section>';
+  function renderKeepScroll() { var y = window.scrollY; render(); window.scrollTo(0, y); }
+  document.addEventListener("click", function (e) {
+    if (bubble && view.name === "home" && !e.target.closest(".bubble")) { bubble = null; renderKeepScroll(); }
+  });
+  function bubbleHtml(w, s, avail, d) {
+    var isDone = d && d.done, h = '<div class="bubble" role="dialog"><div class="bub-title">' + esc(s.title) + '</div>';
+    if (!unlocked(w)) h += '<div class="bub-sub">Conclua o ' + esc(WEEKS[w.idx - 1].title) + ' para liberar.</div><button class="bub-btn off" disabled>Bloqueado</button>';
+    else if (!avail) h += '<div class="bub-sub">Conclua as etapas anteriores deste módulo.</div><button class="bub-btn off" disabled>Bloqueado</button>';
+    else {
+      var info = isDone ? (d.total ? "Feito, " + d.score + " de " + d.total + " acertos" : "Feito") : esc(s.subtitle || "");
+      h += '<div class="bub-sub">' + info + '</div><button class="bub-btn" data-start="' + s.id + '">' + (isDone ? "Refazer" : "Começar") + '</button>';
+    }
+    return h + '</div>';
   }
   function moduleDoneText(m) { var n = WEEKS[m.idx + 1]; return m.title + " concluído" + (n ? ". " + n.title + " liberado" : "!"); }
   function markDone(id) { state.sections[id] = state.sections[id] || {}; state.sections[id].done = true; save(); }
@@ -438,7 +458,12 @@
   // ---------- Erros ----------
   function renderErrors() {
     var pend = pendingIds().sort();
-    var html = '<h1 style="margin-top:8px">Meus erros</h1><p class="muted">No fim de semana, copie a lista e mande para o Claude. Ele usa para ajustar os próximos módulos.</p>';
+    var answered = 0; for (var k in state.results) answered += state.results[k].seen;
+    var doneMods = WEEKS.filter(complete).length;
+    var html = '<h1 style="margin-top:8px">Progresso</h1>' +
+      '<div class="stats"><div><b>' + streak() + '</b>dias seguidos</div><div><b>' + doneMods + '/' + WEEKS.length + '</b>módulos</div>' +
+      '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div></div>' +
+      '<h2 style="margin-top:24px">Meus erros</h2><p class="muted small">No fim de semana, copie a lista e mande para o Claude. Ele usa para ajustar os próximos módulos.</p>';
     if (!pend.length) {
       html += '<div class="empty"><div class="art">' + I.check + '</div><h2>Nenhum erro pendente</h2><p class="muted small">' +
         (state.mastered ? "Você já superou " + state.mastered + (state.mastered === 1 ? " erro." : " erros.") : "Faça uma rodada para começar.") + '</p></div>';
