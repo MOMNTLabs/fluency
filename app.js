@@ -159,14 +159,16 @@
     var rv = state.review[id];
     if (ok) {
       r.right++; r.streak = (r.streak || 0) + 1;
-      if (rv && rv.due <= today()) {
+      // Cada questão sobe no máximo um degrau por dia: reforçar ajuda, mas o domínio pede dias diferentes.
+      if (rv && rv.lastAdv !== today()) {
+        rv.lastAdv = today();
         rv.box++;
         if (rv.box >= 3) { delete state.review[id]; state.mastered++; }
         else rv.due = addDays(rv.box === 1 ? 3 : 7);
       }
     } else {
       r.wrong++; r.last = answer; r.streak = 0;
-      state.review[id] = { box: 0, due: addDays(1), since: (rv && rv.since) || today() };
+      state.review[id] = { box: 0, due: addDays(1), since: (rv && rv.since) || today(), lastAdv: today() };
     }
     state.days[today()] = (state.days[today()] || 0) + 1;
     save(); updateDot();
@@ -260,11 +262,11 @@
       var p = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) p++; });
       var exp = isExpanded(w, cur), isCur = w === cur;
       var segs = ""; w.sections.forEach(function (s) { segs += '<i class="' + (state.sections[s.id] && state.sections[s.id].done ? "on" : "") + '"></i>'; });
-      var status = done ? "Concluído" : isCur ? "Em andamento" : open ? p + " de " + w.sections.length : "Bloqueado";
+      var status = done ? "Concluído" : isCur ? "Em andamento" : open ? p + " de " + w.sections.length : "Bloqueado", weakN = open ? pendingInModule(w) : 0;
       html += '<section class="module' + (open ? "" : " is-locked") + (exp ? " expanded" : "") + (isCur ? " current" : "") + (done ? " complete" : "") + '" style="--m:' + col + '" id="mod-' + w.id + '">' +
         '<button class="banner" data-mod="' + w.id + '" aria-expanded="' + exp + '">' +
         '<span class="m-icon">' + svg(MOD_ICON[w.id] || TROPHY, 2) + (done ? '<span class="m-done">' + I.done + '</span>' : "") + '</span>' +
-        '<span class="grow"><span class="b-label">' + esc(w.title) + '<span class="b-status">' + status + '</span></span>' +
+        '<span class="grow"><span class="b-label">' + esc(w.title) + '<span class="b-status">' + status + '</span>' + (weakN ? '<span class="b-weak">Reforçar ' + weakN + '</span>' : "") + '</span>' +
         '<span class="b-title">' + esc(w.subtitle) + '</span><span class="segs">' + segs + '</span></span>' +
         '<span class="b-chev">' + (open ? I.next : I.lock) + '</span></button>';
       if (!exp) { html += '</section>'; return; }
@@ -272,22 +274,24 @@
       w.sections.forEach(function (s, i) {
         var d = state.sections[s.id], isDone = d && d.done, avail = nodeAvailable(w, s), isNext = avail && !isDone;
         var x = ZIG[(i + w.idx * 3) % ZIG.length] * 46;
-        var cls = isDone ? "done" : isNext ? "next" : "locked";
+        var cls = isDone ? "done" : isNext ? "next" : "locked", weak = isDone ? pendingOf(s).length : 0;
         html += '<div class="step' + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
           (isNext ? '<div class="go-tag">' + (w.sections.indexOf(s) === 0 && w.idx === 0 && !Object.keys(state.results).length ? "Começar" : "Continuar") + '</div>' : "") +
           '<button class="node ' + cls + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
-          (isNext ? '<span class="ring"></span>' : "") + svg(TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + '</button>';
+          (isNext ? '<span class="ring"></span>' : "") + svg(TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + (weak ? '<span class="weak-badge" aria-label="' + weak + ' para reforçar">' + weak + '</span>' : "") + '</button>';
         if (bubble === s.id) html += bubbleHtml(w, s, avail, d);
         html += '</div>';
       });
       var lastX = ZIG[(w.sections.length + w.idx * 3) % ZIG.length] * 46;
-      html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? "won" : "") + '" aria-label="Fim do ' + esc(w.title) + '">' + svg(TROPHY, 2.1) + '</div></div>';
+      html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? (weakN ? "silver" : "won") : "") + '" aria-label="' + (done ? (weakN ? "Concluído. Supere os erros para o troféu dourado" : "Módulo dominado") : "Fim do " + esc(w.title)) + '">' + svg(TROPHY, 2.1) + '</div></div>';
       html += '</div></section>';
     });
     html += '<p class="foot">Fim do curso. Novos módulos podem chegar em atualizações.</p>';
     app.innerHTML = html;
     app.querySelectorAll("[data-node]").forEach(function (b) { b.onclick = function (e) {
       e.stopPropagation(); var id = b.getAttribute("data-node"); bubble = bubble === id ? null : id; renderKeepScroll();
+      var bb = app.querySelector(".bubble");
+      if (bb) { var r = bb.getBoundingClientRect(), lim = window.innerHeight - 100; if (r.bottom > lim) window.scrollBy({ top: r.bottom - lim, behavior: "smooth" }); }
     }; });
     app.querySelectorAll("[data-mod]").forEach(function (b) { b.onclick = function (e) {
       e.stopPropagation(); var w = WEEKS.filter(function (x) { return x.id === b.getAttribute("data-mod"); })[0];
@@ -296,6 +300,7 @@
       var before = b.getBoundingClientRect().top; render();
       var nb = app.querySelector('[data-mod="' + w.id + '"]'); if (nb) window.scrollBy(0, nb.getBoundingClientRect().top - before);
     }; });
+    app.querySelectorAll("[data-reinforce]").forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); bubble = null; reinforce(b.getAttribute("data-reinforce")); }; });
     app.querySelectorAll("[data-start]").forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); var id = b.getAttribute("data-start"); bubble = null; openSection(id); }; });
     var r = document.getElementById("due"); if (r) r.onclick = function () { go({ name: "review" }); };
     var bt = document.getElementById("bk-tip"); if (bt) bt.onclick = function () { go({ name: "errors" }); };
@@ -339,8 +344,12 @@
     if (!unlocked(w)) h += '<div class="bub-sub">Conclua o ' + esc(WEEKS[w.idx - 1].title) + ' para liberar.</div><button class="bub-btn off" disabled>Bloqueado</button>';
     else if (!avail) h += '<div class="bub-sub">Conclua as etapas anteriores deste módulo.</div><button class="bub-btn off" disabled>Bloqueado</button>';
     else {
-      var info = isDone ? (d.total ? "Feito, " + d.score + " de " + d.total + " acertos" : "Feito") : esc(s.subtitle || "");
-      h += '<div class="bub-sub">' + info + '</div><button class="bub-btn" data-start="' + s.id + '">' + (isDone ? "Refazer" : "Começar") + '</button>';
+      var info = isDone ? (d.total ? "Feito, " + d.score + " de " + d.total + " acertos" : "Feito") : esc(s.subtitle || ""), pw = isDone ? pendingOf(s).length : 0;
+      if (pw) {
+        h += '<div class="bub-sub">' + info + '. ' + pw + (pw === 1 ? " questão para reforçar." : " questões para reforçar.") + '</div>' +
+          '<button class="bub-btn" data-reinforce="' + s.id + '">Reforçar ' + pw + (pw === 1 ? " questão" : " questões") + '</button>' +
+          '<button class="bub-link" data-start="' + s.id + '">Refazer tudo</button>';
+      } else h += '<div class="bub-sub">' + info + '</div><button class="bub-btn" data-start="' + s.id + '">' + (isDone ? "Refazer" : "Começar") + '</button>';
     }
     return h + '</div>';
   }
@@ -370,7 +379,11 @@
     if (S.i >= S.ids.length) { finishSession(S); return; }
     go({ name: "quiz", session: S });
   }
-  function sessionName(z) { return z.kind === "review" ? "Revisão" : SECTIONS[z.sectionId].section.title; }
+  function sessionName(z) { return z.kind === "review" ? "Revisão" : (z.kind === "reinforce" ? "Reforço: " : "") + SECTIONS[z.sectionId].section.title; }
+  // Questões de uma seção que ainda estão em revisão (erros não superados).
+  function pendingOf(s) { return (s.items || []).map(function (it) { return it.id; }).filter(function (id) { return state.review[id]; }); }
+  function pendingInModule(w) { return w.sections.reduce(function (n, s) { return n + pendingOf(s).length; }, 0); }
+  function reinforce(id) { var s = SECTIONS[id].section, ids = pendingOf(s); if (ids.length) startSession("reinforce", shuffle(ids.slice()), s); }
   function openSection(id, then) {
     var s = SECTIONS[id].section, z = savedSession();
     if (z && z.kind === "section" && z.sectionId === id) { resumeSession(); return; }
@@ -527,7 +540,7 @@
     if (S.modeAt !== S.i) { S.mode = modeFor(id); S.modeAt = S.i; }
     var m = S.mode.m;
     var isMix = S.section && S.section.type === "mix";
-    var ctx = S.kind === "review" ? "Revisão: " + ref.week.title + ", " + sec.title : isMix ? S.section.title + ": " + ref.week.title + ", " + sec.title : ref.week.title + ", " + sec.title;
+    var ctx = S.kind === "reinforce" ? "Reforço: " + ref.week.title + ", " + sec.title : S.kind === "review" ? "Revisão: " + ref.week.title + ", " + sec.title : isMix ? S.section.title + ": " + ref.week.title + ", " + sec.title : ref.week.title + ", " + sec.title;
     var html = '<div class="qtop"><button class="icon-btn" id="close" aria-label="Sair e continuar depois">' + I.x + '</button>' + progressBar(S) +
       '<span class="count">' + (S.i + 1) + '/' + S.ids.length + '</span></div><div class="qctx">' + esc(ctx) + (S.mode.why && S.phase === "ask" ? '<span class="mode-tag">' + svg('<path d="M4 20h4L19 9l-4-4L4 16z"/>', 2.4) + esc(S.mode.why) + '</span>' : "") + '</div>';
     var ask = S.phase === "ask", dock = "";
@@ -652,11 +665,12 @@
     if (S.moduleDone) {
       var m = S.moduleDone, nxt = WEEKS[m.idx + 1], took = daysBetween((state.modStart || {})[m.id] || today(), today()) + 1;
       html += '<div class="hero" style="--m:' + modColor(m) + '"><div class="hero-trophy">' + svg(TROPHY, 2) + '</div><h1>' + esc(m.title) + ' concluído!</h1>' +
-        '<p class="muted">' + (nxt ? esc(nxt.title) + " liberado: " + esc(nxt.subtitle) + "." : "Você terminou todos os módulos.") + '</p></div>';
+        '<p class="muted">' + (nxt ? esc(nxt.title) + " liberado: " + esc(nxt.subtitle) + "." : "Você terminou todos os módulos.") + '</p>' +
+        (pendingInModule(m) ? '<p class="note">Supere os ' + pendingInModule(m) + ' erros deste módulo para o troféu ficar dourado. Eles voltam na revisão e no botão Reforçar do percurso.</p>' : "") + '</div>';
       if (nxt && took <= 2) html += '<p class="note">Você fechou este módulo em ' + took + (took === 1 ? " dia" : " dias") + '. Antes do próximo, vale fazer a revisão de erros: com alguns dias entre um módulo e outro, o conteúdo fixa melhor.</p>';
     }
     html += '<div class="score">' + right + '<small>/' + total + '</small></div><h2>' + msg + '</h2>' +
-      '<p class="muted">' + (S.kind === "review" ? "Revisão concluída" : esc(S.section.title) + " concluída") + '</p>';
+      '<p class="muted">' + (S.kind === "review" ? "Revisão concluída" : S.kind === "reinforce" ? "Reforço de " + esc(S.section.title) + " concluído" : esc(S.section.title) + " concluída") + '</p>';
     if (wrong.length) {
       html += '<div class="panel">' + wrong.map(function (l) {
         var it = ITEMS[l.id].item; return '<div class="item"><p class="sentence" style="font-size:17px;margin:0">' + fullHtml(it.full) + '</p><div class="row">' + listen(it.full) + '</div></div>';

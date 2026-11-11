@@ -264,8 +264,8 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .m-done { position: absolute; right: -5px; bottom: -5px; width: 20px; height: 20px; border-radius: 50%; background: var(--sign); color: var(--sign-ink);
   display: grid; place-items: center; border: 2.5px solid var(--surface); }
 .m-done svg { width: 11px; height: 11px; margin: 0; }
-.b-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
-.b-status { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 99px; background: var(--sunk); color: var(--ink-2); }
+.b-label { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.b-status { white-space: nowrap; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 99px; background: var(--sunk); color: var(--ink-2); }
 .module.current .b-status { background: var(--m-soft); color: var(--m); }
 .module.complete .b-status { background: var(--ok-soft); color: var(--ok); }
 .b-title { display: block; font-family: var(--display); font-weight: 700; font-size: 18px; line-height: 1.2; letter-spacing: -.015em; margin-top: 2px; }
@@ -409,6 +409,13 @@ body.focus main { padding-bottom: 300px; }
 .w-dots { display: flex; justify-content: center; gap: 6px; margin-top: 28px; }
 .w-dots i { width: 8px; height: 8px; border-radius: 99px; background: var(--line); transition: width .2s; }
 .w-dots i.on { width: 22px; background: var(--cobalt); }
+/* ===== Reforço ===== */
+.weak-badge { position: absolute; right: -6px; top: -6px; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 99px; background: #F08C2E; color: #fff;
+  font-size: 13px; font-weight: 800; display: grid; place-items: center; border: 3px solid var(--bg); box-sizing: content-box; line-height: 1; }
+.b-weak { white-space: nowrap; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 99px; background: color-mix(in srgb, #F08C2E 18%, transparent); color: #D9711A; }
+@media (prefers-color-scheme: dark) { .b-weak { color: #FFB066; } }
+.trophy.silver { background: var(--surface); color: var(--m); border: 3px solid var(--m-soft); box-shadow: 0 6px 0 var(--line); }
+.bub-link { display: block; width: 100%; margin-top: 8px; background: none; border: 0; color: inherit; opacity: .9; font-weight: 700; font-size: 15px; padding: 8px; cursor: pointer; }
 .foot { text-align: center; color: var(--muted); font-size: 13px; margin-top: 24px; }
 </style>
 </head>
