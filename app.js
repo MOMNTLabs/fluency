@@ -48,6 +48,20 @@
     });
   });
   function isQuiz(s) { return s.type === "fill" || s.type === "translate"; }
+  function unlocked(w) { return !w.start || w.start <= today(); }
+  // Revisão misturada: metade das questões que você já errou, o resto sorteado das semanas anteriores.
+  function buildMix(sec) {
+    var wk = SECTIONS[sec.id].week, pool = [];
+    WEEKS.forEach(function (x) {
+      if (x.start < wk.start) x.sections.forEach(function (s) { if (s.type === "fill") s.items.forEach(function (it) { pool.push(it.id); }); });
+    });
+    var weak = shuffle(pool.filter(function (id) { return state.results[id] && state.results[id].wrong > 0; }));
+    var rest = shuffle(pool.filter(function (id) { return weak.indexOf(id) < 0; }));
+    var n = sec.count || 8, half = Math.ceil(n / 2);
+    var pick = weak.slice(0, half).concat(rest.slice(0, n - Math.min(half, weak.length)));
+    if (pick.length < n) pick = pick.concat(weak.slice(half, half + n - pick.length));
+    return shuffle(pick);
+  }
 
   // ---------- Ícones ----------
   function svg(p, w) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 2.2) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; }
@@ -161,35 +175,69 @@
     for (var k in state.results) answered += state.results[k].seen;
     var h = new Date().getHours();
     var hi = h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
-    var html = '<div class="brand"><div class="wordmark">Fluency<i></i></div>' +
-      '<div class="streak" title="Dias seguidos de estudo">' + I.flame + streak() + '</div></div>' +
+    var html = '<div class="brand"><div class="wordmark">Fluency<i></i></div><div class="brand-right">' +
+      '<button class="offline ' + offline.state + '" id="offline" aria-label="Status offline">' + offlineIcon() + '</button>' +
+      '<div class="streak" title="Dias seguidos de estudo">' + I.flame + streak() + '</div></div></div>' +
       '<div class="hello">' + hi + '!</div><div class="date">' + longDate() + '</div>' +
       '<div class="meter"><div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div><div><b>' + pendingIds().length + '</b>em revisão</div></div>';
     if (due) {
       html += '<button class="due" id="due"><span class="n">' + due + '</span><span><h3>Revisão de hoje</h3><p>' +
         (due === 1 ? "Uma questão que você errou antes" : "Questões que você errou antes") + '</p></span><span class="go">' + I.next + '</span></button>';
     }
-    WEEKS.slice().reverse().forEach(function (w) {
-      var nextFound = false;
-      html += '<section class="week"><div class="week-head"><h2>' + esc(w.title) + '</h2><div class="muted small">' + esc(w.subtitle) + '</div></div><ol class="route">';
-      w.sections.forEach(function (s, i) {
-        var d = state.sections[s.id], done = d && d.done, cls = done ? "done" : (!nextFound ? "next" : "");
-        if (!done && !nextFound) nextFound = true;
-        var meta = done ? (d.total ? "Feito · " + d.score + " de " + d.total : "Feito") : esc(s.subtitle || "");
-        html += '<li class="stop ' + cls + '"><button data-sec="' + s.id + '"><span class="pin">' + (done ? I.done : i + 1) + '</span>' +
-          '<span class="body"><h3>' + esc(s.title) + '</h3><div class="meta">' + meta + '</div></span></button></li>';
+    var open = WEEKS.filter(unlocked), locked = WEEKS.filter(function (w) { return !unlocked(w); });
+    var current = open[open.length - 1];
+    if (current) html += routeHtml(current, true);
+    var past = open.slice(0, -1).reverse();
+    if (past.length) {
+      html += '<section class="week"><h2 class="sub-h">Semanas anteriores</h2>';
+      past.forEach(function (w) {
+        var p = weekProgress(w), isOpen = expanded[w.id];
+        html += '<button class="week-row" data-week="' + w.id + '" aria-expanded="' + !!isOpen + '"><span class="grow"><h3>' + esc(w.title) + '</h3>' +
+          '<span class="meta">' + esc(w.subtitle) + '</span></span><span class="frac">' + p.done + '/' + p.total + '</span><span class="chev' + (isOpen ? " up" : "") + '">' + I.next + '</span></button>';
+        if (isOpen) html += routeHtml(w, false);
       });
-      html += '</ol></section>';
-    });
-    html += '<div class="tip">Depois de cada rodada, escreva no bloco de notas duas frases suas para cada erro, usando a forma certa.</div>';
+      html += '</section>';
+    }
+    if (locked.length) {
+      var nx = locked[0];
+      html += '<div class="locked"><h3>' + esc(nx.title) + ': ' + esc(nx.subtitle) + '</h3><span class="meta">Libera na segunda, ' + shortDate(nx.start) +
+        (locked.length > 1 ? ". Depois, mais " + (locked.length - 1) + (locked.length - 1 === 1 ? " semana" : " semanas") + " até " + shortDate(locked[locked.length - 1].start) : "") + '.</span></div>';
+    }
+    if (needsBackup()) html += '<button class="tip tip-btn" id="bk-tip">Faça o backup da semana: um toque na aba Erros.</button>';
+    else html += '<div class="tip">Depois de cada rodada, escreva no bloco de notas duas frases suas para cada erro, usando a forma certa.</div>';
     app.innerHTML = html;
     app.querySelectorAll("[data-sec]").forEach(function (b) { b.onclick = function () { openSection(b.getAttribute("data-sec")); }; });
+    app.querySelectorAll("[data-week]").forEach(function (b) { b.onclick = function () { var id = b.getAttribute("data-week"); expanded[id] = !expanded[id]; render(); }; });
     var r = document.getElementById("due"); if (r) r.onclick = function () { go({ name: "review" }); };
+    var bt = document.getElementById("bk-tip"); if (bt) bt.onclick = function () { go({ name: "errors" }); };
+    document.getElementById("offline").onclick = function () { toast(offlineMessage()); };
+  }
+  var expanded = {};
+  function weekProgress(w) {
+    var d = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) d++; });
+    return { done: d, total: w.sections.length };
+  }
+  function routeHtml(w, withHead) {
+    var nextFound = false, html = '<section class="week">';
+    if (withHead) html += '<div class="week-head"><h2>' + esc(w.title) + '</h2><div class="muted small">' + esc(w.subtitle) + '</div></div>';
+    html += '<ol class="route">';
+    w.sections.forEach(function (s, i) {
+      var d = state.sections[s.id], done = d && d.done, cls = done ? "done" : (!nextFound ? "next" : "");
+      if (!done && !nextFound) nextFound = true;
+      var meta = done ? (d.total ? "Feito, " + d.score + " de " + d.total : "Feito") : esc(s.subtitle || "");
+      html += '<li class="stop ' + cls + '"><button data-sec="' + s.id + '"><span class="pin">' + (done ? I.done : i + 1) + '</span>' +
+        '<span class="body"><h3>' + esc(s.title) + '</h3><div class="meta">' + meta + '</div></span></button></li>';
+    });
+    return html + '</ol></section>';
   }
   function markDone(id) { state.sections[id] = state.sections[id] || {}; state.sections[id].done = true; save(); }
   function openSection(id) {
     var s = SECTIONS[id].section;
-    if (isQuiz(s)) go({ name: "quiz", session: newSession("section", s.items.map(function (it) { return it.id; }), s) });
+    if (s.type === "mix") {
+      var ids = buildMix(s);
+      if (!ids.length) { toast("Ainda não há questões anteriores"); return; }
+      go({ name: "quiz", session: newSession("section", ids, s) });
+    } else if (isQuiz(s)) go({ name: "quiz", session: newSession("section", s.items.map(function (it) { return it.id; }), s) });
     else go({ name: "section", id: id });
   }
 
@@ -239,8 +287,9 @@
   var PRAISE = ["Isso!", "Certinho!", "Mandou bem!", "Acertou!", "Boa!"], pickN = 0;
   function renderQuiz() {
     var S = view.session, id = S.ids[S.i], ref = ITEMS[id], it = ref.item, sec = ref.section;
-    var label = S.kind === "review" ? "Revisão" : ref.week.title + ", " + sec.title;
-    var title = S.kind === "review" ? sec.title + ", questão " + it.n : sec.subtitle;
+    var isMix = S.section && S.section.type === "mix";
+    var label = S.kind === "review" ? "Revisão" : isMix ? S.section.title : ref.week.title + ", " + sec.title;
+    var title = S.kind === "review" || isMix ? ref.week.title + ", " + sec.title + ", questão " + it.n : sec.subtitle;
     var html = top(label, title, '<span class="count">' + (S.i + 1) + '/' + S.ids.length + '</span>') + progressBar(S);
     var answered = S.phase === "fb";
     if (sec.type === "fill") {
@@ -373,8 +422,28 @@
       });
       html += '</div>';
     }
-    html += '<p class="foot">Seu progresso fica salvo só neste iPhone.</p>';
+    var last = state.lastBackup;
+    html += '<section class="backup"><h2>Backup do progresso</h2><p class="muted small">' +
+      (last ? "Último backup em " + shortDate(last) + "." : "Você ainda não fez nenhum backup.") +
+      ' Cole o código no app Notas ou na conversa com o Claude. Se trocar de iPhone ou reinstalar o app, é só restaurar.</p>' +
+      '<div class="actions"><button class="btn btn-soft" id="bk-copy">Copiar backup</button><button class="btn btn-soft" id="bk-open">Restaurar</button></div>' +
+      '<div id="bk-restore" hidden><textarea class="field" id="bk-text" placeholder="Cole aqui o código do backup" style="margin-top:12px;min-height:90px;font-size:15px"></textarea>' +
+      '<div class="actions"><button class="btn btn-primary" id="bk-go">Restaurar progresso</button></div></div></section>';
+    html += '<p class="foot">Seu progresso fica salvo neste iPhone.</p>';
     app.innerHTML = html;
+    document.getElementById("bk-copy").onclick = function () {
+      state.lastBackup = today(); save();
+      copy(makeBackup(), "Backup copiado. Cole no Notas ou no Claude");
+      setTimeout(render, 2300);
+    };
+    document.getElementById("bk-open").onclick = function () {
+      var box = document.getElementById("bk-restore"); box.hidden = !box.hidden; if (!box.hidden) document.getElementById("bk-text").focus();
+    };
+    document.getElementById("bk-go").onclick = function () {
+      var s = readBackup(document.getElementById("bk-text").value);
+      if (!s) { toast("Código inválido. Copie o backup inteiro"); return; }
+      state = s; state.lastBackup = state.lastBackup || today(); save(); updateDot(); toast("Progresso restaurado"); go({ name: "home" });
+    };
     var c = document.getElementById("copy");
     if (c) c.onclick = function () {
       var lines = ["Meus erros no Fluency:"];
@@ -386,15 +455,62 @@
       copy(lines.join("\n"));
     };
   }
-  function copy(text) {
+  function copy(text, okMsg) {
+    okMsg = okMsg || "Lista copiada";
     function fallback() {
       var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
       document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
-      try { document.execCommand("copy"); toast("Lista copiada"); } catch (e) { toast("Não foi possível copiar"); }
+      try { document.execCommand("copy"); toast(okMsg); } catch (e) { toast("Não foi possível copiar"); }
       document.body.removeChild(ta);
     }
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { toast("Lista copiada"); }, fallback);
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { toast(okMsg); }, fallback);
     else fallback();
+  }
+
+  // ---------- Backup ----------
+  function makeBackup() { return "FLUENCY1:" + btoa(unescape(encodeURIComponent(JSON.stringify(state)))); }
+  function readBackup(txt) {
+    var m = String(txt || "").replace(/\s+/g, "").match(/FLUENCY1:([A-Za-z0-9+/=]+)/);
+    if (!m) return null;
+    try {
+      var s = JSON.parse(decodeURIComponent(escape(atob(m[1]))));
+      if (!s || !s.results) return null;
+      var b = blank(); for (var k in b) if (!(k in s)) s[k] = b[k];
+      return s;
+    } catch (e) { return null; }
+  }
+  function needsBackup() {
+    if (!Object.keys(state.results).length) return false;
+    if (!state.lastBackup) return Object.keys(state.days).length >= 3;
+    return state.lastBackup <= addDays(-7);
+  }
+
+  // ---------- Indicador offline ----------
+  var OFFLINE_FILES = ["./", "index.html", "app.js", "content.js", "content-m1.js", "content-m2.js", "content-m3.js", "fonts/bricolage.woff2"];
+  var offline = { state: "checking" };
+  function offlineIcon() {
+    var cloud = '<path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0 0 9z"/>';
+    var mark = offline.state === "ok" ? '<path d="M9.5 14l2 2 3.5-3.5"/>' : offline.state === "partial" ? '<path d="M12 11.5v2.5M12 16.2v.1"/>' : '<path d="M12 11.5v4.5M10 14l2 2 2-2"/>';
+    return svg(cloud + mark, 1.9);
+  }
+  function offlineMessage() {
+    var n = WEEKS.length;
+    if (offline.state === "ok") return "Tudo salvo no iPhone: " + n + " semanas funcionam sem internet";
+    if (offline.state === "partial") return "Ainda falta baixar parte do app. Abra com internet";
+    return "Baixando o app para usar sem internet…";
+  }
+  function checkOffline() {
+    var set = function (st) {
+      if (offline.state === st) return; offline.state = st;
+      var b = document.getElementById("offline"); if (b) { b.className = "offline " + st; b.innerHTML = offlineIcon(); }
+    };
+    if (!("caches" in window) || !("serviceWorker" in navigator)) { set("partial"); return; }
+    navigator.serviceWorker.getRegistration().then(function (reg) {
+      if (!reg || reg.installing || reg.waiting || !navigator.serviceWorker.controller) { set(reg ? "checking" : "partial"); setTimeout(checkOffline, 2000); return; }
+      return Promise.all(OFFLINE_FILES.map(function (f) { return caches.match(f); })).then(function (hits) {
+        set(hits.every(Boolean) ? "ok" : "partial");
+      });
+    }).catch(function () { set("partial"); });
   }
 
   // ---------- Offline ----------
@@ -403,9 +519,11 @@
     navigator.serviceWorker.register("sw.js").catch(function () {});
     navigator.serviceWorker.addEventListener("controllerchange", function () {
       if (hadController) { toast("Conteúdo novo baixado"); setTimeout(function () { location.reload(); }, 900); }
+      else checkOffline();
     });
   }
 
   updateDot();
   render();
+  checkOffline();
 })();

@@ -197,6 +197,34 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translate(-50%, 8px); background: var(--ink); color: var(--bg);
   padding: 11px 18px; border-radius: 99px; font-size: 15px; font-weight: 600; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; z-index: 20; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+/* Topo: status offline */
+.brand-right { display: flex; align-items: center; gap: 8px; }
+.offline { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.offline svg { width: 20px; height: 20px; }
+.offline.ok { color: var(--ok); }
+.offline.partial { color: var(--bad); }
+.offline.checking { color: var(--muted); }
+.offline.checking svg { animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+
+/* Semanas anteriores e próximas */
+.sub-h { font-size: 18px; margin-bottom: 10px; }
+.week-row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; margin-bottom: 8px; cursor: pointer; }
+.week-row .grow { flex: 1; min-width: 0; }
+.week-row .meta { display: block; font-size: 14px; color: var(--muted); }
+.week-row .frac { font-weight: 700; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.week-row .chev { color: var(--muted); display: grid; transition: transform .2s; }
+.week-row .chev svg { width: 18px; height: 18px; }
+.week-row .chev.up { transform: rotate(90deg); }
+.week-row + .week { margin: 4px 0 16px; }
+.locked { border: 2px dashed var(--line); border-radius: var(--r); padding: 14px 16px; margin-bottom: 20px; }
+.locked h3 { color: var(--ink-2); }
+.locked .meta { font-size: 14px; color: var(--muted); }
+.tip-btn { width: 100%; text-align: left; cursor: pointer; border-top: 0; border-right: 0; border-bottom: 0; font: inherit; font-size: 15px; font-weight: 600; color: var(--ink); }
+
+/* Backup */
+.backup { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); }
+.backup h2 { font-size: 19px; margin-bottom: 6px; }
 .foot { text-align: center; color: var(--muted); font-size: 13px; margin-top: 24px; }
 </style>
 </head>
@@ -209,6 +237,9 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 </nav>
 <div class="toast" id="toast" role="status"></div>
 <script src="content.js"></script>
+<script src="content-m1.js"></script>
+<script src="content-m2.js"></script>
+<script src="content-m3.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

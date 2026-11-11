@@ -1,8 +1,16 @@
 // Conteúdo das semanas. Para adicionar uma semana nova, acrescente um objeto ao array WEEKS.
 // Respostas: {chaves} marcam a parte que é a resposta na frase completa.
+// Atalhos para escrever as semanas seguintes.
+window.F = function (q, a, full, why) { return { q: q, a: [].concat(a), full: full, why: why }; };
+window.T = function (q, full, why) { return { q: q, full: full, why: why }; };
+window.R = function (en, pt) { return { en: en, pt: pt }; };
+window.V = function (en, pt, ex) { return { en: en, pt: pt, ex: ex }; };
+window.C = function (title, lines, example) { return { title: title, lines: [].concat(lines), example: example }; };
+
 window.WEEKS = [
   {
     id: "s1",
+    start: "2026-11-09",
     title: "Semana 1",
     subtitle: "Tempos verbais: passado, have, had e would",
     sections: [
