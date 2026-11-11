@@ -62,7 +62,7 @@ window.WEEKS = [
           { q: "If my boss ___ (like) the LUT, we would use it in every video.", a: ["liked"],
             full: "If my boss {liked} the LUT, we would use it in every video.", why: "\"Se o chefe gostasse\" = passado." },
           { q: "What ___ you ___ (do) if you lived abroad?", a: ["would do", "would you do"],
-            full: "What {would} you {do} if you lived abroad?", why: "<i>What would you do…?</i> = \"o que você faria?\" Digite as duas palavras: <i>would do</i>." }
+            full: "What {would} you {do} if you lived abroad?", why: "<i>What would you do…?</i> = \"o que você faria?\"" }
         ]
       },
       {

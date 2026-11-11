@@ -446,6 +446,14 @@
     if (adv && !neg) list = list.filter(function (f) { return !/^to |ing$/.test(f); }).map(function (f) { var w = f.split(" "); return w.length > 1 ? [w[0], adv].concat(w.slice(1)).join(" ") : adv + " " + f; });
     return list;
   }
+  function blanksIn(it) { return (it.q.match(/___/g) || []).length; }
+  // Divide uma resposta entre as lacunas: "would do" em 2 lacunas vira ["would", "do"].
+  function splitFill(ans, n) {
+    if (!ans || n < 2) return [ans];
+    var w = ans.split(" "); if (w.length < n) return [ans];
+    var out = w.slice(0, n - 1); out.push(w.slice(n - 1).join(" ")); return out;
+  }
+  function optLabel(it, o) { var n = blanksIn(it); return n > 1 ? splitFill(o, n).join(" … ") : o; }
   function optionsFor(it) {
     if (it._opts) return it._opts;
     var correct = it.a[0].replace(/^'/, ""), accepted = it.a.map(norm), ref = ITEMS[it.id], pool = [];
@@ -467,6 +475,7 @@
       if (!useForms && n.split(" ").length !== wc) later.push(p); else d.push(p);
     });
     if (d.length < 3) d = d.concat(later);
+    var nb = blanksIn(it); if (nb > 1) d = d.filter(function (p) { return p.split(" ").length >= nb; });
     if (useForms) { var same = d.filter(function (p) { return p.split(" ").length === correct.split(" ").length; }); d = same.slice(0, 2).concat(d.filter(function (p) { return same.indexOf(p) < 0; })); }
     it._opts = sshuffle([correct].concat(d.slice(0, 3)), it.id + "o");
     return it._opts;
@@ -522,11 +531,11 @@
     var ask = S.phase === "ask", dock = "";
     S.tiles = S.tiles || [];
     if (sec.type === "fill") {
-      html += '<div class="q">' + qHtml(it.q, ask ? (m === "tap" && S.pick ? [S.pick] : null) : answerParts(it.full)) + '</div>';
+      html += '<div class="q">' + qHtml(it.q, ask ? (m === "tap" && S.pick ? splitFill(S.pick, blanksIn(it)) : null) : answerParts(it.full)) + '</div>';
       if (ask) {
         if (m === "tap") {
           html += '<div class="opts">' + optionsFor(it).map(function (o, k) {
-            return '<button class="opt' + (S.pick === o ? " sel" : "") + '" data-opt="' + k + '">' + esc(o) + '</button>'; }).join("") + '</div>';
+            return '<button class="opt' + (S.pick === o ? " sel" : "") + '" data-opt="' + k + '">' + esc(optLabel(it, o)) + '</button>'; }).join("") + '</div>';
           dock = '<button class="btn btn-primary" id="check"' + (S.pick ? "" : " disabled") + '>Conferir</button>';
         } else {
           html += '<input class="field" type="text" id="ans" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="Sua resposta" aria-label="Sua resposta" value="' + esc(S.draft || "") + '">' +

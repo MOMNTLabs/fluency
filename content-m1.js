@@ -34,7 +34,7 @@ window.WEEKS.push(
           F("I've ___ seen such good engagement!", "never", "I've {never} seen such good engagement!", "\"Nunca vi\" → never (o verbo fica na afirmativa)."),
           F("Have you ___ been to São Paulo?", "ever", "Have you {ever} been to São Paulo?", "Pergunta sobre experiência → ever."),
           F("I ___ (know) him for five years.", ["have known", "'ve known"], "I {have known} him for five years.", "Começou no passado e continua → have known."),
-          F("How long ___ you ___ (live) in Vitória?", "have lived", "How long {have} you {lived} in Vitória?", "\"Há quanto tempo você mora\" → How long have you lived. Digite <i>have lived</i>.")
+          F("How long ___ you ___ (live) in Vitória?", "have lived", "How long {have} you {lived} in Vitória?", "\"Há quanto tempo você mora\" → How long have you lived.")
         ] },
       { id: "s2-r3", type: "translate", title: "Rodada 3", subtitle: "Traduza para o inglês",
         items: [
