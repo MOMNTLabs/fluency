@@ -1,7 +1,7 @@
-// Mês 3: rumo ao B2 (semanas 9 a 12)
+// Mês 3: rumo ao B2 (módulos 9 a 12)
 window.WEEKS.push(
   {
-    id: "s9", start: "2027-01-04", title: "Semana 9",
+    id: "s9", title: "Módulo 9",
     subtitle: "should, could, might, must e have to",
     sections: [
       { id: "s9-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
@@ -44,7 +44,7 @@ window.WEEKS.push(
           T("Tenho que terminar isso hoje.", "I have to finish this today.", "Tenho que = have to."),
           T("Ele deve estar cansado.", "He must be tired.", "Certeza lógica = must.")
         ] },
-      { id: "s9-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões das semanas anteriores", count: 8 },
+      { id: "s9-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s9-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("You should test different hooks in the first three seconds.", "Você deveria testar ganchos diferentes nos três primeiros segundos."),
@@ -66,7 +66,7 @@ window.WEEKS.push(
     ]
   },
   {
-    id: "s10", start: "2027-01-11", title: "Semana 10",
+    id: "s10", title: "Módulo 10",
     subtitle: "Voz passiva",
     sections: [
       { id: "s10-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
@@ -109,7 +109,7 @@ window.WEEKS.push(
           T("Essas fotos foram tiradas pela nossa equipe.", "These photos were taken by our team.", "\"Por\" → by."),
           T("Esse app pode ser usado offline.", "This app can be used offline.", "can be used.")
         ] },
-      { id: "s10-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões das semanas anteriores", count: 8 },
+      { id: "s10-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s10-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("This carousel was created in less than two hours.", "Este carrossel foi criado em menos de duas horas."),
@@ -131,7 +131,7 @@ window.WEEKS.push(
     ]
   },
   {
-    id: "s11", start: "2027-01-18", title: "Semana 11",
+    id: "s11", title: "Módulo 11",
     subtitle: "Conectores: however, although, despite",
     sections: [
       { id: "s11-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
@@ -174,7 +174,7 @@ window.WEEKS.push(
           T("Mesmo que o orçamento seja pequeno, dá para fazer um bom vídeo.", "Even though the budget is small, we can make a good video.", "even though + frase."),
           T("Assim que o cliente aprovar, eu posto.", "As soon as the client approves, I'll post it.", "as soon as + presente, depois will.")
         ] },
-      { id: "s11-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões das semanas anteriores", count: 8 },
+      { id: "s11-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s11-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Although the video was short, it got a lot of shares.", "Embora o vídeo fosse curto, teve muitos compartilhamentos."),
@@ -196,10 +196,10 @@ window.WEEKS.push(
     ]
   },
   {
-    id: "s12", start: "2027-01-25", title: "Semana 12",
-    subtitle: "Revisão final e teste do trimestre",
+    id: "s12", title: "Módulo 12",
+    subtitle: "revisão final e teste",
     sections: [
-      { id: "s12-resumo", type: "summary", title: "Resumo dos 3 meses", subtitle: "Tudo o que você estudou, numa tela",
+      { id: "s12-resumo", type: "summary", title: "Resumo dos 12 módulos", subtitle: "Tudo o que você estudou, numa tela",
         intro: "Releia com calma. Se algo parecer estranho, volte na semana correspondente.",
         cards: [
           C("Tempos verbais", ["Momento definido → passado simples", "Já, até agora → have + particípio", "\"tinha\" → had, \"-ria\" → would"], "I've already posted it."),
@@ -209,9 +209,9 @@ window.WEEKS.push(
           C("-ing ou to", ["enjoy / finish / avoid + -ing", "want / need / decide + to", "preposição + -ing"], "Thanks for helping me."),
           C("Modais, passiva e conectores", ["should / might / must + verbo puro", "be + particípio", "although + frase, despite + nome"], "The video was edited by our team.")
         ] },
-      { id: "s12-mix1", type: "mix", title: "Revisão final, parte 1", subtitle: "Questões de todo o trimestre", count: 10 },
-      { id: "s12-mix2", type: "mix", title: "Revisão final, parte 2", subtitle: "Questões de todo o trimestre", count: 10 },
-      { id: "s12-teste", type: "translate", title: "Teste do trimestre", subtitle: "Traduza para o inglês",
+      { id: "s12-mix1", type: "mix", title: "Revisão final, parte 1", subtitle: "Questões de todos os módulos", count: 10 },
+      { id: "s12-mix2", type: "mix", title: "Revisão final, parte 2", subtitle: "Questões de todos os módulos", count: 10 },
+      { id: "s12-teste", type: "translate", title: "Teste final", subtitle: "Traduza para o inglês",
         items: [
           T("Já postei o vídeo, mas o cliente ainda não viu.", "I've already posted the video, but the client hasn't seen it yet.", "already, yet e have + particípio."),
           T("Se eu tivesse começado antes, teria chegado ao B2 mais cedo.", "If I had started earlier, I would have reached B2 sooner.", "if + had done, would have done."),
@@ -222,7 +222,7 @@ window.WEEKS.push(
           T("O vídeo foi editado em menos de uma hora.", "The video was edited in less than an hour.", "Passiva no passado."),
           T("Embora seja difícil, eu não vou desistir.", "Although it's hard, I won't give up.", "although + frase; give up.")
         ] },
-      { id: "s12-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Um texto para fechar o trimestre",
+      { id: "s12-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Um texto para fechar o curso",
         items: [
           R("Three months ago, I couldn't use \"had\" without thinking.", "Três meses atrás, eu não conseguia usar \"had\" sem pensar."),
           R("I've studied English on the bus almost every day since November.", "Estudo inglês no ônibus quase todo dia desde novembro."),

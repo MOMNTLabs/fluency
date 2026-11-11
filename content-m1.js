@@ -1,7 +1,7 @@
-// Mês 1: tempos verbais com segurança (semanas 2 a 4)
+// Mês 1: tempos verbais com segurança (módulos 2 a 4)
 window.WEEKS.push(
   {
-    id: "s2", start: "2026-11-16", title: "Semana 2",
+    id: "s2", title: "Módulo 2",
     subtitle: "already, yet, just, ever, never, for e since",
     sections: [
       { id: "s2-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
@@ -45,7 +45,7 @@ window.WEEKS.push(
           T("Faz duas semanas que eu estudo inglês no ônibus.", "I've studied English on the bus for two weeks.", "\"Faz … que\" → have + particípio + for. <i>I've been studying</i> também vale."),
           T("Nunca usei o After Effects.", "I've never used After Effects.", "Experiência → have never + particípio.")
         ] },
-      { id: "s2-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões das semanas anteriores", count: 8 },
+      { id: "s2-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s2-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I've just finished the first draft of the carousel.", "Acabei de terminar o primeiro rascunho do carrossel."),
@@ -67,7 +67,7 @@ window.WEEKS.push(
     ]
   },
   {
-    id: "s3", start: "2026-11-23", title: "Semana 3",
+    id: "s3", title: "Módulo 3",
     subtitle: "Os três tipos de if",
     sections: [
       { id: "s3-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
@@ -109,7 +109,7 @@ window.WEEKS.push(
           T("Se eu soubesse, teria te ajudado.", "If I had known, I would have helped you.", "\"Teria ajudado\" → would have helped."),
           T("O que você faria se fosse o chefe?", "What would you do if you were the boss?", "Imaginação → would + were.")
         ] },
-      { id: "s3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões das semanas anteriores", count: 8 },
+      { id: "s3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s3-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("If the post goes viral, we'll need more people to answer the comments.", "Se o post viralizar, vamos precisar de mais gente para responder os comentários."),
@@ -131,8 +131,8 @@ window.WEEKS.push(
     ]
   },
   {
-    id: "s4", start: "2026-11-30", title: "Semana 4",
-    subtitle: "Contando o que alguém disse + revisão do mês",
+    id: "s4", title: "Módulo 4",
+    subtitle: "Contando o que alguém disse + revisão geral",
     sections: [
       { id: "s4-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
         intro: "Quando você conta o que alguém disse no passado, <b>o verbo recua um tempo</b>.",
@@ -173,8 +173,8 @@ window.WEEKS.push(
           T("Ela disse que não podia vir.", "She said she couldn't come.", "can't → couldn't."),
           T("Ele me perguntou se eu já tinha terminado.", "He asked me if I had already finished.", "Sim ou não → if; \"tinha terminado\" → had finished.")
         ] },
-      { id: "s4-mix1", type: "mix", title: "Revisão do mês, parte 1", subtitle: "Tudo o que você viu até aqui", count: 8 },
-      { id: "s4-mix2", type: "mix", title: "Revisão do mês, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
+      { id: "s4-mix1", type: "mix", title: "Revisão dos módulos, parte 1", subtitle: "Tudo o que você viu até aqui", count: 8 },
+      { id: "s4-mix2", type: "mix", title: "Revisão dos módulos, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
       { id: "s4-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("My boss told me the new carousel was the best one this month.", "Meu chefe me disse que o novo carrossel era o melhor do mês."),

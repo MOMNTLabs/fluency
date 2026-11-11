@@ -10,8 +10,8 @@ window.C = function (title, lines, example) { return { title: title, lines: [].c
 window.WEEKS = [
   {
     id: "s1",
-    start: "2026-11-09",
-    title: "Semana 1",
+   
+    title: "Módulo 1",
     subtitle: "Tempos verbais: passado, have, had e would",
     sections: [
       {

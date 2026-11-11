@@ -1,7 +1,7 @@
-// Mês 2: soar natural (semanas 5 a 8)
+// Mês 2: soar natural (módulos 5 a 8)
 window.WEEKS.push(
   {
-    id: "s5", start: "2026-12-07", title: "Semana 5",
+    id: "s5", title: "Módulo 5",
     subtitle: "Preposições: in, on e at",
     sections: [
       { id: "s5-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
@@ -43,7 +43,7 @@ window.WEEKS.push(
           T("Tem um erro na legenda.", "There's a mistake in the caption.", "Dentro do texto → in."),
           T("Começo a trabalhar às 8h da manhã.", "I start work at 8 a.m.", "Hora → at.")
         ] },
-      { id: "s5-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões das semanas anteriores", count: 8 },
+      { id: "s5-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s5-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I study English on the bus every morning.", "Estudo inglês no ônibus toda manhã."),
@@ -65,7 +65,7 @@ window.WEEKS.push(
     ]
   },
   {
-    id: "s6", start: "2026-12-14", title: "Semana 6",
+    id: "s6", title: "Módulo 6",
     subtitle: "-ing ou to depois do verbo",
     sections: [
       { id: "s6-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
@@ -109,7 +109,7 @@ window.WEEKS.push(
           T("Quero aprender a usar o After Effects.", "I want to learn how to use After Effects.", "want to + learn how to. <i>I want to learn to use…</i> também vale."),
           T("Obrigado por me ajudar com o roteiro.", "Thanks for helping me with the script.", "for + -ing.")
         ] },
-      { id: "s6-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões das semanas anteriores", count: 8 },
+      { id: "s6-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s6-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I enjoy creating content, but I hate waiting for approval.", "Gosto de criar conteúdo, mas odeio esperar aprovação."),
@@ -131,7 +131,7 @@ window.WEEKS.push(
     ]
   },
   {
-    id: "s7", start: "2026-12-21", title: "Semana 7",
+    id: "s7", title: "Módulo 7",
     subtitle: "Falsos cognatos",
     sections: [
       { id: "s7-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
@@ -175,7 +175,7 @@ window.WEEKS.push(
           T("Eu pretendo estudar inglês todos os dias.", "I intend to study English every day.", "Pretender = intend. <i>I plan to</i> também vale."),
           T("Eu assisto vídeos de marketing em inglês.", "I watch marketing videos in English.", "Assistir = watch.")
         ] },
-      { id: "s7-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões das semanas anteriores", count: 8 },
+      { id: "s7-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s7-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Actually, I prefer editing to filming.", "Na verdade, prefiro editar a filmar."),
@@ -197,8 +197,8 @@ window.WEEKS.push(
     ]
   },
   {
-    id: "s8", start: "2026-12-28", title: "Semana 8",
-    subtitle: "Phrasal verbs do trabalho + revisão do mês",
+    id: "s8", title: "Módulo 8",
+    subtitle: "Phrasal verbs do trabalho + revisão geral",
     sections: [
       { id: "s8-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
         intro: "Phrasal verb é <b>verbo + partícula</b> com sentido novo. Decore como um bloco, igual a uma palavra.",
@@ -239,8 +239,8 @@ window.WEEKS.push(
           T("Não desista!", "Don't give up!", "Desistir = give up."),
           T("Vou dar retorno para o cliente na segunda.", "I'll follow up with the client on Monday.", "Dar retorno = follow up; dia → on.")
         ] },
-      { id: "s8-mix1", type: "mix", title: "Revisão do mês, parte 1", subtitle: "Tudo o que você viu até aqui", count: 8 },
-      { id: "s8-mix2", type: "mix", title: "Revisão do mês, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
+      { id: "s8-mix1", type: "mix", title: "Revisão dos módulos, parte 1", subtitle: "Tudo o que você viu até aqui", count: 8 },
+      { id: "s8-mix2", type: "mix", title: "Revisão dos módulos, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
       { id: "s8-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("We ran out of ideas, so we went over our best posts from last year.", "Ficamos sem ideias, então revisamos nossos melhores posts do ano passado."),

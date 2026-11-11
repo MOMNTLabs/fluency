@@ -48,12 +48,32 @@
     });
   });
   function isQuiz(s) { return s.type === "fill" || s.type === "translate"; }
-  function unlocked(w) { return !w.start || w.start <= today(); }
-  // Revisão misturada: metade das questões que você já errou, o resto sorteado das semanas anteriores.
+  WEEKS.forEach(function (w, i) { w.idx = i; w.num = i + 1; });
+  function complete(w) { return w.sections.every(function (s) { return state.sections[s.id] && state.sections[s.id].done; }); }
+  function started(w) { return w.sections.some(function (s) { return state.sections[s.id]; }); }
+  // Um módulo libera quando o anterior é concluído.
+  function unlocked(w) { return w.idx === 0 || complete(WEEKS[w.idx - 1]) || started(w); }
+  function currentModule() {
+    var open = WEEKS.filter(unlocked);
+    return open.filter(function (w) { return !complete(w); })[0] || open[open.length - 1];
+  }
+  function daysBetween(a, b) { return Math.round((new Date(b + "T12:00:00") - new Date(a + "T12:00:00")) / 86400000); }
+  // Chamado quando uma seção é concluída. Devolve o módulo, se ele acabou de ser concluído.
+  function sectionFinished(sectionId, extra) {
+    var w = SECTIONS[sectionId].week, was = complete(w);
+    state.modStart = state.modStart || {};
+    if (!state.modStart[w.id]) state.modStart[w.id] = today();
+    var prev = state.sections[sectionId] || {};
+    state.sections[sectionId] = Object.assign(prev, extra || {}, { done: true });
+    save();
+    if (!was && complete(w)) { state.modDone = state.modDone || {}; state.modDone[w.id] = today(); save(); return w; }
+    return null;
+  }
+  // Revisão misturada: metade das questões que você já errou, o resto sorteado dos módulos anteriores.
   function buildMix(sec) {
     var wk = SECTIONS[sec.id].week, pool = [];
     WEEKS.forEach(function (x) {
-      if (x.start < wk.start) x.sections.forEach(function (s) { if (s.type === "fill") s.items.forEach(function (it) { pool.push(it.id); }); });
+      if (x.idx < wk.idx) x.sections.forEach(function (s) { if (s.type === "fill") s.items.forEach(function (it) { pool.push(it.id); }); });
     });
     var weak = shuffle(pool.filter(function (id) { return state.results[id] && state.results[id].wrong > 0; }));
     var rest = shuffle(pool.filter(function (id) { return weak.indexOf(id) < 0; }));
@@ -72,7 +92,8 @@
     x: svg('<path d="M6 6l12 12M18 6L6 18"/>', 3),
     sound: svg('<path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>', 2),
     flame: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFB020" d="M12 2.5c.6 3.2 4.8 5.4 4.8 10.3A4.8 4.8 0 0 1 12 17.6a4.8 4.8 0 0 1-4.8-4.8c0-2.1 1-3.6 2-4.6.2 1.6 1 2.6 2 2.9-.4-3 .2-6.2.8-8.6z"/><path fill="#FF6B2C" d="M12 21.5a5.5 5.5 0 0 1-5.5-5.5c0-.8.2-1.6.5-2.3a5.3 5.3 0 0 0 10 0c.3.7.5 1.5.5 2.3a5.5 5.5 0 0 1-5.5 5.5z"/></svg>',
-    done: svg('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 2.6)
+    done: svg('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 2.6),
+    lock: svg('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>', 2)
   };
 
   // ---------- Utilidades ----------
@@ -184,30 +205,32 @@
       html += '<button class="due" id="due"><span class="n">' + due + '</span><span><h3>Revisão de hoje</h3><p>' +
         (due === 1 ? "Uma questão que você errou antes" : "Questões que você errou antes") + '</p></span><span class="go">' + I.next + '</span></button>';
     }
-    var open = WEEKS.filter(unlocked), locked = WEEKS.filter(function (w) { return !unlocked(w); });
-    var current = open[open.length - 1];
-    if (current) html += routeHtml(current, true);
-    var past = open.slice(0, -1).reverse();
-    if (past.length) {
-      html += '<section class="week"><h2 class="sub-h">Semanas anteriores</h2>';
-      past.forEach(function (w) {
-        var p = weekProgress(w), isOpen = expanded[w.id];
-        html += '<button class="week-row" data-week="' + w.id + '" aria-expanded="' + !!isOpen + '"><span class="grow"><h3>' + esc(w.title) + '</h3>' +
-          '<span class="meta">' + esc(w.subtitle) + '</span></span><span class="frac">' + p.done + '/' + p.total + '</span><span class="chev' + (isOpen ? " up" : "") + '">' + I.next + '</span></button>';
-        if (isOpen) html += routeHtml(w, false);
-      });
-      html += '</section>';
-    }
-    if (locked.length) {
-      var nx = locked[0];
-      html += '<div class="locked"><h3>' + esc(nx.title) + ': ' + esc(nx.subtitle) + '</h3><span class="meta">Libera na segunda, ' + shortDate(nx.start) +
-        (locked.length > 1 ? ". Depois, mais " + (locked.length - 1) + (locked.length - 1 === 1 ? " semana" : " semanas") + " até " + shortDate(locked[locked.length - 1].start) : "") + '.</span></div>';
-    }
+    var cur = currentModule(), doneCount = WEEKS.filter(complete).length;
+    html += routeHtml(cur, true);
+    html += '<section class="week" id="all"><div class="all-head"><h2 class="sub-h">Todos os módulos</h2><span class="frac">' + doneCount + ' de ' + WEEKS.length + ' concluídos</span></div>' +
+      '<div class="overall"><i style="width:' + Math.round(doneCount / WEEKS.length * 100) + '%"></i></div>';
+    WEEKS.forEach(function (w) {
+      var p = weekProgress(w), isCur = w === cur, isDone = complete(w), isOpen = unlocked(w), exp = expanded[w.id] && isOpen && !isCur;
+      var cls = isCur ? "current" : isDone ? "done" : isOpen ? "" : "locked-row";
+      var right = isDone ? '<span class="state ok">' + I.done + '</span>' : isCur ? '<span class="frac">' + p.done + '/' + p.total + '</span>' :
+        isOpen ? '<span class="frac">' + p.done + '/' + p.total + '</span>' : '<span class="state">' + I.lock + '</span>';
+      var meta = isCur ? "Em andamento" : isDone ? "Concluído" : isOpen ? p.done + " de " + p.total + " seções" :
+        w.idx === cur.idx + 1 ? "Conclua o " + cur.title + " para liberar" : "Bloqueado";
+      html += '<button class="week-row ' + cls + '" data-week="' + w.id + '"' + (isOpen && !isCur ? ' aria-expanded="' + !!exp + '"' : "") + '>' +
+        '<span class="mod-num">' + w.num + '</span><span class="grow"><h3>' + esc(w.subtitle) + '</h3><span class="meta">' + meta + '</span></span>' + right + '</button>';
+      if (exp) html += routeHtml(w, false);
+    });
+    html += '</section>';
     if (needsBackup()) html += '<button class="tip tip-btn" id="bk-tip">Faça o backup da semana: um toque na aba Erros.</button>';
     else html += '<div class="tip">Depois de cada rodada, escreva no bloco de notas duas frases suas para cada erro, usando a forma certa.</div>';
     app.innerHTML = html;
     app.querySelectorAll("[data-sec]").forEach(function (b) { b.onclick = function () { openSection(b.getAttribute("data-sec")); }; });
-    app.querySelectorAll("[data-week]").forEach(function (b) { b.onclick = function () { var id = b.getAttribute("data-week"); expanded[id] = !expanded[id]; render(); }; });
+    app.querySelectorAll("[data-week]").forEach(function (b) { b.onclick = function () {
+      var w = WEEKS.filter(function (x) { return x.id === b.getAttribute("data-week"); })[0];
+      if (w === cur) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+      if (!unlocked(w)) { toast("Conclua o " + cur.title + " para liberar"); return; }
+      expanded[w.id] = !expanded[w.id]; render();
+    }; });
     var r = document.getElementById("due"); if (r) r.onclick = function () { go({ name: "review" }); };
     var bt = document.getElementById("bk-tip"); if (bt) bt.onclick = function () { go({ name: "errors" }); };
     document.getElementById("offline").onclick = function () { toast(offlineMessage()); };
@@ -219,7 +242,7 @@
   }
   function routeHtml(w, withHead) {
     var nextFound = false, html = '<section class="week">';
-    if (withHead) html += '<div class="week-head"><h2>' + esc(w.title) + '</h2><div class="muted small">' + esc(w.subtitle) + '</div></div>';
+    if (withHead) html += '<div class="week-head"><div class="muted small">' + esc(w.title) + (complete(w) ? ", concluído" : "") + '</div><h2>' + esc(w.subtitle) + '</h2></div>';
     html += '<ol class="route">';
     w.sections.forEach(function (s, i) {
       var d = state.sections[s.id], done = d && d.done, cls = done ? "done" : (!nextFound ? "next" : "");
@@ -230,6 +253,7 @@
     });
     return html + '</ol></section>';
   }
+  function moduleDoneText(m) { var n = WEEKS[m.idx + 1]; return m.title + " concluído" + (n ? ". " + n.title + " liberado" : "!"); }
   function markDone(id) { state.sections[id] = state.sections[id] || {}; state.sections[id].done = true; save(); }
   function openSection(id) {
     var s = SECTIONS[id].section;
@@ -271,7 +295,10 @@
       var el = document.getElementById("rev" + b.getAttribute("data-rev")); el.hidden = !el.hidden; b.textContent = el.hidden ? "Ver tradução" : "Esconder"; }; });
     app.querySelectorAll("[data-flip]").forEach(function (c) { c.onclick = function () {
       var open = c.classList.toggle("open"); c.querySelector(".more").hidden = !open; c.querySelector(".hint").hidden = open; }; });
-    document.getElementById("finish").onclick = function () { markDone(s.id); toast("Seção concluída"); go({ name: "home" }); };
+    document.getElementById("finish").onclick = function () {
+      var mod = sectionFinished(s.id);
+      toast(mod ? moduleDoneText(mod) : "Seção concluída"); go({ name: "home" });
+    };
   }
 
   // ---------- Exercícios ----------
@@ -353,7 +380,7 @@
     else {
       if (S.kind === "section") {
         var right = S.log.filter(function (l) { return l.ok; }).length;
-        state.sections[S.section.id] = { done: true, score: right, total: S.ids.length, at: today() }; save();
+        S.moduleDone = sectionFinished(S.section.id, { score: right, total: S.ids.length, at: today() });
       }
       go({ name: "done", session: S });
     }
@@ -368,6 +395,12 @@
     var msg = ratio === 1 ? "Rodada perfeita." : ratio >= 0.75 ? "Muito bom." : ratio >= 0.5 ? "Bom treino." : "Os erros viram o seu material de revisão.";
     var html = '<div class="score">' + right + '<small>/' + total + '</small></div><h1>' + msg + '</h1>' +
       '<p class="muted">' + (S.kind === "review" ? "Revisão concluída" : esc(S.section.title) + " concluída") + '</p>';
+    if (S.moduleDone) {
+      var m = S.moduleDone, nxt = WEEKS[m.idx + 1], took = daysBetween(state.modStart[m.id], today()) + 1;
+      html += '<div class="unlock"><span class="mark">' + I.done + '</span><div><h3>' + esc(m.title) + ' concluído</h3><p>' +
+        (nxt ? esc(nxt.title) + " liberado: " + esc(nxt.subtitle) + "." : "Você terminou todos os módulos!") + '</p></div></div>';
+      if (nxt && took <= 2) html += '<p class="note">Você fechou este módulo em ' + took + (took === 1 ? " dia" : " dias") + '. Antes de começar o próximo, vale fazer a revisão de erros: com alguns dias entre um módulo e outro, o conteúdo fixa melhor.</p>';
+    }
     if (wrong.length) {
       html += '<div class="panel">' + wrong.map(function (l) {
         var it = ITEMS[l.id].item; return '<div class="item"><p class="sentence" style="font-size:17px;margin:0">' + fullHtml(it.full) + '</p><div class="row">' + listen(it.full) + '</div></div>';
@@ -405,7 +438,7 @@
   // ---------- Erros ----------
   function renderErrors() {
     var pend = pendingIds().sort();
-    var html = '<h1 style="margin-top:8px">Meus erros</h1><p class="muted">No fim de semana, copie a lista e mande para o Claude montar a próxima semana.</p>';
+    var html = '<h1 style="margin-top:8px">Meus erros</h1><p class="muted">No fim de semana, copie a lista e mande para o Claude. Ele usa para ajustar os próximos módulos.</p>';
     if (!pend.length) {
       html += '<div class="empty"><div class="art">' + I.check + '</div><h2>Nenhum erro pendente</h2><p class="muted small">' +
         (state.mastered ? "Você já superou " + state.mastered + (state.mastered === 1 ? " erro." : " erros.") : "Faça uma rodada para começar.") + '</p></div>';
@@ -495,7 +528,7 @@
   }
   function offlineMessage() {
     var n = WEEKS.length;
-    if (offline.state === "ok") return "Tudo salvo no iPhone: " + n + " semanas funcionam sem internet";
+    if (offline.state === "ok") return "Tudo salvo no iPhone: " + n + " módulos funcionam sem internet";
     if (offline.state === "partial") return "Ainda falta baixar parte do app. Abra com internet";
     return "Baixando o app para usar sem internet…";
   }
