@@ -1,8 +1,8 @@
 // Mude a versão a cada atualização de conteúdo para o iPhone baixar os arquivos novos.
-const VERSION = "2026-11-11-1";
+const VERSION = "2026-11-11-2";
 const CACHE = "ingles-" + VERSION;
 const FILES = ["./", "index.html", "app.js", "content.js", "manifest.webmanifest",
-  "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png"];
+  "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "fonts/bricolage.woff2"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE)
