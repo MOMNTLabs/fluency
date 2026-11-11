@@ -211,6 +211,24 @@
   }
   var ZIG = [0, -1, -2, -1, 0, 1, 2, 1];
   var bubble = null, scrolledOnce = false;
+  // Ícone de cada módulo, ligado ao tema.
+  var MOD_ICON = {
+    s1: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    s2: '<path d="M7 3.5h10M7 20.5h10M8 3.5c0 4 8 4.5 8 8.5s-8 4.5-8 8.5M16 3.5c0 4-8 4.5-8 8.5s8 4.5 8 8.5"/>',
+    s3: '<circle cx="6" cy="5.5" r="2"/><circle cx="6" cy="18.5" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 7.5v9M18 10c0 4-5 4-11 7"/>',
+    s4: '<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-5 4v-4h0.5A2.5 2.5 0 0 1 4 13.5z"/><path d="M9 9h.01M12 9h.01M15 9h.01"/>',
+    s5: '<path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
+    s6: '<path d="M4 12h6M14 7l5 5-5 5M10 12c0-3 2-5 4-5M10 12c0 3 2 5 4 5"/>',
+    s7: '<path d="M4 6c3-1.5 13-1.5 16 0 0 6-3 11-8 13C7 17 4 12 4 6z"/><path d="M8.5 10.5c.8-.6 1.7-.6 2.5 0M13 10.5c.8-.6 1.7-.6 2.5 0M9.5 14.5c1.6 1 3.4 1 5 0"/>',
+    s8: '<path d="M10 4h4v3a1.5 1.5 0 0 0 3 0h3v4h-3a1.5 1.5 0 0 0 0 3h3v4h-4v-3a1.5 1.5 0 0 0-3 0v3H4v-6h3a1.5 1.5 0 0 0 0-3H4V4z"/>',
+    s9: '<circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+    s10: '<path d="M7 4L4 7l3 3M4 7h11a5 5 0 0 1 5 5M17 20l3-3-3-3M20 17H9a5 5 0 0 1-5-5"/>',
+    s11: '<path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/>',
+    s12: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'
+  };
+  var MOD_OPEN_KEY = "fluency-open-modules";
+  var openMods = (function () { try { return JSON.parse(localStorage.getItem(MOD_OPEN_KEY)) || {}; } catch (e) { return {}; } })();
+  function isExpanded(w, cur) { return w.id in openMods ? openMods[w.id] : w === cur; }
 
   function renderHome() {
     var due = dueIds().length, cur = currentModule();
@@ -222,10 +240,17 @@
     WEEKS.forEach(function (w) {
       var open = unlocked(w), done = complete(w), col = modColor(w);
       var p = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) p++; });
-      html += '<section class="module' + (open ? "" : " is-locked") + '" style="--m:' + col + '" id="mod-' + w.id + '">' +
-        '<div class="banner"><div class="grow"><div class="b-label">' + esc(w.title) + (done ? ", concluído" : open ? ", " + p + " de " + w.sections.length : "") + '</div>' +
-        '<div class="b-title">' + esc(w.subtitle) + '</div></div>' +
-        (open ? "" : '<span class="b-lock">' + I.lock + '</span>') + '</div><div class="path">';
+      var exp = isExpanded(w, cur), isCur = w === cur;
+      var segs = ""; w.sections.forEach(function (s) { segs += '<i class="' + (state.sections[s.id] && state.sections[s.id].done ? "on" : "") + '"></i>'; });
+      var status = done ? "Concluído" : isCur ? "Em andamento" : open ? p + " de " + w.sections.length : "Bloqueado";
+      html += '<section class="module' + (open ? "" : " is-locked") + (exp ? " expanded" : "") + (isCur ? " current" : "") + (done ? " complete" : "") + '" style="--m:' + col + '" id="mod-' + w.id + '">' +
+        '<button class="banner" data-mod="' + w.id + '" aria-expanded="' + exp + '">' +
+        '<span class="m-icon">' + svg(MOD_ICON[w.id] || TROPHY, 2) + (done ? '<span class="m-done">' + I.done + '</span>' : "") + '</span>' +
+        '<span class="grow"><span class="b-label">' + esc(w.title) + '<span class="b-status">' + status + '</span></span>' +
+        '<span class="b-title">' + esc(w.subtitle) + '</span><span class="segs">' + segs + '</span></span>' +
+        '<span class="b-chev">' + (open ? I.next : I.lock) + '</span></button>';
+      if (!exp) { html += '</section>'; return; }
+      html += '<div class="path">';
       w.sections.forEach(function (s, i) {
         var d = state.sections[s.id], isDone = d && d.done, avail = nodeAvailable(w, s), isNext = avail && !isDone;
         var x = ZIG[(i + w.idx * 3) % ZIG.length] * 46;
@@ -245,6 +270,13 @@
     app.innerHTML = html;
     app.querySelectorAll("[data-node]").forEach(function (b) { b.onclick = function (e) {
       e.stopPropagation(); var id = b.getAttribute("data-node"); bubble = bubble === id ? null : id; renderKeepScroll();
+    }; });
+    app.querySelectorAll("[data-mod]").forEach(function (b) { b.onclick = function (e) {
+      e.stopPropagation(); var w = WEEKS.filter(function (x) { return x.id === b.getAttribute("data-mod"); })[0];
+      openMods[w.id] = !isExpanded(w, cur); bubble = null;
+      try { localStorage.setItem(MOD_OPEN_KEY, JSON.stringify(openMods)); } catch (err) {}
+      var before = b.getBoundingClientRect().top; render();
+      var nb = app.querySelector('[data-mod="' + w.id + '"]'); if (nb) window.scrollBy(0, nb.getBoundingClientRect().top - before);
     }; });
     app.querySelectorAll("[data-start]").forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); var id = b.getAttribute("data-start"); bubble = null; openSection(id); }; });
     var r = document.getElementById("due"); if (r) r.onclick = function () { go({ name: "review" }); };
