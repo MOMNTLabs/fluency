@@ -38,6 +38,14 @@
   // ---------- Índice do conteúdo ----------
   var WEEKS = window.WEEKS || [];
   var ITEMS = {}, SECTIONS = {};
+  // Cada módulo ganha uma etapa de escuta, feita com as frases de leitura.
+  WEEKS.forEach(function (w) {
+    var r = w.sections.filter(function (s) { return s.type === "reading"; })[0];
+    if (r && !w.sections.some(function (s) { return s.type === "listen"; })) {
+      w.sections.splice(w.sections.indexOf(r) + 1, 0, { id: w.id + "-escuta", type: "listen", title: "Escuta", subtitle: "Ouça e monte a frase",
+        items: r.items.map(function (x) { return { en: x.en, pt: x.pt, full: x.en }; }) });
+    }
+  });
   WEEKS.forEach(function (w) {
     w.sections.forEach(function (s) {
       SECTIONS[s.id] = { section: s, week: w };
@@ -47,7 +55,8 @@
       });
     });
   });
-  function isQuiz(s) { return s.type === "fill" || s.type === "translate"; }
+  function isQuiz(s) { return s.type === "fill" || s.type === "translate" || s.type === "listen"; }
+  function goal() { return state.goal || 20; }
   WEEKS.forEach(function (w, i) { w.idx = i; w.num = i + 1; });
   function complete(w) { return w.sections.every(function (s) { return state.sections[s.id] && state.sections[s.id].done; }); }
   function started(w) { return w.sections.some(function (s) { return state.sections[s.id]; }); }
@@ -127,10 +136,10 @@
     voice = vs.filter(function (v) { return /^en[-_]US/i.test(v.lang); })[0] || vs.filter(function (v) { return /^en/i.test(v.lang); })[0] || null;
   }
   if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
-  function speak(text) {
+  function speak(text, rate) {
     if (!("speechSynthesis" in window)) { toast("Áudio indisponível neste aparelho"); return; }
     speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(plain(text)); u.lang = "en-US"; u.rate = 0.9; if (voice) u.voice = voice;
+    var u = new SpeechSynthesisUtterance(plain(text)); u.lang = "en-US"; u.rate = rate || 0.9; if (voice) u.voice = voice;
     speechSynthesis.speak(u);
   }
   function listen(text) { return '<button class="listen" data-speak="' + esc(plain(text)) + '">' + I.sound + 'Ouvir</button>'; }
@@ -177,12 +186,13 @@
   });
   function setTabs() {
     var inReview = view.session && view.session.kind === "review";
-    var map = { home: "home", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
+    var map = { welcome: "home", home: "home", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
     document.querySelectorAll(".tab").forEach(function (t) { t.classList.toggle("on", t.getAttribute("data-tab") === map[view.name]); });
   }
   function render() {
     setTabs();
-    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors })[view.name]();
+    document.body.classList.toggle("focus", view.name === "quiz" || view.name === "welcome");
+    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors, welcome: renderWelcome })[view.name]();
   }
   function top(label, title, right) {
     return '<div class="top"><button class="icon-btn" id="back" aria-label="Voltar">' + I.back + '</button>' +
@@ -199,7 +209,8 @@
     fill: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
     translate: '<path d="M4 6h9M8.5 4v2M6 6c.5 3 2.5 5.5 5 6.5M11 6c-.8 3.5-3 6-6 7"/><path d="M13 20l3.5-8 3.5 8M14.2 17.5h4.6"/>',
     mix: '<path d="M4 7h3.5c2 0 3 1 4.5 3.5S14.5 17 16.5 17H20M4 17h3.5c1.3 0 2.2-.5 3-1.5M13.5 8.5c.8-1 1.7-1.5 3-1.5H20"/><path d="M17.5 4.5L20 7l-2.5 2.5M17.5 14.5L20 17l-2.5 2.5"/>',
-    reading: '<path d="M4 13a8 8 0 0 1 16 0"/><rect x="3.5" y="13" width="4" height="6.5" rx="1.5"/><rect x="16.5" y="13" width="4" height="6.5" rx="1.5"/>',
+    reading: '<path d="M5 6h14M5 10h14M5 14h9M5 18h6"/>',
+    listen: '<path d="M4 13a8 8 0 0 1 16 0"/><rect x="3.5" y="13" width="4" height="6.5" rx="1.5"/><rect x="16.5" y="13" width="4" height="6.5" rx="1.5"/>',
     vocab: '<rect x="7" y="3.5" width="12" height="15" rx="2"/><path d="M5 7.5v11a2 2 0 0 0 2 2h9"/>'
   };
   var TROPHY = '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/>';
@@ -235,8 +246,9 @@
     var html = '<header class="bar-top"><div class="wordmark">Fluency<i></i></div><div class="brand-right">' +
       (due ? '<button class="due-pill" id="due" aria-label="Revisão de hoje">' + svg('<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>', 2.4) + due + '</button>' : "") +
       '<button class="offline ' + offline.state + '" id="offline" aria-label="Status offline">' + offlineIcon() + '</button>' +
-      '<div class="streak" title="Dias seguidos de estudo">' + I.flame + streak() + '</div></div></header>';
+      goalChip() + '</div></header>';
     if (needsBackup()) html += '<button class="nudge" id="bk-tip">Faça o backup da semana na aba Progresso</button>';
+    html += studyCard(cur);
     WEEKS.forEach(function (w) {
       var open = unlocked(w), done = complete(w), col = modColor(w);
       var p = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) p++; });
@@ -282,14 +294,35 @@
     var r = document.getElementById("due"); if (r) r.onclick = function () { go({ name: "review" }); };
     var bt = document.getElementById("bk-tip"); if (bt) bt.onclick = function () { go({ name: "errors" }); };
     document.getElementById("offline").onclick = function () { toast(offlineMessage()); };
+    document.getElementById("goal").onclick = function () {
+      var n = state.days[today()] || 0;
+      toast(n >= goal() ? "Meta de hoje batida: " + n + " questões" : "Meta de hoje: " + n + " de " + goal() + " questões");
+    };
+    var sb = document.getElementById("study"); if (sb) sb.onclick = studyAction;
     if (!scrolledOnce) {
       scrolledOnce = true;
       var target = app.querySelector(".node.next") || app.querySelector("#mod-" + cur.id);
       if (target) requestAnimationFrame(function () {
-        var y = target.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.42;
-        window.scrollTo(0, Math.max(0, y));
+        var r = target.getBoundingClientRect();
+        if (r.bottom > window.innerHeight - 140) window.scrollTo(0, Math.max(0, r.top + window.scrollY - window.innerHeight * 0.42));
       });
     }
+  }
+  function goalChip() {
+    var n = state.days[today()] || 0, f = Math.min(1, n / goal()), C = 2 * Math.PI * 15;
+    return '<button class="goal' + (f >= 1 ? " hit" : "") + '" id="goal" aria-label="Meta do dia e sequência"><span class="g-ring"><svg viewBox="0 0 36 36" aria-hidden="true">' +
+      '<circle cx="18" cy="18" r="15" class="g-bg"/><circle cx="18" cy="18" r="15" class="g-fg" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - f)).toFixed(1) + '"/></svg>' +
+      I.flame + '</span>' + streak() + '</button>';
+  }
+  var studyAction = null;
+  function studyCard(cur) {
+    var z = savedSession(), due = dueIds(), nx = nextSection(), col = cur ? modColor(cur) : MOD_COLORS[0], t, sub;
+    if (z) { t = "Continuar: " + sessionName(z); sub = z.log.length + " de " + z.ids.length + " questões feitas"; studyAction = resumeSession; }
+    else if (due.length && nx) { t = "Estudar agora"; sub = "Revisão de " + due.length + (due.length === 1 ? " erro" : " erros") + ", depois " + nx.title; studyAction = function () { startSession("review", shuffle(due.slice()), null, nx.id); }; }
+    else if (due.length) { t = "Estudar agora"; sub = "Revisão de " + due.length + (due.length === 1 ? " erro" : " erros"); studyAction = function () { startSession("review", shuffle(due.slice())); }; }
+    else if (nx) { t = "Estudar agora"; sub = cur.title + ": " + nx.title; studyAction = function () { openSection(nx.id); }; }
+    else return "";
+    return '<button class="study" id="study" style="--m:' + col + '"><span class="grow"><span class="s-title">' + esc(t) + '</span><span class="s-sub">' + esc(sub) + '</span></span><span class="s-go">' + I.next + '</span></button>';
   }
   function renderKeepScroll() { var y = window.scrollY; render(); window.scrollTo(0, y); }
   document.addEventListener("click", function (e) {
@@ -306,14 +339,40 @@
     return h + '</div>';
   }
   function moduleDoneText(m) { var n = WEEKS[m.idx + 1]; return m.title + " concluído" + (n ? ". " + n.title + " liberado" : "!"); }
-  function markDone(id) { state.sections[id] = state.sections[id] || {}; state.sections[id].done = true; save(); }
-  function openSection(id) {
-    var s = SECTIONS[id].section;
+  function isDoneSec(s) { return !!(state.sections[s.id] && state.sections[s.id].done); }
+  function nextSectionOf(w) { return w.sections.filter(function (s) { return nodeAvailable(w, s) && !isDoneSec(s); })[0] || null; }
+  function nextSection() { var cur = currentModule(); return cur ? nextSectionOf(cur) : null; }
+
+  // ---------- Sessões (com retomada) ----------
+  function savedSession() {
+    var z = state.session;
+    if (!z || !z.ids || !z.ids.length) return null;
+    if (!z.ids.every(function (id) { return ITEMS[id]; }) || (z.sectionId && !SECTIONS[z.sectionId])) { state.session = null; save(); return null; }
+    return z;
+  }
+  function persist(S) {
+    state.session = { kind: S.kind, ids: S.ids, log: S.log, sectionId: S.section ? S.section.id : null, then: S.then || null };
+    save();
+  }
+  function startSession(kind, ids, section, then) {
+    var S = { kind: kind, ids: ids, i: 0, phase: "ask", section: section || null, log: [], then: then || null };
+    persist(S); go({ name: "quiz", session: S });
+  }
+  function resumeSession() {
+    var z = savedSession(); if (!z) { go({ name: "home" }); return; }
+    var S = { kind: z.kind, ids: z.ids, i: z.log.length, phase: "ask", section: z.sectionId ? SECTIONS[z.sectionId].section : null, log: z.log, then: z.then };
+    if (S.i >= S.ids.length) { finishSession(S); return; }
+    go({ name: "quiz", session: S });
+  }
+  function sessionName(z) { return z.kind === "review" ? "Revisão" : SECTIONS[z.sectionId].section.title; }
+  function openSection(id, then) {
+    var s = SECTIONS[id].section, z = savedSession();
+    if (z && z.kind === "section" && z.sectionId === id) { resumeSession(); return; }
     if (s.type === "mix") {
       var ids = buildMix(s);
       if (!ids.length) { toast("Ainda não há questões anteriores"); return; }
-      go({ name: "quiz", session: newSession("section", ids, s) });
-    } else if (isQuiz(s)) go({ name: "quiz", session: newSession("section", s.items.map(function (it) { return it.id; }), s) });
+      startSession("section", ids, s, then);
+    } else if (isQuiz(s)) startSession("section", s.items.map(function (it) { return it.id; }), s, then);
     else go({ name: "section", id: id });
   }
 
@@ -345,97 +404,207 @@
     app.innerHTML = html; bindBack();
     app.querySelectorAll("[data-rev]").forEach(function (b) { b.onclick = function () {
       var el = document.getElementById("rev" + b.getAttribute("data-rev")); el.hidden = !el.hidden; b.textContent = el.hidden ? "Ver tradução" : "Esconder"; }; });
-    app.querySelectorAll("[data-flip]").forEach(function (c) { c.onclick = function () {
+    app.querySelectorAll("[data-flip]").forEach(function (c) { c.onclick = function (e) {
+      if (e.target.closest("[data-speak]")) return;
       var open = c.classList.toggle("open"); c.querySelector(".more").hidden = !open; c.querySelector(".hint").hidden = open; }; });
     document.getElementById("finish").onclick = function () {
       var mod = sectionFinished(s.id);
-      toast(mod ? moduleDoneText(mod) : "Seção concluída"); go({ name: "home" });
+      if (mod) { celebrate(); toast(moduleDoneText(mod)); } else toast("Seção concluída");
+      go({ name: "home" });
     };
   }
 
-  // ---------- Exercícios ----------
-  function newSession(kind, ids, section) { return { kind: kind, ids: ids, i: 0, phase: "ask", section: section, log: [], answer: "" }; }
+  // ---------- Opções e blocos de palavras (responder tocando) ----------
+  function hashStr(t) { var h = 2166136261; for (var i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function seeded(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function sshuffle(a, key) { var r = seeded(hashStr(key)), b = a.slice(); for (var i = b.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)), t = b[i]; b[i] = b[j]; b[j] = t; } return b; }
+  var IRR = { have: ["had", "had"], be: ["was", "been"], go: ["went", "gone"], come: ["came", "come"], see: ["saw", "seen"], know: ["knew", "known"],
+    leave: ["left", "left"], send: ["sent", "sent"], take: ["took", "taken"], write: ["wrote", "written"], get: ["got", "gotten"], lose: ["lost", "lost"],
+    pay: ["paid", "paid"], tell: ["told", "told"], speak: ["spoke", "spoken"], find: ["found", "found"], give: ["gave", "given"], buy: ["bought", "bought"],
+    forget: ["forgot", "forgotten"], "do": ["did", "done"], make: ["made", "made"], put: ["put", "put"], run: ["ran", "run"], think: ["thought", "thought"],
+    sell: ["sold", "sold"], keep: ["kept", "kept"], read: ["read", "read"], meet: ["met", "met"], win: ["won", "won"], begin: ["began", "begun"],
+    bring: ["brought", "brought"], build: ["built", "built"], choose: ["chose", "chosen"], drive: ["drove", "driven"], hear: ["heard", "heard"],
+    say: ["said", "said"], shoot: ["shot", "shot"], show: ["showed", "shown"], teach: ["taught", "taught"], spend: ["spent", "spent"], feel: ["felt", "felt"] };
+  var DOUBLE = { get: 1, put: 1, stop: 1, plan: 1, run: 1, sit: 1, swim: 1, begin: 1 };
+  function pastOf(b) { if (IRR[b]) return IRR[b][0]; if (/e$/.test(b)) return b + "d"; if (/[^aeiou]y$/.test(b)) return b.slice(0, -1) + "ied"; if (DOUBLE[b]) return b + b.slice(-1) + "ed"; return b + "ed"; }
+  function ppOf(b) { return IRR[b] ? IRR[b][1] : pastOf(b); }
+  function ingOf(b) { if (b === "be") return "being"; if (/[^e]e$/.test(b)) return b.slice(0, -1) + "ing"; if (DOUBLE[b]) return b + b.slice(-1) + "ing"; return b + "ing"; }
+  function sOf(b) { if (b === "have") return "has"; if (b === "be") return "is"; if (/(s|sh|ch|x|o)$/.test(b)) return b + "es"; if (/[^aeiou]y$/.test(b)) return b.slice(0, -1) + "ies"; return b + "s"; }
+  function verbForms(hint, passive) {
+    var parts = hint.split("/"), b = parts.pop().trim(), adv = parts.length ? parts[0].trim() : "";
+    if (!/^[a-z]+$/.test(b)) return null;
+    var V2 = pastOf(b), V3 = ppOf(b), neg = adv === "not";
+    var list = neg ? (passive ? ["hasn't been " + V3, "wasn't " + V3, "isn't " + V3, "won't be " + V3, "hadn't " + V3, "didn't " + b] :
+      ["didn't " + b, "don't " + b, "hadn't " + V3, "haven't " + V3, "wouldn't " + b, "wouldn't have " + V3, "won't " + b]) :
+      [b, sOf(b), V2, "have " + V3, "has " + V3, "had " + V3, "would " + b, "will " + b, "would have " + V3, "to " + b, ingOf(b)];
+    if (passive && !neg) list = ["is " + V3, "are " + V3, "was " + V3, "were " + V3, "has been " + V3, "will be " + V3, "be " + V3, "been " + V3, V2, "have " + V3, "would " + b];
+    if (b === "be") list = list.concat(["were", "was", "is", "are", "am"]);
+    if (adv && !neg) list = list.filter(function (f) { return !/^to |ing$/.test(f); }).map(function (f) { var w = f.split(" "); return w.length > 1 ? [w[0], adv].concat(w.slice(1)).join(" ") : adv + " " + f; });
+    return list;
+  }
+  function optionsFor(it) {
+    if (it._opts) return it._opts;
+    var correct = it.a[0].replace(/^'/, ""), accepted = it.a.map(norm), ref = ITEMS[it.id], pool = [];
+    var hint = (it.q.match(/\(([^()]+)\)\s*[^()]*$/) || [])[1];
+    var passive = it.a.some(function (x) { return /\b(is|are|was|were|be|been)\b/.test(x) && /\b(\w+ed|\w+en|found|sent|taken|given|spoken|written)$/.test(x); });
+    var forms = hint ? verbForms(hint.toLowerCase(), passive) : null;
+    var useForms = forms && forms.some(function (f) { return accepted.indexOf(norm(f)) >= 0; });
+    var plainItem = function (x) { var h = (x.q.match(/\(([^()]+)\)\s*[^()]*$/) || [])[1]; return !h || !verbForms(h.toLowerCase()); };
+    if (useForms) pool = forms;
+    else {
+      ref.section.items.forEach(function (x) { if (x !== it && plainItem(x)) pool.push(x.a[0].replace(/^'/, "")); });
+      ref.week.sections.forEach(function (s) { if (s.type === "fill" && s !== ref.section) s.items.forEach(function (x) { if (plainItem(x)) pool.push(x.a[0].replace(/^'/, "")); }); });
+    }
+    var seen = {}, d = [], later = [], wc = norm(correct).split(" ").length;
+    sshuffle(pool, it.id).forEach(function (p) {
+      var n = norm(p); if (!n || seen[n] || accepted.indexOf(n) >= 0) return;
+      seen[n] = 1;
+      // Em seções sem verbo, prefira distratores com o mesmo número de palavras.
+      if (!useForms && n.split(" ").length !== wc) later.push(p); else d.push(p);
+    });
+    if (d.length < 3) d = d.concat(later);
+    if (useForms) { var same = d.filter(function (p) { return p.split(" ").length === correct.split(" ").length; }); d = same.slice(0, 2).concat(d.filter(function (p) { return same.indexOf(p) < 0; })); }
+    it._opts = sshuffle([correct].concat(d.slice(0, 3)), it.id + "o");
+    return it._opts;
+  }
+  function tokens(t) { return plain(t).replace(/[.,!?;:"“”]/g, "").split(/\s+/).filter(Boolean); }
+  function tilesFor(it, sec) {
+    if (it._tiles) return it._tiles;
+    var own = tokens(it.full), lower = own.map(function (w) { return w.toLowerCase(); }), extra = [];
+    sshuffle(sec.items, it.id).forEach(function (x) {
+      if (x === it) return;
+      tokens(x.full).forEach(function (w) { if (extra.length < 3 && lower.indexOf(w.toLowerCase()) < 0 && extra.indexOf(w) < 0 && w.length > 2) extra.push(w); });
+    });
+    it._tiles = sshuffle(own.concat(extra), it.id + "t");
+    return it._tiles;
+  }
+
+  // ---------- Exercício ----------
+  var PRAISE = ["Isso!", "Certinho!", "Mandou bem!", "Acertou!", "Boa!"], pickN = 0;
   function progressBar(S) {
     var h = '<div class="bar">';
-    for (var i = 0; i < S.ids.length; i++) {
-      var l = S.log[i], c = l ? (l.ok ? "ok" : "bad") : (i === S.i ? "now" : "");
-      h += '<i class="' + c + '"></i>';
-    }
+    for (var i = 0; i < S.ids.length; i++) { var l = S.log[i]; h += '<i class="' + (l ? (l.ok ? "ok" : "bad") : (i === S.i ? "now" : "")) + '"></i>'; }
     return h + '</div>';
   }
-  var PRAISE = ["Isso!", "Certinho!", "Mandou bem!", "Acertou!", "Boa!"], pickN = 0;
+  function mode() { return state.inputMode === "type" ? "type" : "tap"; }
   function renderQuiz() {
-    var S = view.session, id = S.ids[S.i], ref = ITEMS[id], it = ref.item, sec = ref.section;
+    var S = view.session, id = S.ids[S.i], ref = ITEMS[id], it = ref.item, sec = ref.section, m = mode();
     var isMix = S.section && S.section.type === "mix";
-    var label = S.kind === "review" ? "Revisão" : isMix ? S.section.title : ref.week.title + ", " + sec.title;
-    var title = S.kind === "review" || isMix ? ref.week.title + ", " + sec.title + ", questão " + it.n : sec.subtitle;
-    var html = top(label, title, '<span class="count">' + (S.i + 1) + '/' + S.ids.length + '</span>') + progressBar(S);
-    var answered = S.phase === "fb";
+    var ctx = S.kind === "review" ? "Revisão: " + ref.week.title + ", " + sec.title : isMix ? S.section.title + ": " + ref.week.title + ", " + sec.title : ref.week.title + ", " + sec.title;
+    var html = '<div class="qtop"><button class="icon-btn" id="close" aria-label="Sair e continuar depois">' + I.x + '</button>' + progressBar(S) +
+      '<span class="count">' + (S.i + 1) + '/' + S.ids.length + '</span></div><div class="qctx">' + esc(ctx) + '</div>';
+    var ask = S.phase === "ask", dock = "";
+    S.tiles = S.tiles || [];
     if (sec.type === "fill") {
-      html += '<div class="q">' + qHtml(it.q, answered ? answerParts(it.full) : null) + '</div>';
-      if (S.phase === "ask") {
-        html += '<input class="field" type="text" id="ans" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="Sua resposta" aria-label="Sua resposta">' +
-          '<div class="actions"><button class="btn btn-primary" id="check">Conferir</button></div>' +
-          '<div class="center"><button class="text-btn" id="skip">Não sei, mostrar a resposta</button></div>';
-      } else html += feedbackHtml(S, it, true);
-    } else {
-      html += '<div class="kicker">Como se diz em inglês?</div><div class="q">' + esc(it.q) + '</div>';
-      if (S.phase === "ask") {
-        html += '<textarea class="field" id="ans" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Escreva aqui, ou só pense na resposta" aria-label="Sua tradução"></textarea>' +
-          '<div class="actions"><button class="btn btn-primary" id="show">Ver resposta</button></div>';
-      } else if (S.phase === "grade") {
-        html += '<div class="result neutral">' + (S.answer ? '<div class="yours">Você escreveu: ' + esc(S.answer) + '</div>' : "") +
-          '<p class="sentence">' + fullHtml(it.full) + '</p><div class="why">' + it.why + '</div><div class="row">' + listen(it.full) + '</div></div>' +
-          '<p class="note">Compare com a sua. Se o tempo verbal estiver certo, conta como acerto mesmo com outras palavras.</p>' +
-          '<div class="actions"><button class="btn btn-soft" id="g-bad">Errei</button><button class="btn btn-primary" id="g-ok">Acertei</button></div>';
-      } else html += feedbackHtml(S, it, false);
-    }
-    app.innerHTML = html; bindBack(S.kind === "review" ? "review" : "home");
-    var ans = document.getElementById("ans");
-    if (S.phase === "ask") {
-      if (sec.type === "fill") {
-        ans.focus();
-        var check = function (skip) {
-          var v = skip ? "" : ans.value.trim(); if (!skip && !v) { ans.focus(); return; }
-          S.answer = v; S.ok = !skip && isRight(it, v); S.snap = record(id, S.ok, skip ? "(não soube)" : v);
-          S.log.push({ id: id, ok: S.ok }); S.phase = "fb"; render();
-        };
-        document.getElementById("check").onclick = function () { check(false); };
-        document.getElementById("skip").onclick = function () { check(true); };
-        ans.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); check(false); } });
-      } else {
-        document.getElementById("show").onclick = function () { S.answer = ans.value.trim(); S.phase = "grade"; render(); };
+      html += '<div class="q">' + qHtml(it.q, ask ? (m === "tap" && S.pick ? [S.pick] : null) : answerParts(it.full)) + '</div>';
+      if (ask) {
+        if (m === "tap") {
+          html += '<div class="opts">' + optionsFor(it).map(function (o, k) {
+            return '<button class="opt' + (S.pick === o ? " sel" : "") + '" data-opt="' + k + '">' + esc(o) + '</button>'; }).join("") + '</div>';
+          dock = '<button class="btn btn-primary" id="check"' + (S.pick ? "" : " disabled") + '>Conferir</button>';
+        } else {
+          html += '<input class="field" type="text" id="ans" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="Sua resposta" aria-label="Sua resposta" value="' + esc(S.draft || "") + '">' +
+            '<div class="center"><button class="text-btn" id="skip">Não sei, mostrar a resposta</button></div>';
+          dock = '<button class="btn btn-primary" id="check">Conferir</button>';
+        }
       }
+    } else {
+      var isListen = sec.type === "listen";
+      if (isListen) {
+        html += '<div class="kicker">Ouça e monte a frase</div><div class="play-row"><button class="play" id="play" aria-label="Ouvir">' + I.sound + '</button>' +
+          '<button class="play slow" id="slow" aria-label="Ouvir devagar">' + "Devagar" + '</button></div>';
+      } else html += '<div class="kicker">Como se diz em inglês?</div><div class="q">' + esc(it.q) + '</div>';
+      if (ask) {
+        if (m === "tap") {
+          var tl = tilesFor(it, sec);
+          html += '<div class="build">' + S.tiles.map(function (k, pos) { return '<button class="tile" data-un="' + pos + '">' + esc(tl[k]) + '</button>'; }).join("") + '</div>' +
+            '<div class="bank">' + tl.map(function (w, k) { var used = S.tiles.indexOf(k) >= 0; return '<button class="tile' + (used ? " used" : "") + '" data-tile="' + k + '"' + (used ? " disabled" : "") + '>' + esc(w) + '</button>'; }).join("") + '</div>';
+          dock = '<button class="btn btn-primary" id="check"' + (S.tiles.length ? "" : " disabled") + '>Conferir</button>';
+        } else {
+          html += '<textarea class="field" id="ans" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="' + (isListen ? "Escreva o que ouviu" : "Escreva aqui, ou só pense na resposta") + '" aria-label="Sua resposta">' + esc(S.draft || "") + '</textarea>';
+          dock = '<button class="btn btn-primary" id="check">' + (isListen ? "Conferir" : "Ver resposta") + '</button>';
+        }
+      } else if (S.phase === "grade") {
+        dock = '<div class="sheet neutral">' + (S.answer ? '<div class="yours">Você escreveu: ' + esc(S.answer) + '</div>' : "") +
+          '<p class="sentence">' + fullHtml(it.full) + '</p><div class="why">' + it.why + '</div>' +
+          '<p class="why" style="margin-top:8px">Se o tempo verbal está certo, conta como acerto mesmo com outras palavras.</p>' +
+          '<div class="actions"><button class="btn btn-soft" id="g-bad">Errei</button><button class="btn btn-primary" id="g-ok">Acertei</button></div></div>';
+      }
+    }
+    if (ask) html += '<div class="center"><button class="text-btn mode-switch" id="mode">' + (m === "tap" ? "Prefiro digitar" : "Responder com opções") + '</button></div>';
+    if (S.phase === "fb") dock = feedbackHtml(S, it, sec);
+    app.innerHTML = html + '<div class="dock' + (S.phase === "fb" ? " fb" : "") + '">' + dock + '</div>';
+    bindQuiz(S, id, it, sec, m);
+  }
+  function feedbackHtml(S, it, sec) {
+    var canOverride = !S.ok && S.answer && S.answer !== "(não soube)" && (mode() === "type" || sec.type === "translate" || sec.type === "listen");
+    var h = '<div class="sheet ' + (S.ok ? "ok" : "bad") + '"><div class="verdict"><span class="mark">' + (S.ok ? I.check : I.x) + '</span>' +
+      (S.ok ? PRAISE[pickN++ % PRAISE.length] : "Resposta certa:") + '</div>';
+    if (!S.ok && S.answer && S.answer !== "(não soube)") h += '<div class="yours">Você respondeu <s>' + esc(S.answer) + '</s></div>';
+    h += '<p class="sentence">' + fullHtml(it.full) + '</p>' + (it.pt && sec.type === "listen" ? '<div class="why">' + esc(it.pt) + '</div>' : '<div class="why">' + (it.why || "") + '</div>') +
+      '<div class="row">' + listen(it.full) + (canOverride ? '<button class="text-btn" id="override">Eu tinha acertado</button>' : "") + '</div>' +
+      '<button class="btn ' + (S.ok ? "btn-ok" : "btn-bad") + '" id="next">Continuar</button></div>';
+    return h;
+  }
+  function bindQuiz(S, id, it, sec, m) {
+    document.getElementById("close").onclick = function () { speechStop(); toast("Progresso salvo. Continue quando quiser"); go({ name: "home" }); };
+    var modeBtn = document.getElementById("mode");
+    if (modeBtn) modeBtn.onclick = function () { state.inputMode = m === "tap" ? "type" : "tap"; save(); S.pick = null; S.tiles = []; render(); };
+    var commit = function (ok, answer) {
+      S.answer = answer; S.ok = ok; var before = state.days[today()] || 0;
+      S.snap = record(id, ok, answer);
+      S.log.push({ id: id, ok: ok }); S.phase = "fb"; persist(S);
+      if (before < goal() && state.days[today()] >= goal()) { celebrate(); toast("Meta do dia batida!"); }
+      render();
+    };
+    if (sec.type === "listen" && S.phase === "ask") {
+      document.getElementById("play").onclick = function () { speak(it.full); };
+      document.getElementById("slow").onclick = function () { speak(it.full, 0.6); };
+      if (!S.autoplayed) { S.autoplayed = true; setTimeout(function () { speak(it.full); }, 250); }
+    }
+    if (S.phase === "ask") {
+      var ans = document.getElementById("ans");
+      if (ans) { ans.oninput = function () { S.draft = ans.value; }; if (sec.type === "fill") ans.focus(); }
+      app.querySelectorAll("[data-opt]").forEach(function (b) { b.onclick = function () { S.pick = optionsFor(it)[+b.getAttribute("data-opt")]; render(); }; });
+      app.querySelectorAll("[data-tile]").forEach(function (b) { b.onclick = function () { S.tiles.push(+b.getAttribute("data-tile")); render(); }; });
+      app.querySelectorAll("[data-un]").forEach(function (b) { b.onclick = function () { S.tiles.splice(+b.getAttribute("data-un"), 1); render(); }; });
+      var check = function (skip) {
+        if (sec.type === "fill") {
+          var v = skip ? "" : (m === "tap" ? S.pick : ans.value.trim()); if (!skip && !v) return;
+          commit(!skip && isRight(it, v), skip ? "(não soube)" : v);
+        } else if (m === "tap") {
+          if (!S.tiles.length) return;
+          var tl = tilesFor(it, sec), built = S.tiles.map(function (k) { return tl[k]; }).join(" ");
+          commit(norm(built) === norm(plain(it.full)), built);
+        } else if (sec.type === "listen") {
+          var lv = ans.value.trim(); if (!lv) return; commit(norm(lv) === norm(plain(it.full)), lv);
+        } else { S.answer = ans.value.trim(); S.phase = "grade"; render(); }
+      };
+      document.getElementById("check").onclick = function () { check(false); };
+      var sk = document.getElementById("skip"); if (sk) sk.onclick = function () { check(true); };
+      if (ans && sec.type === "fill") ans.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); check(false); } });
     } else if (S.phase === "grade") {
-      var grade = function (ok) { S.ok = ok; S.snap = record(id, ok, S.answer || "(só pensei)"); S.log.push({ id: id, ok: ok }); S.phase = "fb"; render(); };
-      document.getElementById("g-ok").onclick = function () { grade(true); };
-      document.getElementById("g-bad").onclick = function () { grade(false); };
+      document.getElementById("g-ok").onclick = function () { commit(true, S.answer || "(só pensei)"); };
+      document.getElementById("g-bad").onclick = function () { commit(false, S.answer || "(só pensei)"); };
     } else {
       document.getElementById("next").onclick = advance;
       var ov = document.getElementById("override");
-      if (ov) ov.onclick = function () { undo(id, S.snap); S.snap = record(id, true, S.answer); S.ok = true; S.log[S.log.length - 1].ok = true; render(); };
+      if (ov) ov.onclick = function () { undo(id, S.snap); S.snap = record(id, true, S.answer); S.ok = true; S.log[S.log.length - 1].ok = true; persist(S); render(); };
     }
   }
-  function feedbackHtml(S, it, canOverride) {
-    var h = '<div class="result ' + (S.ok ? "ok" : "bad") + '"><div class="verdict"><span class="mark">' + (S.ok ? I.check : I.x) + '</span>' +
-      (S.ok ? PRAISE[pickN++ % PRAISE.length] : "Ainda não") + '</div>';
-    if (!S.ok && S.answer && canOverride) h += '<div class="yours">Você respondeu <s>' + esc(S.answer) + '</s></div>';
-    h += '<p class="sentence">' + fullHtml(it.full) + '</p><div class="why">' + it.why + '</div><div class="row">' + listen(it.full) +
-      (!S.ok && canOverride && S.answer ? '<button class="text-btn" id="override" style="padding:6px 0">Eu tinha acertado</button>' : "") + '</div></div>';
-    if (!S.ok) h += '<p class="note">Leia a frase certa em voz baixa. Ela volta na revisão de amanhã.</p>';
-    h += '<div class="actions"><button class="btn btn-primary" id="next">' + (S.i + 1 < S.ids.length ? "Próxima" : "Ver resultado") + '</button></div>';
-    return h;
-  }
+  function speechStop() { try { speechSynthesis.cancel(); } catch (e) {} }
   function advance() {
     var S = view.session;
-    if (S.i + 1 < S.ids.length) { S.i++; S.phase = "ask"; S.answer = ""; render(); window.scrollTo(0, 0); }
-    else {
-      if (S.kind === "section") {
-        var right = S.log.filter(function (l) { return l.ok; }).length;
-        S.moduleDone = sectionFinished(S.section.id, { score: right, total: S.ids.length, at: today() });
-      }
-      go({ name: "done", session: S });
+    if (S.i + 1 < S.ids.length) { S.i++; S.phase = "ask"; S.answer = ""; S.pick = null; S.tiles = []; S.draft = ""; S.autoplayed = false; render(); window.scrollTo(0, 0); }
+    else finishSession(S);
+  }
+  function finishSession(S) {
+    if (S.kind === "section" && S.section) {
+      var right = S.log.filter(function (l) { return l.ok; }).length;
+      S.moduleDone = sectionFinished(S.section.id, { score: right, total: S.ids.length, at: today() });
     }
+    state.session = null; save();
+    go({ name: "done", session: S });
   }
   document.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && view.name === "quiz" && view.session.phase === "fb") { e.preventDefault(); advance(); }
@@ -445,31 +614,54 @@
     var S = view.session, right = S.log.filter(function (l) { return l.ok; }).length, total = S.log.length;
     var wrong = S.log.filter(function (l) { return !l.ok; }), ratio = total ? right / total : 0;
     var msg = ratio === 1 ? "Rodada perfeita." : ratio >= 0.75 ? "Muito bom." : ratio >= 0.5 ? "Bom treino." : "Os erros viram o seu material de revisão.";
-    var html = '<div class="score">' + right + '<small>/' + total + '</small></div><h1>' + msg + '</h1>' +
-      '<p class="muted">' + (S.kind === "review" ? "Revisão concluída" : esc(S.section.title) + " concluída") + '</p>';
+    var html = "";
     if (S.moduleDone) {
-      var m = S.moduleDone, nxt = WEEKS[m.idx + 1], took = daysBetween(state.modStart[m.id], today()) + 1;
-      html += '<div class="unlock"><span class="mark">' + I.done + '</span><div><h3>' + esc(m.title) + ' concluído</h3><p>' +
-        (nxt ? esc(nxt.title) + " liberado: " + esc(nxt.subtitle) + "." : "Você terminou todos os módulos!") + '</p></div></div>';
-      if (nxt && took <= 2) html += '<p class="note">Você fechou este módulo em ' + took + (took === 1 ? " dia" : " dias") + '. Antes de começar o próximo, vale fazer a revisão de erros: com alguns dias entre um módulo e outro, o conteúdo fixa melhor.</p>';
+      var m = S.moduleDone, nxt = WEEKS[m.idx + 1], took = daysBetween((state.modStart || {})[m.id] || today(), today()) + 1;
+      html += '<div class="hero" style="--m:' + modColor(m) + '"><div class="hero-trophy">' + svg(TROPHY, 2) + '</div><h1>' + esc(m.title) + ' concluído!</h1>' +
+        '<p class="muted">' + (nxt ? esc(nxt.title) + " liberado: " + esc(nxt.subtitle) + "." : "Você terminou todos os módulos.") + '</p></div>';
+      if (nxt && took <= 2) html += '<p class="note">Você fechou este módulo em ' + took + (took === 1 ? " dia" : " dias") + '. Antes do próximo, vale fazer a revisão de erros: com alguns dias entre um módulo e outro, o conteúdo fixa melhor.</p>';
     }
+    html += '<div class="score">' + right + '<small>/' + total + '</small></div><h2>' + msg + '</h2>' +
+      '<p class="muted">' + (S.kind === "review" ? "Revisão concluída" : esc(S.section.title) + " concluída") + '</p>';
     if (wrong.length) {
       html += '<div class="panel">' + wrong.map(function (l) {
         var it = ITEMS[l.id].item; return '<div class="item"><p class="sentence" style="font-size:17px;margin:0">' + fullHtml(it.full) + '</p><div class="row">' + listen(it.full) + '</div></div>';
-      }).join("") + '</div><div class="tip">Agora escreva duas frases suas para cada uma dessas, sobre o seu dia a dia.</div>';
+      }).join("") + '</div><div class="tip">Escreva duas frases suas para cada uma dessas, sobre o seu dia a dia.</div>';
     }
-    html += '<div class="actions" style="margin-top:20px"><button class="btn btn-soft" id="again">Refazer</button><button class="btn btn-primary" id="home">Voltar ao início</button></div>';
+    var then = S.then && SECTIONS[S.then] && !isDoneSec(SECTIONS[S.then].section) ? SECTIONS[S.then].section : null;
+    var nx = then || nextSection();
+    html += '<div class="actions stack" style="margin-top:20px">' + (nx ? '<button class="btn btn-primary" id="nx">Seguir: ' + esc(nx.title) + '</button>' : "") +
+      '<button class="btn btn-soft" id="home">Voltar ao percurso</button></div>';
     app.innerHTML = html;
+    if (ratio === 1 || S.moduleDone) celebrate();
     document.getElementById("home").onclick = function () { go({ name: "home" }); };
-    document.getElementById("again").onclick = function () { go({ name: "quiz", session: newSession(S.kind, S.ids.slice(), S.section) }); };
+    var nb = document.getElementById("nx"); if (nb) nb.onclick = function () { openSection(nx.id); };
+  }
+
+  // ---------- Celebração ----------
+  function celebrate() {
+    try { if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; } catch (e) {}
+    var c = document.createElement("canvas"), dpr = window.devicePixelRatio || 1, W = window.innerWidth, H = window.innerHeight;
+    c.className = "confetti"; c.width = W * dpr; c.height = H * dpr; document.body.appendChild(c);
+    var g = c.getContext("2d"); g.scale(dpr, dpr);
+    var cols = MOD_COLORS.concat(["#FFD23F"]), ps = [];
+    for (var i = 0; i < 90; i++) ps.push({ x: W / 2 + (Math.random() - .5) * 60, y: H * .35, vx: (Math.random() - .5) * 11, vy: -Math.random() * 11 - 4,
+      r: Math.random() * Math.PI, vr: (Math.random() - .5) * .3, s: 6 + Math.random() * 6, c: cols[i % cols.length] });
+    var t0 = performance.now();
+    (function frame(t) {
+      var k = (t - t0) / 1600; g.clearRect(0, 0, W, H);
+      ps.forEach(function (p) { p.vy += .32; p.x += p.vx; p.y += p.vy; p.r += p.vr; g.save(); g.globalAlpha = Math.max(0, 1 - k); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); g.restore(); });
+      if (k < 1) requestAnimationFrame(frame); else c.remove();
+    })(t0);
   }
 
   // ---------- Revisão ----------
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function renderReview() {
-    var due = dueIds(), pend = pendingIds();
+    var due = dueIds(), pend = pendingIds(), z = savedSession();
     var html = '<h1 style="margin-top:8px">Revisão</h1><p class="muted">Cada erro volta depois de 1, 3 e 7 dias. Acertou três vezes, está superado.</p>';
-    if (due.length) {
+    if (z && z.kind === "review") html += '<button class="study" id="resume" style="--m:#F08C2E;margin-top:16px"><span class="grow"><span class="s-title">Continuar revisão</span><span class="s-sub">' + z.log.length + ' de ' + z.ids.length + ' questões</span></span><span class="s-go">' + I.next + '</span></button>';
+    else if (due.length) {
       html += '<button class="due" id="start" style="margin-top:16px"><span class="n">' + due.length + '</span><span><h3>' +
         (due.length === 1 ? "Questão para hoje" : "Questões para hoje") + '</h3><p>Uns ' + Math.max(2, Math.round(due.length * 0.7)) + ' minutos</p></span><span class="go">' + I.next + '</span></button>';
     } else {
@@ -478,24 +670,31 @@
           : '<p class="muted small">Quando você errar uma questão, ela aparece aqui.</p>') + '</div>';
     }
     app.innerHTML = html;
-    var st = document.getElementById("start");
-    if (st) st.onclick = function () { go({ name: "quiz", session: newSession("review", shuffle(due)) }); };
+    var rs = document.getElementById("resume"); if (rs) rs.onclick = resumeSession;
+    var st = document.getElementById("start"); if (st) st.onclick = function () { startSession("review", shuffle(due)); };
     var al = document.getElementById("all");
-    if (al) al.onclick = function () {
-      pend.forEach(function (id) { state.review[id].due = today(); }); save();
-      go({ name: "quiz", session: newSession("review", shuffle(pend)) });
-    };
+    if (al) al.onclick = function () { pend.forEach(function (id) { state.review[id].due = today(); }); save(); startSession("review", shuffle(pend)); };
   }
 
-  // ---------- Erros ----------
+  // ---------- Progresso ----------
+  var WD = ["D", "S", "T", "Q", "Q", "S", "S"];
+  function weekChart() {
+    var d = new Date(), bars = [], max = goal();
+    for (var i = 6; i >= 0; i--) { var x = new Date(d); x.setDate(d.getDate() - i); var n = state.days[iso(x)] || 0; bars.push({ n: n, l: WD[x.getDay()], today: i === 0 }); if (n > max) max = n; }
+    var total = bars.reduce(function (a, b) { return a + b.n; }, 0), gy = 100 - goal() / max * 100;
+    return '<div class="chart-card"><div class="chart-head"><h3>Últimos 7 dias</h3><span class="muted small">' + total + ' questões</span></div>' +
+      '<div class="chart"><div class="goal-line" style="top:' + gy + '%"><span>meta</span></div>' + bars.map(function (b) {
+        return '<div class="col' + (b.today ? " today" : "") + '"><div class="bar-v' + (b.n >= goal() ? " hit" : "") + '" style="height:' + Math.max(b.n ? 6 : 2, b.n / max * 100) + '%"></div><span>' + b.l + '</span></div>';
+      }).join("") + '</div></div>';
+  }
   function renderErrors() {
-    var pend = pendingIds().sort();
-    var answered = 0; for (var k in state.results) answered += state.results[k].seen;
+    var pend = pendingIds().sort(), answered = 0; for (var k in state.results) answered += state.results[k].seen;
     var doneMods = WEEKS.filter(complete).length;
     var html = '<h1 style="margin-top:8px">Progresso</h1>' +
       '<div class="stats"><div><b>' + streak() + '</b>dias seguidos</div><div><b>' + doneMods + '/' + WEEKS.length + '</b>módulos</div>' +
-      '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div></div>' +
-      '<h2 style="margin-top:24px">Meus erros</h2><p class="muted small">No fim de semana, copie a lista e mande para o Claude. Ele usa para ajustar os próximos módulos.</p>';
+      '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div></div>' + weekChart() +
+      '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
+      '<h2 style="margin-top:28px">Meus erros</h2><p class="muted small">No fim de semana, copie a lista e mande para o Claude. Ele usa para ajustar os próximos módulos.</p>';
     if (!pend.length) {
       html += '<div class="empty"><div class="art">' + I.check + '</div><h2>Nenhum erro pendente</h2><p class="muted small">' +
         (state.mastered ? "Você já superou " + state.mastered + (state.mastered === 1 ? " erro." : " erros.") : "Faça uma rodada para começar.") + '</p></div>';
@@ -503,7 +702,7 @@
       html += '<div class="actions"><button class="btn btn-primary" id="copy">Copiar lista para o Claude</button></div><div class="panel">';
       pend.forEach(function (id) {
         var ref = ITEMS[id], r = state.results[id] || {}, rv = state.review[id], isDue = rv.due <= today();
-        var dots = ""; for (var k = 0; k < 3; k++) dots += '<i class="' + (k < rv.box ? "on" : "") + '"></i>';
+        var dots = ""; for (var k2 = 0; k2 < 3; k2++) dots += '<i class="' + (k2 < rv.box ? "on" : "") + '"></i>';
         html += '<div class="item"><div class="where">' + esc(ref.week.title + ", " + ref.section.title + ", questão " + ref.item.n) + '</div>' +
           '<p class="sentence" style="font-size:17px;margin:0 0 4px">' + fullHtml(ref.item.full) + '</p>' +
           (r.last ? '<div class="yours" style="margin:0">Você respondeu <s>' + esc(r.last) + '</s></div>' : "") +
@@ -521,25 +720,20 @@
       '<div class="actions"><button class="btn btn-primary" id="bk-go">Restaurar progresso</button></div></div></section>';
     html += '<p class="foot">Seu progresso fica salvo neste iPhone.</p>';
     app.innerHTML = html;
-    document.getElementById("bk-copy").onclick = function () {
-      state.lastBackup = today(); save();
-      copy(makeBackup(), "Backup copiado. Cole no Notas ou no Claude");
-      setTimeout(render, 2300);
-    };
-    document.getElementById("bk-open").onclick = function () {
-      var box = document.getElementById("bk-restore"); box.hidden = !box.hidden; if (!box.hidden) document.getElementById("bk-text").focus();
-    };
+    app.querySelectorAll("[data-goal]").forEach(function (b) { b.onclick = function () { state.goal = +b.getAttribute("data-goal"); save(); render(); }; });
+    document.getElementById("bk-copy").onclick = function () { state.lastBackup = today(); save(); copy(makeBackup(), "Backup copiado. Cole no Notas ou no Claude"); setTimeout(render, 2300); };
+    document.getElementById("bk-open").onclick = function () { var box = document.getElementById("bk-restore"); box.hidden = !box.hidden; if (!box.hidden) document.getElementById("bk-text").focus(); };
     document.getElementById("bk-go").onclick = function () {
       var s = readBackup(document.getElementById("bk-text").value);
       if (!s) { toast("Código inválido. Copie o backup inteiro"); return; }
-      state = s; state.lastBackup = state.lastBackup || today(); save(); updateDot(); toast("Progresso restaurado"); go({ name: "home" });
+      state = s; state.lastBackup = state.lastBackup || today(); state.onboarded = true; save(); updateDot(); toast("Progresso restaurado"); go({ name: "home" });
     };
     var c = document.getElementById("copy");
     if (c) c.onclick = function () {
       var lines = ["Meus erros no Fluency:"];
       pend.forEach(function (id) {
         var ref = ITEMS[id], r = state.results[id] || {};
-        lines.push("- " + ref.week.title + ", " + ref.section.title + ", questão " + ref.item.n + ": " + plain(ref.item.q) +
+        lines.push("- " + ref.week.title + ", " + ref.section.title + ", questão " + ref.item.n + ": " + plain(ref.item.q || ref.item.full) +
           " | Minha resposta: " + (r.last || "-") + " | Certo: " + plain(ref.item.full) + " | Errei " + (r.wrong || 1) + "x");
       });
       copy(lines.join("\n"));
@@ -555,6 +749,23 @@
     }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { toast(okMsg); }, fallback);
     else fallback();
+  }
+
+  // ---------- Boas-vindas ----------
+  var WELCOME = [
+    { t: "Seu percurso de inglês", p: "12 módulos, um passo de cada vez. Uns 20 minutos por dia, no caminho para o trabalho.", ic: '<path d="M5 19c3-6 11-4 14-12"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="7" r="2"/>' },
+    { t: "Funciona sem internet", p: "No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. A nuvem verde no topo mostra que está tudo salvo.", ic: '<path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0 0 9z"/><path d="M9.5 14l2 2 3.5-3.5"/>' },
+    { t: "Erre à vontade", p: "Cada erro volta na revisão até você acertar três vezes. Faça backup do progresso uma vez por semana, na aba Progresso.", ic: '<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>' }
+  ];
+  function renderWelcome() {
+    var k = view.step || 0, s = WELCOME[k];
+    app.innerHTML = '<div class="welcome"><div class="w-art" style="--m:' + MOD_COLORS[k] + '">' + svg(s.ic, 2) + '</div><h1>' + s.t + '</h1><p class="muted">' + s.p + '</p>' +
+      '<div class="w-dots">' + WELCOME.map(function (_, i) { return '<i class="' + (i === k ? "on" : "") + '"></i>'; }).join("") + '</div></div>' +
+      '<div class="dock"><button class="btn btn-primary" id="w-next">' + (k < WELCOME.length - 1 ? "Próximo" : "Começar") + '</button>' +
+      (k < WELCOME.length - 1 ? '<button class="text-btn" id="w-skip" style="width:100%">Pular</button>' : "") + '</div>';
+    var fin = function () { state.onboarded = true; save(); go({ name: "home" }); };
+    document.getElementById("w-next").onclick = function () { if (k < WELCOME.length - 1) go({ name: "welcome", step: k + 1 }); else fin(); };
+    var sk = document.getElementById("w-skip"); if (sk) sk.onclick = fin;
   }
 
   // ---------- Backup ----------
@@ -584,8 +795,7 @@
     return svg(cloud + mark, 1.9);
   }
   function offlineMessage() {
-    var n = WEEKS.length;
-    if (offline.state === "ok") return "Tudo salvo no iPhone: " + n + " módulos funcionam sem internet";
+    if (offline.state === "ok") return "Tudo salvo no iPhone: " + WEEKS.length + " módulos funcionam sem internet";
     if (offline.state === "partial") return "Ainda falta baixar parte do app. Abra com internet";
     return "Baixando o app para usar sem internet…";
   }
@@ -597,13 +807,11 @@
     if (!("caches" in window) || !("serviceWorker" in navigator)) { set("partial"); return; }
     navigator.serviceWorker.getRegistration().then(function (reg) {
       if (!reg || reg.installing || reg.waiting || !navigator.serviceWorker.controller) { set(reg ? "checking" : "partial"); setTimeout(checkOffline, 2000); return; }
-      return Promise.all(OFFLINE_FILES.map(function (f) { return caches.match(f); })).then(function (hits) {
-        set(hits.every(Boolean) ? "ok" : "partial");
-      });
+      return Promise.all(OFFLINE_FILES.map(function (f) { return caches.match(f); })).then(function (hits) { set(hits.every(Boolean) ? "ok" : "partial"); });
     }).catch(function () { set("partial"); });
   }
 
-  // ---------- Offline ----------
+  // ---------- Início do app ----------
   if ("serviceWorker" in navigator) {
     var hadController = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.register("sw.js").catch(function () {});
@@ -612,7 +820,9 @@
       else checkOffline();
     });
   }
-
+  if (!state.onboarded && Object.keys(state.results).length) { state.onboarded = true; save(); }
+  if (!state.onboarded) view = { name: "welcome", step: 0 };
+  window.__fluencyDebug = { ITEMS: ITEMS, optionsFor: optionsFor };
   updateDot();
   render();
   checkOffline();
