@@ -112,6 +112,8 @@
   function fullHtml(t) { return esc(t).replace(/\{([^}]*)\}/g, "<b>$1</b>"); }
   function qHtml(t, fills) {
     var i = 0;
+    // Com a lacuna preenchida, a dica entre parênteses sai para a frase ficar limpa.
+    if (fills && fills.length && fills[0]) t = t.replace(/\s*\([^()]*\)/g, "");
     return esc(t).replace(/___/g, function () {
       var f = fills && fills[i++];
       return f ? '<span class="blank filled">' + esc(f) + '</span>' : '<span class="blank"></span>';
