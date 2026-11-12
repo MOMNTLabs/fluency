@@ -12,7 +12,7 @@
     } catch (e) {}
     return blank();
   }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} if (typeof scheduleSync === "function") scheduleSync(); }
 
   // ---------- Datas ----------
   function iso(d) { d = d || new Date(); var m = d.getMonth() + 1, day = d.getDate();
@@ -218,13 +218,13 @@
   });
   function setTabs() {
     var inReview = view.session && view.session.kind === "review";
-    var map = { level: "home", placement: "errors", setup: "home", welcome: "home", home: "home", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
+    var map = { login: "errors", level: "home", placement: "errors", setup: "home", welcome: "home", home: "home", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
     document.querySelectorAll(".tab").forEach(function (t) { t.classList.toggle("on", t.getAttribute("data-tab") === map[view.name]); });
   }
   function render() {
     setTabs();
-    document.body.classList.toggle("focus", ["quiz", "welcome", "placement", "setup"].indexOf(view.name) >= 0);
-    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors, welcome: renderWelcome, placement: renderPlacement, setup: renderSetup, level: renderLevel })[view.name]();
+    document.body.classList.toggle("focus", ["quiz", "welcome", "placement", "setup", "login"].indexOf(view.name) >= 0);
+    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors, welcome: renderWelcome, placement: renderPlacement, setup: renderSetup, level: renderLevel, login: renderLogin })[view.name]();
   }
   function top(label, title, right) {
     return '<div class="top"><button class="icon-btn" id="back" aria-label="Voltar">' + I.back + '</button>' +
@@ -330,7 +330,7 @@
   function renderHome() {
     var cur = currentModule(), html = topBarHtml();
     if (needsBackup()) html += '<button class="nudge" id="bk-tip">Faça o backup da semana na aba Perfil</button>';
-    html += studyCard(cur);
+    html += studyCard(cur) + loginNudge();
     if (cur) {
       var L = levelInfo(cur.level), st = levelState(L);
       html += '<button class="lv-current" data-open-level="' + L.id + '" style="--m:' + modColor(cur) + '">' +
@@ -348,7 +348,7 @@
     });
     html += '</div><p class="foot">Do A1 ao C2, no seu ritmo.</p>';
     app.innerHTML = html;
-    bindTopBar();
+    bindTopBar(); bindNudge();
     app.querySelectorAll("[data-open-level]").forEach(function (b) { b.onclick = function () { go({ name: "level", code: b.getAttribute("data-open-level") }); }; });
   }
 
@@ -854,7 +854,7 @@
   function renderErrors() {
     var pend = pendingIds().sort(), answered = 0; for (var k in state.results) answered += state.results[k].seen;
     var doneMods = WEEKS.filter(complete).length;
-    var html = '<h1 style="margin-top:8px">Perfil</h1>' + profileCard() +
+    var html = '<h1 style="margin-top:8px">Perfil</h1>' + profileCard() + accountCard() +
       '<div class="stats"><div><b>' + streak() + '</b>dias seguidos</div><div><b>' + doneMods + '/' + WEEKS.length + '</b>módulos</div>' +
       '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div></div>' + weekChart() +
       '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
@@ -876,16 +876,17 @@
       html += '</div>';
     }
     var last = state.lastBackup;
-    html += '<section class="backup"><h2>Backup do progresso</h2><p class="muted small">' +
+    html += '<details class="advanced"' + (auth ? "" : " open") + '><summary>Backup manual</summary><section class="backup"><p class="muted small">' +
       (last ? "Último backup em " + shortDate(last) + "." : "Você ainda não fez nenhum backup.") +
       ' Guarde o código no app de notas ou mande para você mesmo por e-mail. Se trocar de celular ou reinstalar o app, é só restaurar.</p>' +
       '<div class="actions"><button class="btn btn-soft" id="bk-copy">Salvar backup</button><button class="btn btn-soft" id="bk-open">Restaurar</button></div>' +
       '<div id="bk-restore" hidden><textarea class="field" id="bk-text" placeholder="Cole aqui o código do backup" style="margin-top:12px;min-height:90px;font-size:15px"></textarea>' +
-      '<div class="actions"><button class="btn btn-primary" id="bk-go">Restaurar progresso</button></div></div></section>';
+      '<div class="actions"><button class="btn btn-primary" id="bk-go">Restaurar progresso</button></div></div></section></details>';
     html += '<div class="center" style="margin-top:18px"><button class="text-btn" id="redo-pl">Refazer o teste de nível</button></div>';
-    html += '<p class="foot">Seu progresso fica salvo neste aparelho.</p>';
+    html += '<div class="center links"><a href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a>' + (auth ? '<button class="text-btn" id="acct-del">Excluir minha conta</button>' : "") + '</div>';
+    html += '<p class="foot">' + (auth ? "Seu progresso fica salvo neste aparelho e na sua conta." : "Seu progresso fica salvo neste aparelho.") + '</p>';
     app.innerHTML = html;
-    bindProfile();
+    bindProfile(); bindAccount();
     document.getElementById("redo-pl").onclick = function () { go({ name: "placement" }); };
     app.querySelectorAll("[data-goal]").forEach(function (b) { b.onclick = function () { state.goal = +b.getAttribute("data-goal"); save(); render(); }; });
     document.getElementById("bk-copy").onclick = function () { state.lastBackup = today(); save(); share(makeBackup(), "Backup do nowish", "Backup copiado. Guarde no seu app de notas"); setTimeout(render, 2300); };
@@ -1050,10 +1051,222 @@
     app.innerHTML = '<div class="welcome"><div class="w-art" style="--m:' + MOD_COLORS[3] + '">' + svg('<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>', 2) + '</div>' +
       '<h1>Como podemos te chamar?</h1><input class="field" id="su-name" maxlength="40" placeholder="Seu nome" style="margin-top:18px;text-align:center" value="' + esc((state.profile || {}).name || "") + '">' +
       '<p class="muted small" style="margin-top:22px">Agora, um teste rápido (12 questões, uns 2 minutos) para você começar no nível certo.</p></div>' +
+      (api.ready && !auth ? '<div class="center" style="margin-top:14px"><button class="text-btn" id="su-login">Já tenho conta: entrar</button></div>' : "") +
       '<div class="dock"><button class="btn btn-primary" id="su-test">Fazer o teste de nível</button><button class="text-btn" id="su-a2" style="width:100%">Pular e começar do zero (A1)</button></div>';
     var keep = function () { state.profile = state.profile || {}; state.profile.name = document.getElementById("su-name").value.trim(); save(); };
     document.getElementById("su-test").onclick = function () { keep(); go({ name: "placement" }); };
+    var sl = document.getElementById("su-login"); if (sl) sl.onclick = function () { keep(); go({ name: "login", from: "setup" }); };
     document.getElementById("su-a2").onclick = function () { keep(); state.placement = "A1"; state.onboarded = true; save(); go({ name: "home" }); };
+  }
+
+  // ---------- Conta e sincronização ----------
+  // O login é opcional. Com conta, o progresso vai para a nuvem e volta em qualquer aparelho.
+  var AUTH_KEY = "nowish-auth";
+  var auth = (function () { try { return JSON.parse(localStorage.getItem(AUTH_KEY)) || null; } catch (e) { return null; } })();
+  var api = { ready: false, config: null };
+  var syncTimer = null, syncing = false, syncState = "idle";
+  function saveAuth() { try { if (auth) localStorage.setItem(AUTH_KEY, JSON.stringify(auth)); else localStorage.removeItem(AUTH_KEY); } catch (e) {} }
+  function apiFetch(path, opts) {
+    opts = opts || {}; opts.headers = opts.headers || {};
+    if (auth && auth.token) opts.headers.Authorization = "Bearer " + auth.token;
+    if (opts.body && typeof opts.body !== "string") { opts.body = JSON.stringify(opts.body); opts.headers["Content-Type"] = "application/json"; }
+    return fetch("api/" + path, opts).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) { j._status = r.status; return j; });
+    });
+  }
+  function loadApiConfig() {
+    if (!navigator.onLine) return;
+    apiFetch("config").then(function (c) {
+      if (c._status !== 200) return;
+      api.ready = true; api.config = c;
+      if (auth) { apiFetch("me").then(function (m) { if (m._status === 401) { auth = null; saveAuth(); render(); } else if (m.user) { auth.user = m.user; saveAuth(); } }); syncNow(); }
+      if (["home", "errors", "setup"].indexOf(view.name) >= 0) render();
+    }).catch(function () {});
+  }
+  // Campos que só fazem sentido neste aparelho e não vão para a nuvem.
+  var LOCAL_ONLY = ["session", "inputMode", "lastBackup"];
+  function syncPayload() { var d = {}; for (var k in state) if (LOCAL_ONLY.indexOf(k) < 0) d[k] = state[k]; return d; }
+  // Junta o progresso do aparelho com o da nuvem sem perder nada.
+  function mergeStates(a, b) {
+    if (!b) return a; if (!a) return b;
+    var m = JSON.parse(JSON.stringify(a)), k;
+    m.results = m.results || {}; m.review = m.review || {}; m.days = m.days || {}; m.sections = m.sections || {};
+    for (k in (b.results || {})) { var ra = m.results[k], rb = b.results[k]; if (!ra || (rb.seen || 0) > (ra.seen || 0)) m.results[k] = rb; }
+    var ids = {}; for (k in (a.review || {})) ids[k] = 1; for (k in (b.review || {})) ids[k] = 1;
+    m.review = {};
+    for (k in ids) {
+      var sa = ((a.results || {})[k] || {}).seen || 0, sb = ((b.results || {})[k] || {}).seen || 0;
+      var src = sb > sa ? b : a; if (src.review && src.review[k]) m.review[k] = src.review[k];
+    }
+    for (k in (b.days || {})) m.days[k] = Math.max(m.days[k] || 0, b.days[k]);
+    for (k in (b.sections || {})) { var x = m.sections[k], y = b.sections[k]; if (!x) m.sections[k] = y; else if (y.done && !x.done) m.sections[k] = y; else if (y.done && x.done && (y.score || 0) > (x.score || 0)) m.sections[k] = y; }
+    m.mastered = Math.max(a.mastered || 0, b.mastered || 0);
+    ["modStart"].forEach(function (f) { m[f] = m[f] || {}; for (k in (b[f] || {})) if (!m[f][k] || b[f][k] < m[f][k]) m[f][k] = b[f][k]; });
+    ["modDone"].forEach(function (f) { m[f] = m[f] || {}; for (k in (b[f] || {})) if (!m[f][k]) m[f][k] = b[f][k]; });
+    m.profile = m.profile || {}; var pb = b.profile || {};
+    if (!m.profile.name && pb.name) m.profile.name = pb.name;
+    if (!m.profile.photo && pb.photo) m.profile.photo = pb.photo;
+    ["placement", "estLevel", "goal"].forEach(function (f) { if (!m[f] && b[f]) m[f] = b[f]; });
+    if (b.placement && a.placement && lvl(b.placement) > lvl(a.placement) && !Object.keys(a.results || {}).length) m.placement = b.placement;
+    m.onboarded = !!(a.onboarded || b.onboarded);
+    return m;
+  }
+  function scheduleSync() {
+    if (!auth || !api || !api.ready) return;
+    clearTimeout(syncTimer); syncTimer = setTimeout(syncNow, 4000);
+  }
+  function syncNow() {
+    if (!auth || !api.ready || syncing || !navigator.onLine) return Promise.resolve();
+    syncing = true; syncState = "syncing";
+    var push = function (base, tries) {
+      return apiFetch("progress", { method: "PUT", body: { data: syncPayload(), baseVersion: base } }).then(function (r) {
+        if (r._status === 409 && tries > 0) return pull().then(function (v) { return push(v, tries - 1); });
+        if (r._status === 401) { auth = null; saveAuth(); throw new Error("auth"); }
+        if (r.version) { auth.version = r.version; auth.lastSync = Date.now(); saveAuth(); }
+      });
+    };
+    var pull = function () {
+      return apiFetch("progress").then(function (r) {
+        if (r._status === 401) { auth = null; saveAuth(); throw new Error("auth"); }
+        if (r.data) { state = mergeStates(state, r.data); try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+        return r.version || 0;
+      });
+    };
+    return pull().then(function (v) { return push(v, 2); })
+      .then(function () { syncState = "ok"; }, function () { syncState = "error"; })
+      .then(function () { syncing = false; updateDot(); var el = document.getElementById("sync-line"); if (el) el.textContent = syncLabel(); });
+  }
+  function syncLabel() {
+    if (!auth) return "";
+    if (syncState === "syncing") return "Sincronizando…";
+    if (syncState === "error") return "Não deu para sincronizar agora. Tentamos de novo depois.";
+    if (!auth.lastSync) return "Sincroniza quando houver internet.";
+    var d = Math.round((Date.now() - auth.lastSync) / 60000);
+    return "Progresso salvo na nuvem " + (d < 1 ? "agora mesmo" : d < 60 ? "há " + d + " min" : "há " + Math.round(d / 60) + " h") + ".";
+  }
+  window.addEventListener("online", function () { if (!api.ready) loadApiConfig(); else syncNow(); });
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden" && auth && api.ready) { clearTimeout(syncTimer); syncNow(); } });
+
+  function signedIn(res) {
+    auth = { token: res.token, user: res.user, version: 0 }; saveAuth();
+    state.profile = state.profile || {};
+    if (!state.profile.name && res.user.name) state.profile.name = res.user.name;
+    if (!state.profile.photo && res.user.picture) state.profile.photo = res.user.picture;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    toast("Pronto! Seu progresso agora fica salvo na nuvem");
+    syncNow().then(function () {
+      updateTabAvatar();
+      // Quem entrou num aparelho novo e já tinha nível definido na conta pula o teste.
+      if (state.placement) { state.onboarded = true; save(); }
+      go({ name: state.onboarded ? (view.from || "home") : "setup" });
+    });
+  }
+
+  // ---------- Tela de entrar ----------
+  function renderLogin() {
+    var V = view, c = api.config || {};
+    if (!api.ready) {
+      app.innerHTML = '<div class="welcome"><h1>Sem conexão</h1><p class="muted">Para entrar na sua conta, abra o app com internet.</p></div>' +
+        '<div class="dock"><button class="btn btn-soft" id="lg-back">Voltar</button></div>';
+      document.getElementById("lg-back").onclick = function () { go({ name: V.from || "home" }); };
+      return;
+    }
+    var html = '<div class="login"><button class="icon-btn" id="lg-back" aria-label="Voltar">' + I.back + '</button>' +
+      '<div class="w-logo sm" aria-hidden="true">n<i></i></div><h1>Entre na sua conta</h1>' +
+      '<p class="muted">Seu progresso fica salvo na nuvem e aparece em qualquer aparelho.</p>';
+    if (V.step === "code") {
+      html += '<p class="small" style="margin-top:22px">Mandamos um código de 6 dígitos para <b>' + esc(V.email) + '</b>.</p>' +
+        '<input class="field code-in" id="lg-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">' +
+        '<div class="actions"><button class="btn btn-primary" id="lg-verify">Entrar</button></div>' +
+        '<div class="center"><button class="text-btn" id="lg-other">Usar outro e-mail</button></div>';
+    } else {
+      if (c.googleClientId) html += '<div id="g-btn" class="g-btn"></div><div class="or"><span>ou</span></div>';
+      if (c.emailLogin) html += '<input class="field" id="lg-email" type="email" inputmode="email" autocomplete="email" placeholder="Seu e-mail" value="' + esc(V.email || "") + '">' +
+        '<div class="actions"><button class="btn btn-primary" id="lg-send">Receber código por e-mail</button></div>';
+      if (!c.googleClientId && !c.emailLogin) html += '<p class="tip" style="margin-top:20px">O login ainda está sendo configurado. Volte em breve.</p>';
+    }
+    html += '<p class="tiny muted center" style="margin-top:22px">Ao entrar, você concorda com a <a href="privacy.html" target="_blank" rel="noopener">política de privacidade</a>.</p></div>';
+    app.innerHTML = html;
+    document.getElementById("lg-back").onclick = function () { go({ name: V.from || "home" }); };
+    var err = function (r) {
+      var m = { invalid_email: "Confira o e-mail digitado", too_many: "Muitas tentativas. Espere um pouco", send_failed: "Não foi possível enviar o e-mail agora",
+        wrong_code: "Código incorreto", expired: "Código expirado. Peça um novo", invalid_token: "Não foi possível entrar com o Google" };
+      toast(m[r.error] || "Algo deu errado. Tente de novo");
+    };
+    var send = document.getElementById("lg-send");
+    if (send) send.onclick = function () {
+      var email = document.getElementById("lg-email").value.trim(); if (!email) return;
+      send.disabled = true; send.textContent = "Enviando…";
+      apiFetch("auth/email/start", { method: "POST", body: { email: email } }).then(function (r) {
+        if (r.ok) go({ name: "login", step: "code", email: email, from: V.from }); else { err(r); send.disabled = false; send.textContent = "Receber código por e-mail"; }
+      }).catch(function () { toast("Sem conexão"); send.disabled = false; });
+    };
+    var ver = document.getElementById("lg-verify");
+    if (ver) {
+      var ci = document.getElementById("lg-code"); ci.focus();
+      var doVerify = function () {
+        var code = ci.value.replace(/\D/g, ""); if (code.length !== 6) return;
+        ver.disabled = true;
+        apiFetch("auth/email/verify", { method: "POST", body: { email: V.email, code: code } }).then(function (r) {
+          if (r.token) signedIn(r); else { err(r); ver.disabled = false; }
+        }).catch(function () { toast("Sem conexão"); ver.disabled = false; });
+      };
+      ver.onclick = doVerify; ci.oninput = function () { if (ci.value.replace(/\D/g, "").length === 6) doVerify(); };
+      document.getElementById("lg-other").onclick = function () { go({ name: "login", from: V.from }); };
+    }
+    if (c.googleClientId && document.getElementById("g-btn")) loadGoogle(function () {
+      google.accounts.id.initialize({ client_id: c.googleClientId, callback: function (resp) {
+        apiFetch("auth/google", { method: "POST", body: { credential: resp.credential } }).then(function (r) { if (r.token) signedIn(r); else err(r); });
+      } });
+      var box = document.getElementById("g-btn");
+      if (box) google.accounts.id.renderButton(box, { theme: "outline", size: "large", shape: "pill", text: "continue_with", locale: "pt-BR", width: Math.min(360, box.clientWidth || 320) });
+    });
+  }
+  var googleLoaded = false;
+  function loadGoogle(cb) {
+    if (googleLoaded && window.google) return cb();
+    var s = document.createElement("script"); s.src = "https://accounts.google.com/gsi/client"; s.async = true;
+    s.onload = function () { googleLoaded = true; cb(); };
+    s.onerror = function () { var b = document.getElementById("g-btn"); if (b) b.innerHTML = '<p class="tiny muted">Não foi possível carregar o login do Google.</p>'; };
+    document.head.appendChild(s);
+  }
+
+  // Cartão de conta no Perfil
+  function accountCard() {
+    if (!api.ready && !auth) return "";
+    if (!auth) return '<div class="acct off"><div class="grow"><h3>Salve seu progresso na nuvem</h3><p class="muted small">Crie uma conta grátis para não perder nada se trocar de celular.</p></div>' +
+      '<button class="btn btn-primary" id="acct-login">Entrar ou criar conta</button></div>';
+    return '<div class="acct"><div class="grow"><div class="tiny muted">Conectado como</div><h3>' + esc(auth.user.email) + '</h3>' +
+      '<p class="muted small" id="sync-line">' + syncLabel() + '</p></div>' +
+      '<div class="actions"><button class="btn btn-soft" id="acct-sync">Sincronizar</button><button class="btn btn-soft" id="acct-out">Sair</button></div></div>';
+  }
+  function bindAccount() {
+    var l = document.getElementById("acct-login"); if (l) l.onclick = function () { go({ name: "login", from: "errors" }); };
+    var s = document.getElementById("acct-sync"); if (s) s.onclick = function () { syncNow().then(function () { toast(syncState === "ok" ? "Tudo sincronizado" : "Não foi possível sincronizar agora"); }); };
+    var o = document.getElementById("acct-out"); if (o) o.onclick = function () {
+      syncNow().then(function () {
+        apiFetch("logout", { method: "POST" }).catch(function () {});
+        auth = null; saveAuth(); toast("Você saiu da conta. O progresso continua neste aparelho"); render();
+      });
+    };
+    var d = document.getElementById("acct-del"); if (d) d.onclick = function () {
+      if (!d.dataset.armed) { d.dataset.armed = "1"; d.textContent = "Toque de novo para excluir tudo"; d.classList.add("danger"); return; }
+      apiFetch("account", { method: "DELETE" }).then(function (r) {
+        if (!r.ok) { toast("Não foi possível excluir agora"); return; }
+        auth = null; saveAuth(); toast("Conta e dados na nuvem excluídos"); render();
+      }).catch(function () { toast("Sem conexão"); });
+    };
+  }
+  // Convite para criar conta, na tela inicial, depois de algum uso.
+  function loginNudge() {
+    if (auth || !api.ready || state.nudgeOff) return "";
+    var n = 0; for (var k in state.results) n += state.results[k].seen;
+    if (n < 15) return "";
+    return '<div class="nudge acct-nudge"><span class="grow">Crie uma conta grátis para não perder seu progresso.</span><button class="text-btn" id="ng-login">Entrar</button><button class="icon-btn sm" id="ng-x" aria-label="Agora não">' + I.x + '</button></div>';
+  }
+  function bindNudge() {
+    var a = document.getElementById("ng-login"); if (a) a.onclick = function () { go({ name: "login", from: "home" }); };
+    var x = document.getElementById("ng-x"); if (x) x.onclick = function () { state.nudgeOff = true; save(); render(); };
   }
 
   // ---------- Backup ----------
@@ -1120,4 +1333,5 @@
   render();
   updateTabAvatar();
   checkOffline();
+  loadApiConfig();
 })();

@@ -1,0 +1,10 @@
+worker
+wrangler.jsonc
+wrangler.jsonc.example
+.assetsignore
+README.md
+node_modules
+.wrangler
+package.json
+package-lock.json
+wrangler.test.jsonc

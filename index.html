@@ -195,7 +195,7 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .tab.on { background: var(--cobalt); color: var(--cobalt-ink); }
 .tab .dot { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--sign); color: var(--sign-ink); font-size: 11px; font-weight: 800; line-height: 18px; text-align: center; }
 .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translate(-50%, 8px); background: var(--ink); color: var(--bg);
-  padding: 11px 18px; border-radius: 99px; font-size: 15px; font-weight: 600; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; z-index: 20; white-space: nowrap; }
+  padding: 11px 18px; border-radius: 18px; width: max-content; max-width: calc(100vw - 40px); text-align: center; font-size: 15px; font-weight: 600; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; z-index: 20; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 /* Topo: status offline */
 .brand-right { display: flex; align-items: center; gap: 8px; }
@@ -484,6 +484,36 @@ html, body { touch-action: manipulation; }
 .lv-tile.soon .lt-name { color: var(--muted); }
 .lv-head { display: flex; align-items: center; gap: 12px; margin: 4px 0 6px; }
 .lv-head .grow { flex: 1; min-width: 0; }
+/* ===== Conta ===== */
+.login { padding-top: 6px; text-align: center; }
+.login .icon-btn { margin-bottom: 8px; }
+.login h1 { font-size: 28px; margin-top: 4px; }
+.w-logo.sm { width: 76px; height: 76px; border-radius: 22px; font-size: 54px; padding-top: 8px; margin-bottom: 18px; box-shadow: 0 5px 0 #1F33B8; }
+.w-logo.sm i { width: 11px; height: 11px; margin-left: 4px; }
+.g-btn { display: flex; justify-content: center; margin: 24px 0 4px; min-height: 44px; }
+.or { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; margin: 14px 0; }
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.code-in { text-align: center; font-size: 30px; letter-spacing: 10px; font-weight: 700; margin-top: 12px; }
+.login a, .links a { color: var(--cobalt); font-weight: 600; }
+.acct { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; margin-top: 12px; }
+.acct h3 { font-size: 16px; word-break: break-all; }
+.acct p { margin: 4px 0 0; }
+.acct.off { background: var(--cobalt-soft); border-color: transparent; }
+.acct .actions { margin-top: 12px; }
+.acct.off .btn { width: 100%; margin-top: 12px; }
+.icon-btn.sm { width: 30px; height: 30px; background: transparent; }
+.icon-btn.sm svg { width: 14px; height: 14px; }
+.acct-nudge { display: flex; align-items: center; gap: 8px; cursor: default; }
+.acct-nudge .grow { flex: 1; }
+.acct-nudge .text-btn { padding: 4px 6px; }
+.advanced { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 14px; }
+.advanced summary { cursor: pointer; font-weight: 700; font-size: 16px; list-style: none; }
+.advanced summary::-webkit-details-marker { display: none; }
+.advanced summary::after { content: " +"; color: var(--muted); }
+.advanced[open] summary::after { content: " −"; }
+.advanced .backup { margin-top: 8px; padding-top: 0; border-top: 0; }
+.links { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 8px; font-size: 14px; }
+.text-btn.danger { color: var(--bad); }
 .foot { text-align: center; color: var(--muted); font-size: 13px; margin-top: 24px; }
 </style>
 </head>
