@@ -49,6 +49,46 @@
     for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === theme()) return THEMES[i];
     return THEMES[0];
   }
+  // ---------- Treino de vocabulário ----------
+  // Monta uma rodada a partir das palavras do próprio módulo: a frase de exemplo
+  // com a palavra escondida e as outras palavras da lista como alternativas.
+  function formsOf(en) {
+    var base = String(en).toLowerCase().replace(/^to /, ""), out = [base], w = base.split(" ");
+    var head = w[0], rest = w.slice(1);
+    [sOf, pastOf, ppOf, ingOf].forEach(function (f) {
+      try { var v = f(head); if (v) out.push([v].concat(rest).join(" ")); } catch (e) {}
+    });
+    return out.filter(function (x, i, a) { return x && a.indexOf(x) === i; }).sort(function (a, b) { return b.length - a.length; });
+  }
+  function vocabDrill(vs, pid) {
+    var itens = [];
+    (vs.items || []).forEach(function (v) {
+      var ex = String(v.ex || ""), low = ex.toLowerCase(), achou = null, at = -1;
+      formsOf(v.en).some(function (f) {
+        var i = low.indexOf(f);
+        while (i >= 0) {
+          var antes = i === 0 || /[^a-z']/.test(low[i - 1]), depois = i + f.length >= low.length || /[^a-z']/.test(low[i + f.length]);
+          if (antes && depois) { achou = ex.substr(i, f.length); at = i; return true; }
+          i = low.indexOf(f, i + 1);
+        }
+        return false;
+      });
+      if (!achou) return;
+      var q = ex.slice(0, at) + "___" + ex.slice(at + achou.length);
+      // A dica é a tradução, sem parênteses dentro de parênteses.
+      var dica = String(v.pt).replace(/\s*\([^)]*\)/g, "").trim() || v.pt;
+      itens.push({ q: q + " (" + dica + ")", a: [achou], full: ex.slice(0, at) + "{" + achou + "}" + ex.slice(at + achou.length),
+        why: "<b>" + esc(v.en) + "</b> = " + esc(v.pt), _vocab: v.en });
+    });
+    if (itens.length < 3) return null;
+    // Alternativas: as outras palavras da mesma lista.
+    itens.forEach(function (it) {
+      var outras = itens.filter(function (o) { return o !== it; }).map(function (o) { return o.a[0]; });
+      it.o = shuffle(outras).slice(0, 3);
+    });
+    return { id: vs.id + "-treino", type: "fill", title: "Treino de vocabulário",
+      subtitle: "Complete a frase com a palavra certa", icon: vs.icon, items: itens };
+  }
   // Leitura, escuta e vocabulário seguem o tema escolhido. Cada tema tem as suas
   // etapas, com id próprio, para que o progresso de um não se misture com o do outro.
   function applyPack() {
@@ -86,7 +126,12 @@
           items: v.sec.items.map(function (x) { return { en: x.en, pt: x.pt, full: x.en }; }) };
         add.push(w.packSec[lid]);
       });
-      variants("vocab").forEach(function (v) { add.push(v.sec); });
+      variants("vocab").forEach(function (v) {
+        add.push(v.sec);
+        var tid = v.sec.id + "-treino";
+        if (!w.packSec[tid]) { var dr = vocabDrill(v.sec, v.pid); if (dr) w.packSec[tid] = dr; }
+        if (w.packSec[tid]) add.push(w.packSec[tid]);
+      });
       w.sections = w.sections.concat(add);
     });
   }
@@ -185,9 +230,12 @@
     var i = 0;
     // Com a lacuna preenchida, a dica entre parênteses sai para a frase ficar limpa.
     if (fills && fills.length && fills[0]) t = t.replace(/\s*\([^()]*\)/g, "");
+    var total = (String(t).match(/___/g) || []).length;
     var h = esc(t).replace(/___/g, function () {
-      var f = fills && fills[i++];
-      return f ? '<span class="blank filled">' + esc(f) + '</span>' : '<span class="blank"></span>';
+      var k = i++, f = fills && fills[k];
+      if (f) return '<span class="blank filled">' + esc(f) + '</span>';
+      // Com duas lacunas, cada uma ganha um número que casa com a caixa de resposta.
+      return '<span class="blank">' + (total > 1 ? '<i>' + (k + 1) + '</i>' : "") + '</span>';
     });
     // A dica do verbo vira um botão: toque para ver passado, particípio e gerúndio.
     // Só vale quando a dica é mesmo um verbo em inglês; dicas como "(negativa)" ficam como texto.
@@ -481,7 +529,7 @@
         var cls = isDone ? (secMastered(s) ? "done gold" : "done") : isNext ? "next" : "locked", weak = isDone ? pendingOf(s).length : 0;
         html += '<div class="step' + (cls === "locked" ? " is-locked" : cls.indexOf("done") === 0 ? " is-done" : "") + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
           (isNext ? '<div class="go-tag">' + (w.sections.indexOf(s) === 0 && !Object.keys(state.results).length ? "Começar" : "Continuar") + '</div>' : "") +
-          '<button class="node ' + cls + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
+          '<button class="node ' + cls + (s.type === "summary" ? " lesson" + (isDone && modMastered(w) ? " gold-dark" : "") : "") + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
           (isNext ? '<span class="ring"></span>' : "") + svg(s.icon || TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + (weak ? '<span class="weak-badge" aria-label="' + weak + ' para reforçar">' + weak + '</span>' : "") + '</button><span class="node-lbl">' + esc(s.title) + '</span>';
         if (bubble === s.id) html += bubbleHtml(w, s, avail, d);
         html += '</div>';
@@ -598,6 +646,25 @@
   function pendingOf(s) { return (s.items || []).map(function (it) { return it.id; }).filter(function (id) { var r = state.results[id]; return state.review[id] && !(r && r.streak > 0); }); }
   function pendingInModule(w) { return w.sections.reduce(function (n, s) { return n + pendingOf(s).length; }, 0); }
   function reinforce(id) { var s = SECTIONS[id].section, ids = pendingOf(s); if (ids.length) startSession("reinforce", shuffle(ids.slice()), s); }
+  // Ao refazer uma lição já concluída, as frases vêm do módulo inteiro, não as mesmas de antes.
+  // Assim você responde pela regra, e não porque decorou a frase.
+  function redoIds(s) {
+    var proprios = s.items.map(function (it) { return it.id; });
+    if (secRuns(s) < 1) return proprios;
+    var ref = SECTIONS[s.id], pool = [];
+    ref.week.sections.forEach(function (o) {
+      if (o.type !== s.type || !(o.items || []).length) return;
+      o.items.forEach(function (it) { pool.push(it.id); });
+    });
+    if (pool.length <= proprios.length) return proprios;
+    // Primeiro as que você errou ou ainda não viu, depois o resto, sempre embaralhado.
+    var fracas = [], outras = [];
+    shuffle(pool).forEach(function (id) {
+      var r = state.results[id];
+      (!r || !r.streak ? fracas : outras).push(id);
+    });
+    return fracas.concat(outras).slice(0, proprios.length);
+  }
   function openSection(id, then) {
     var s = SECTIONS[id].section, z = savedSession();
     if (z && z.kind === "section" && z.sectionId === id) { resumeSession(); return; }
@@ -605,7 +672,7 @@
       var ids = buildMix(s);
       if (!ids.length) { toast("Ainda não há questões anteriores"); return; }
       startSession("section", ids, s, then);
-    } else if (isQuiz(s)) startSession("section", s.items.map(function (it) { return it.id; }), s, then);
+    } else if (isQuiz(s)) startSession("section", redoIds(s), s, then);
     else go({ name: "section", id: id });
   }
 
@@ -679,7 +746,8 @@
       html += '<div class="cards" style="margin-top:16px">';
       s.items.forEach(function (it, i) {
         html += '<div class="flip" data-flip="' + i + '" role="button" tabindex="0"><div class="w">' + esc(it.en) + '</div>' +
-          '<div class="hint">Toque para ver</div><div class="more" hidden><div class="pt">' + esc(it.pt) + '</div><div class="ex">' + esc(it.ex) + '</div>' + listen(it.ex) + '</div></div>';
+          '<div class="hint">Toque para ver</div><div class="more" hidden><div class="pt">' + esc(it.pt) + '</div><div class="ex">' + esc(it.ex) + '</div>' +
+          (exPt(it.ex) ? '<div class="ex-pt">' + esc(exPt(it.ex)) + '</div>' : "") + listen(it.ex) + '</div></div>';
       });
       html += '</div>';
     }
@@ -844,8 +912,17 @@
             return '<button class="opt' + (S.pick === o ? " sel" : "") + '" data-opt="' + k + '">' + esc(optLabel(it, o)) + '</button>'; }).join("") + '</div>';
           dock = '<button class="btn btn-primary" id="check"' + (S.pick ? "" : " disabled") + '>Conferir</button>';
         } else {
-          html += '<input class="field" type="text" id="ans" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="Sua resposta" aria-label="Sua resposta" value="' + esc(S.draft || "") + '">' +
-            '<div class="center"><button class="text-btn" id="skip">Não sei, mostrar a resposta</button></div>';
+          var nb = blanksIn(it);
+          S.drafts = S.drafts || [];
+          if (nb > 1) {
+            html += '<div class="gaps">';
+            for (var g = 0; g < nb; g++) html += '<label class="gap"><span>' + (g + 1) + '</span>' +
+              '<input class="field" type="text" id="ans' + g + '" data-gap="' + g + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="' + (g + 1 === nb ? "done" : "next") + '" placeholder="lacuna ' + (g + 1) + '" aria-label="Lacuna ' + (g + 1) + '" value="' + esc(S.drafts[g] || "") + '"></label>';
+            html += '</div><p class="tiny muted center">Uma palavra por caixa, na ordem da frase.</p>';
+          } else {
+            html += '<input class="field" type="text" id="ans" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="Sua resposta" aria-label="Sua resposta" value="' + esc(S.draft || "") + '">';
+          }
+          html += '<div class="center"><button class="text-btn" id="skip">Não sei, mostrar a resposta</button></div>';
           dock = '<button class="btn btn-primary" id="check">Conferir</button>';
         }
       }
@@ -904,6 +981,17 @@
     if (S.phase === "ask") {
       var ans = document.getElementById("ans");
       if (ans) { ans.oninput = function () { S.draft = ans.value; }; if (sec.type === "fill") ans.focus(); }
+      var caixas = app.querySelectorAll("[data-gap]");
+      caixas.forEach(function (c, k) {
+        c.oninput = function () { S.drafts[k] = c.value; };
+        c.addEventListener("keydown", function (e) {
+          if (e.key !== "Enter") return;
+          e.preventDefault(); e.stopPropagation();
+          var prox = caixas[k + 1];
+          if (prox && !prox.value.trim()) prox.focus(); else check(false);
+        });
+      });
+      if (caixas.length) caixas[0].focus();
       app.querySelectorAll("[data-verb]").forEach(function (b) { b.onclick = function (e) {
         e.preventDefault(); e.stopPropagation();
         var box = document.getElementById("vbox"), v = b.getAttribute("data-verb");
@@ -917,7 +1005,18 @@
       app.querySelectorAll("[data-un]").forEach(function (b) { b.onclick = function () { S.tiles.splice(+b.getAttribute("data-un"), 1); render(); }; });
       var check = function (skip) {
         if (sec.type === "fill") {
-          var v = skip ? "" : (m === "tap" ? S.pick : ans.value.trim()); if (!skip && !v) return;
+          var v;
+          if (skip) v = "";
+          else if (m === "tap") v = S.pick;
+          else {
+            var caixas = app.querySelectorAll("[data-gap]");
+            if (caixas.length) {
+              var vals = [].map.call(caixas, function (c) { return c.value.trim(); });
+              if (vals.some(function (x) { return !x; })) return;
+              v = vals.join(" ");
+            } else v = ans ? ans.value.trim() : "";
+          }
+          if (!skip && !v) return;
           commit(!skip && isRight(it, v), skip ? "(não soube)" : v);
         } else if (m === "tap") {
           if (!S.tiles.length) return;
@@ -942,7 +1041,7 @@
   function speechStop() { try { speechSynthesis.cancel(); } catch (e) {} }
   function advance() {
     var S = view.session;
-    if (S.i + 1 < S.ids.length) { S.i++; S.phase = "ask"; S.answer = ""; S.pick = null; S.tiles = []; S.draft = ""; S.autoplayed = false; render(); window.scrollTo(0, 0); }
+    if (S.i + 1 < S.ids.length) { S.i++; S.phase = "ask"; S.answer = ""; S.pick = null; S.tiles = []; S.draft = ""; S.drafts = []; S.autoplayed = false; render(); window.scrollTo(0, 0); }
     else finishSession(S);
   }
   function finishSession(S) {
@@ -1124,13 +1223,14 @@
     });
     return out;
   }
+  function exPt(ex) { return (window.EXPT || {})[String(ex).trim()] || ""; }
   function sortKey(en) { return String(en).toLowerCase().replace(/^to /, "").replace(/[^a-z]/g, ""); }
   function wordRow(r) {
     var it = r.it, tapped = !!wordOpen[it.id], open = tapped || !!state.wordsShow;
     return '<button class="word' + (open ? " open" : "") + '" data-word="' + it.id + '">' +
       '<span class="w-en">' + esc(it.en) + '</span>' +
       (open ? '<span class="w-pt">' + esc(it.pt) + '</span>' : '<span class="w-hint">ver</span>') +
-      (tapped && it.ex ? '<span class="w-ex">' + esc(it.ex) + '</span>' : "") + '</button>';
+      (tapped && it.ex ? '<span class="w-ex">' + esc(it.ex) + (exPt(it.ex) ? ' <i>' + esc(exPt(it.ex)) + '</i>' : "") + '</span>' : "") + '</button>';
   }
   function lineRow(r) {
     var it = r.it, open = !!wordOpen[it.id] || !!state.wordsShow;
@@ -1705,5 +1805,5 @@
   updateTabAvatar();
   checkOffline();
   loadApiConfig();
-  window.__audit = { isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
+  window.__audit = { redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
 })();

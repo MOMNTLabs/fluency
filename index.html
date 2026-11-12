@@ -187,6 +187,7 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .flip.open { grid-column: 1 / -1; background: var(--cobalt-soft); border-color: transparent; }
 .flip .pt { font-size: 16px; font-weight: 600; margin-top: 6px; }
 .flip .ex { font-size: 15px; color: var(--ink-2); font-style: italic; margin: 6px 0 10px; }
+.flip .ex-pt { font-size: 14px; color: var(--muted); margin: -4px 0 10px; }
 
 /* Resultado final */
 .score { font-family: var(--display); font-weight: 800; font-size: 88px; letter-spacing: -.06em; line-height: .9; margin: 18px 0 4px; }
@@ -314,6 +315,11 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .step.is-next .node-lbl { color: var(--m); font-weight: 700; }
 .node.locked { background: var(--sunk); color: var(--muted); box-shadow: 0 6px 0 var(--line); }
 .node.gold { background: var(--sign); color: #2A2100; box-shadow: 0 6px 0 #C99A00; }
+.node.lesson { background: var(--surface); color: var(--m); box-shadow: 0 6px 0 var(--line), inset 0 0 0 2.5px var(--m); }
+.node.lesson.locked { color: var(--muted); box-shadow: 0 6px 0 var(--line), inset 0 0 0 2.5px var(--line); }
+.node.lesson.gold-dark { background: #B88A08; color: #FFF7E0; box-shadow: 0 6px 0 #7A5B00, inset 0 0 0 2.5px #FFD23F; }
+.node.lesson + .node-lbl { color: var(--m); }
+.node.lesson.gold-dark + .node-lbl { color: #B88A08; font-weight: 700; }
 .step.is-done .node.gold ~ .node-lbl, .node.gold + .node-lbl { color: #A77C00; font-weight: 700; }
 .module.mastered .m-done { background: var(--sign); color: #2A2100; }
 .ring { position: absolute; inset: -11px; border-radius: 50%; border: 5px solid var(--m-soft); pointer-events: none; animation: ring 2.4s ease-in-out infinite; }
@@ -368,6 +374,12 @@ body.focus main { padding-bottom: 300px; }
 .qctx { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
 .qbody { display: flex; flex-direction: column; justify-content: center; min-height: calc(100dvh - 260px); padding: 18px 0; }
 .qbody .q:last-child { margin-bottom: 0; }
+.gaps { display: flex; gap: 10px; }
+.gap { flex: 1; min-width: 0; position: relative; }
+.gap > span { position: absolute; top: -7px; left: 12px; z-index: 1; background: var(--cobalt); color: var(--cobalt-ink);
+  width: 18px; height: 18px; border-radius: 50%; font: 700 11px/18px var(--text); text-align: center; }
+.gap .field { width: 100%; }
+.blank i { font-style: normal; font-size: .55em; vertical-align: super; color: var(--cobalt); font-weight: 800; margin-left: 1px; }
 .vhint { font: inherit; color: var(--cobalt); background: none; border: 0; border-bottom: 2px dotted var(--cobalt); padding: 0 1px; cursor: pointer; }
 .vhint.on { background: var(--cobalt-soft); border-radius: 6px; border-bottom-color: transparent; }
 .vsheet { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; margin: -8px 0 18px; }
@@ -573,6 +585,7 @@ html, body { touch-action: manipulation; }
 .w-pt { color: var(--cobalt); font-weight: 600; font-size: 15px; text-align: right; }
 .w-hint { color: var(--muted); font-size: 13px; }
 .w-ex { grid-column: 1 / -1; color: var(--muted); font-size: 14px; font-style: italic; margin-top: 2px; }
+.w-ex i { display: block; font-style: normal; }
 .lv-head { display: flex; align-items: center; gap: 10px; margin: 2px 0 8px; }
 .lv-count { font-family: var(--display); font-weight: 700; font-size: 15px; color: var(--muted); }
 .lv-head .grow { flex: 1; min-width: 0; }
@@ -630,6 +643,7 @@ html, body { touch-action: manipulation; }
 <script src="content-c2.js"></script>
 <script src="content-viagem.js"></script>
 <script src="content-glossario.js"></script>
+<script src="content-exemplos.js"></script>
 <script src="course.js"></script>
 <script src="app.js"></script>
 </body>
