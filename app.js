@@ -138,7 +138,19 @@
   }
   indexContent();
   function isQuiz(s) { return s.type === "fill" || s.type === "translate" || s.type === "listen"; }
-  function goal() { return state.goal || 20; }
+  // A meta pode subir na hora, mas uma redução só vale a partir do dia seguinte:
+  // assim o dia que já está correndo não fica batido de repente.
+  function goal() {
+    if (state.goalNext && state.goalFrom && today() >= state.goalFrom) return state.goalNext;
+    return state.goal || 20;
+  }
+  function goalPick() { return state.goalNext || state.goal || 20; }
+  function settleGoal() {
+    if (state.goalNext && state.goalFrom && today() >= state.goalFrom) {
+      state.goal = state.goalNext; delete state.goalNext; delete state.goalFrom; save();
+    }
+  }
+  function amanha() { var d = new Date(); d.setDate(d.getDate() + 1); return iso(d); }
   WEEKS.forEach(function (w, i) { w.idx = i; w.num = i + 1; });
   function complete(w) { return w.sections.every(function (s) { return state.sections[s.id] && state.sections[s.id].done; }); }
   function started(w) { return w.sections.some(function (s) { return state.sections[s.id]; }); }
@@ -1314,7 +1326,8 @@
     var html = '<h1 style="margin-top:8px">Perfil</h1>' + profileCard() + mountainCard() + accountCard() +
       '<div class="stats"><div><b>' + streak() + '</b>dias<br>seguidos</div><div><b>' + doneMods + '</b>de ' + WEEKS.length + '<br>módulos</div>' +
       '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros<br>superados</div></div>' + weekChart() +
-      '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
+      '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goalPick() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
+      (state.goalNext ? '<p class="tiny muted" style="margin-top:6px">A partir de amanhã, ' + state.goalNext + ' por dia. Hoje ainda vale ' + goal() + '.</p>' : "") +
       '';
     var last = state.lastBackup;
     html += '<details class="advanced"' + (auth ? "" : " open") + '><summary>Backup manual</summary><section class="backup"><p class="muted small">' +
@@ -1329,7 +1342,17 @@
     app.innerHTML = html;
     bindProfile(); bindAccount();
     document.getElementById("redo-pl").onclick = function () { go({ name: "placement" }); };
-    app.querySelectorAll("[data-goal]").forEach(function (b) { b.onclick = function () { state.goal = +b.getAttribute("data-goal"); save(); render(); }; });
+    app.querySelectorAll("[data-goal]").forEach(function (b) { b.onclick = function () {
+      var n = +b.getAttribute("data-goal"), hoje = goal();
+      if (n >= hoje) {
+        state.goal = n; delete state.goalNext; delete state.goalFrom;
+        toast(n === hoje ? "Meta de " + n + " por dia" : "Meta de " + n + " por dia, a partir de agora");
+      } else {
+        state.goalNext = n; state.goalFrom = amanha();
+        toast("A partir de amanhã, " + n + " por dia. Hoje ainda vale " + hoje + ".");
+      }
+      save(); render();
+    }; });
     document.getElementById("bk-copy").onclick = function () { state.lastBackup = today(); save(); share(makeBackup(), "Backup do nowish", "Backup copiado. Guarde no seu app de notas"); setTimeout(render, 2300); };
     document.getElementById("bk-open").onclick = function () { var box = document.getElementById("bk-restore"); box.hidden = !box.hidden; if (!box.hidden) document.getElementById("bk-text").focus(); };
     document.getElementById("bk-go").onclick = function () {
@@ -1793,6 +1816,7 @@
     });
   }
   // Quem já usava o app antes dos níveis continua no B1, onde estava.
+  settleGoal();
   if (!state.placement && Object.keys(state.results).length) { state.placement = "B1"; save(); }
   if (!state.onboarded && Object.keys(state.results).length) { state.onboarded = true; save(); }
   if (!state.onboarded) view = { name: "welcome", step: 0 };
