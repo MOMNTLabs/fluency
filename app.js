@@ -141,7 +141,8 @@
     state.modStart = state.modStart || {};
     if (!state.modStart[w.id]) state.modStart[w.id] = today();
     var prev = state.sections[sectionId] || {};
-    state.sections[sectionId] = Object.assign(prev, extra || {}, { done: true });
+    // runs = quantas vezes a etapa foi feita inteira. Reforço de erros não conta.
+    state.sections[sectionId] = Object.assign(prev, extra || {}, { done: true, runs: (prev.runs || 0) + 1 });
     save();
     if (!was && complete(w)) { state.modDone = state.modDone || {}; state.modDone[w.id] = today(); save(); return w; }
     return null;
@@ -512,16 +513,26 @@
         h += '<div class="bub-sub">' + info + '. ' + pw + (pw === 1 ? " questão para reforçar." : " questões para reforçar.") + '</div>' +
           '<button class="bub-btn" data-reinforce="' + s.id + '">Reforçar ' + pw + (pw === 1 ? " questão" : " questões") + '</button>' +
           '<button class="bub-link" data-start="' + s.id + '">Refazer tudo</button>';
+      } else if (isDone && isQuiz(s) && (s.items || []).length) {
+        var gold = secMastered(s);
+        h += '<div class="bub-sub">' + info + (gold ? ". Dourada: você acertou tudo na segunda passada."
+          : secAllRight(s) ? ". Refaça a lição inteira para ela ficar dourada." : ". Acerte todas para a lição ficar dourada.") + '</div>' +
+          '<button class="bub-btn" data-start="' + s.id + '">Refazer</button>';
       } else h += '<div class="bub-sub">' + info + '</div><button class="bub-btn" data-start="' + s.id + '">' + (isDone ? "Refazer" : "Começar") + '</button>';
     }
     return h + '</div>';
   }
   function moduleDoneText(m) { var n = WEEKS[m.idx + 1]; return m.title + " concluído" + (n ? ". " + n.title + " liberado" : "!"); }
   function isDoneSec(s) { return !!(state.sections[s.id] && state.sections[s.id].done); }
-  // Dourado = reforçado: a última resposta de todas as questões da etapa está certa.
+  // Dourado = reforçado de verdade: a etapa foi feita inteira duas vezes (a segunda
+  // costuma vir no modo de digitar, mais difícil) e todas as respostas estão certas.
+  function secRuns(s) { var d = state.sections[s.id]; return d && d.done ? (d.runs || 1) : 0; }
+  function secAllRight(s) {
+    return (s.items || []).every(function (it) { var r = state.results[it.id]; return r && r.streak > 0; });
+  }
   function secMastered(s) {
     if (!isQuiz(s) || !(s.items || []).length || !isDoneSec(s)) return false;
-    return s.items.every(function (it) { var r = state.results[it.id]; return r && r.streak > 0; });
+    return secRuns(s) >= 2 && secAllRight(s);
   }
   function modMastered(w) {
     var qs = w.sections.filter(function (s) { return isQuiz(s) && (s.items || []).length; });
@@ -862,7 +873,7 @@
       var m = S.moduleDone, nxt = WEEKS[m.idx + 1], took = daysBetween((state.modStart || {})[m.id] || today(), today()) + 1;
       html += '<div class="hero" style="--m:' + modColor(m) + '"><div class="hero-trophy">' + svg(TROPHY, 2) + '</div><h1>' + esc(m.title) + ' concluído!</h1>' +
         '<p class="muted">' + (nxt ? esc(nxt.title) + " liberado: " + esc(nxt.subtitle) + "." : "Você terminou todos os módulos.") + '</p>' +
-        (pendingInModule(m) ? '<p class="note">Refaça as ' + pendingInModule(m) + ' questões que você errou para a etapa e o troféu ficarem dourados. Elas estão no botão Reforçar do percurso e voltam na revisão.</p>' : "") + '</div>';
+        (pendingInModule(m) ? '<p class="note">Você errou ' + pendingInModule(m) + (pendingInModule(m) === 1 ? ' questão' : ' questões') + ' neste módulo. Refaça as lições inteiras, acertando tudo, para elas e o troféu ficarem dourados.</p>' : "") + '</div>';
       if (nxt && took <= 2) html += '<p class="note">Você fechou este módulo em ' + took + (took === 1 ? " dia" : " dias") + '. Antes do próximo, vale fazer a revisão de erros: com alguns dias entre um módulo e outro, o conteúdo fixa melhor.</p>';
     }
     html += '<div class="score">' + right + '<small>/' + total + '</small></div><h2>' + msg + '</h2>' +
@@ -874,12 +885,18 @@
     }
     var then = S.then && SECTIONS[S.then] && !isDoneSec(SECTIONS[S.then].section) ? SECTIONS[S.then].section : null;
     var nx = then || nextSection();
-    html += '<div class="actions stack" style="margin-top:20px">' + (nx ? '<button class="btn btn-primary" id="nx">Seguir: ' + esc(nx.title) + '</button>' : "") +
+    // Ainda erradas agora: quem acertou na revisão da própria rodada não volta.
+    var redo = wrong.map(function (l) { return l.id; }).filter(function (id) { var r = state.results[id]; return r && !r.streak; });
+    html += '<div class="actions stack" style="margin-top:20px">' +
+      (redo.length ? '<button class="btn btn-primary" id="redo">Tentar de novo as ' + redo.length + (redo.length === 1 ? " que errei" : " que errei") + '</button>' : "") +
+      (nx ? '<button class="btn ' + (redo.length ? "btn-soft" : "btn-primary") + '" id="nx">Seguir: ' + esc(nx.title) + '</button>' : "") +
       '<button class="btn btn-soft" id="home">Voltar ao percurso</button></div>';
     app.innerHTML = html;
     if (ratio === 1 || S.moduleDone) celebrate();
     document.getElementById("home").onclick = function () { backToPath(S.section ? S.section.id : null); };
     var nb = document.getElementById("nx"); if (nb) nb.onclick = function () { openSection(nx.id); };
+    var rb = document.getElementById("redo");
+    if (rb) rb.onclick = function () { startSession("reinforce", shuffle(redo.slice()), S.section || null); };
   }
 
   // ---------- Celebração ----------
