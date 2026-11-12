@@ -47,11 +47,11 @@ window.WEEKS.push(
       { id: "s9-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s9-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
-          R("You should test different hooks in the first three seconds.", "Você deveria testar ganchos diferentes nos três primeiros segundos."),
-          R("Could you review the caption before I post it?", "Você poderia revisar a legenda antes de eu postar?"),
+          R("You should check the weather before you leave.", "Você deveria ver a previsão do tempo antes de sair."),
+          R("Could you review the message before I send it?", "Você poderia revisar a mensagem antes de eu enviar?"),
           R("We might need a new camera next year.", "Talvez a gente precise de uma câmera nova no ano que vem."),
           R("You don't have to answer every comment, but you should answer the questions.", "Você não precisa responder todo comentário, mas deveria responder as perguntas."),
-          R("The video got 50k views. The hook must be really good.", "O vídeo teve 50 mil visualizações. O gancho deve ser muito bom."),
+          R("The video got 50k views. It must be really good.", "O vídeo teve 50 mil visualizações. Deve ser muito bom."),
           R("You mustn't post the client's content without approval.", "Você não pode postar conteúdo do cliente sem aprovação.")
         ] },
       { id: "s9-vocab", type: "vocab", title: "Vocabulário", subtitle: "Toque no cartão para ver o significado",
@@ -112,9 +112,9 @@ window.WEEKS.push(
       { id: "s10-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s10-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
-          R("This carousel was created in less than two hours.", "Este carrossel foi criado em menos de duas horas."),
+          R("This website was created in less than two hours.", "Este site foi criado em menos de duas horas."),
           R("All our contracts are reviewed by a lawyer.", "Todos os nossos contratos são revisados por um advogado."),
-          R("The campaign will be launched after Carnival.", "A campanha vai ser lançada depois do Carnaval."),
+          R("The new app will be launched after Carnival.", "O aplicativo novo vai ser lançado depois do Carnaval."),
           R("The post has been shared more than 500 times.", "O post foi compartilhado mais de 500 vezes."),
           R("Our logo was redesigned last year.", "Nosso logo foi redesenhado no ano passado."),
           R("Comments should be answered within 24 hours.", "Os comentários devem ser respondidos em até 24 horas.")
@@ -178,8 +178,8 @@ window.WEEKS.push(
       { id: "s11-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Although the video was short, it got a lot of shares.", "Embora o vídeo fosse curto, teve muitos compartilhamentos."),
-          R("Despite the low budget, the campaign looked professional.", "Apesar do orçamento baixo, a campanha ficou profissional."),
-          R("The reach was great. However, the comments were negative.", "O alcance foi ótimo. No entanto, os comentários foram negativos."),
+          R("Despite the low budget, the event looked professional.", "Apesar do orçamento baixo, o evento ficou profissional."),
+          R("The food was great. However, the service was slow.", "A comida estava ótima. No entanto, o atendimento foi lento."),
           R("I study every day, so my English is getting better.", "Estudo todo dia, então meu inglês está melhorando."),
           R("Even though I was tired, I watched an episode in English.", "Mesmo cansado, assisti um episódio em inglês."),
           R("As soon as the client replies, I'll let you know.", "Assim que o cliente responder, te aviso.")

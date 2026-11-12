@@ -110,7 +110,7 @@ window.WEEKS.push(
       { id: "b2m2-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I wish I had more time to study, but work is busy.", "Queria ter mais tempo para estudar, mas o trabalho está corrido."),
-          R("If only we had launched the campaign a week earlier!", "Se ao menos tivéssemos lançado a campanha uma semana antes!"),
+          R("If only we had booked the tickets a week earlier!", "Se ao menos tivéssemos comprado as passagens uma semana antes!"),
           R("I wish the client would make a decision.", "Queria que o cliente tomasse uma decisão."),
           R("If I had learned English as a kid, I would be fluent now.", "Se eu tivesse aprendido inglês criança, seria fluente agora."),
           R("She wishes she lived closer to the office.", "Ela queria morar mais perto do escritório."),

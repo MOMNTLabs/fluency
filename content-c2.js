@@ -46,7 +46,7 @@ window.WEEKS.push(
       { id: "c2m1-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Let's touch base on Monday and see where we are.", "Vamos nos falar na segunda e ver onde estamos."),
-          R("The bottom line is that the campaign didn't pay off.", "O resumo é que a campanha não deu retorno."),
+          R("The bottom line is that the investment didn't pay off.", "O resumo é que o investimento não deu retorno."),
           R("Winning that contract was a long shot, but we did it.", "Ganhar aquele contrato era improvável, mas conseguimos."),
           R("We can't afford to cut corners on client security.", "Não podemos economizar na segurança dos clientes."),
           R("Our new intern really hit the ground running.", "Nosso novo estagiário já chegou produzindo."),

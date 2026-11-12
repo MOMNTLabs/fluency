@@ -48,7 +48,7 @@ window.WEEKS.push(
       { id: "s2-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s2-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
-          R("I've just finished the first draft of the carousel.", "Acabei de terminar o primeiro rascunho do carrossel."),
+          R("I've just finished the first draft of the report.", "Acabei de terminar o primeiro rascunho do relatório."),
           R("Has the client approved the video yet?", "O cliente já aprovou o vídeo?"),
           R("Not yet, but he's already seen it.", "Ainda não, mas ele já viu."),
           R("I've worked with social media for three years.", "Trabalho com redes sociais há três anos."),
@@ -112,8 +112,8 @@ window.WEEKS.push(
       { id: "s3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
       { id: "s3-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
-          R("If the post goes viral, we'll need more people to answer the comments.", "Se o post viralizar, vamos precisar de mais gente para responder os comentários."),
-          R("If I had more followers, brands would pay me to post.", "Se eu tivesse mais seguidores, marcas me pagariam para postar."),
+          R("If the video does well, we'll need more people to answer the messages.", "Se o vídeo for bem, vamos precisar de mais gente para responder as mensagens."),
+          R("If I had more time, I would learn another language.", "Se eu tivesse mais tempo, eu aprenderia outra língua."),
           R("If I had known about the trend earlier, I would have made a video.", "Se eu soubesse da tendência antes, teria feito um vídeo."),
           R("If you don't save your work, you'll lose it.", "Se você não salvar seu trabalho, vai perdê-lo."),
           R("We would have finished on time if the client hadn't changed the script.", "Teríamos terminado no prazo se o cliente não tivesse mudado o roteiro."),
@@ -177,9 +177,9 @@ window.WEEKS.push(
       { id: "s4-mix2", type: "mix", title: "Revisão dos módulos, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
       { id: "s4-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
-          R("My boss told me the new campaign was the best one this month.", "Meu chefe me disse que a nova campanha era a melhor do mês."),
+          R("My boss told me the new plan was the best one this month.", "Meu chefe me disse que o novo plano era o melhor do mês."),
           R("The client asked if we could deliver the video by Friday.", "O cliente perguntou se podíamos entregar o vídeo até sexta."),
-          R("She said she had never seen so much engagement.", "Ela disse que nunca tinha visto tanto engajamento."),
+          R("She said she had never seen so much rain.", "Ela disse que nunca tinha visto tanta chuva."),
           R("I told him not to worry about the deadline.", "Eu disse para ele não se preocupar com o prazo."),
           R("They asked me where I had learned to edit like that.", "Eles me perguntaram onde eu tinha aprendido a editar assim."),
           R("He said he would send the feedback in the afternoon.", "Ele disse que mandaria o retorno à tarde.")

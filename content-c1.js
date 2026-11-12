@@ -47,7 +47,7 @@ window.WEEKS.push(
       { id: "c1m1-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Never before have we had so many leads in a single month.", "Nunca antes tivemos tantos leads num único mês."),
-          R("Not only did the campaign hit its target, but it also lowered our costs.", "A campanha não só bateu a meta como reduziu nossos custos."),
+          R("Not only did the project hit its target, but it also lowered our costs.", "O projeto não só bateu a meta como reduziu nossos custos."),
           R("No sooner had we fixed one bug than another appeared.", "Mal corrigimos um bug e outro apareceu."),
           R("Only after reading the contract carefully did we notice the clause.", "Só depois de ler o contrato com atenção percebemos a cláusula."),
           R("Under no circumstances should client data leave the company.", "Em hipótese nenhuma dados de clientes devem sair da empresa."),

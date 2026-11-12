@@ -47,7 +47,7 @@ window.WEEKS.push(
       { id: "s5-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I study English on the bus every morning.", "Estudo inglês no ônibus toda manhã."),
-          R("The new campaign goes live on Monday at 9 a.m.", "A nova campanha vai ao ar na segunda às 9h."),
+          R("The new course starts on Monday at 9 a.m.", "O curso novo começa na segunda às 9h."),
           R("We get more likes on Instagram in the evening.", "Recebemos mais curtidas no Instagram no começo da noite."),
           R("There's a mistake in the second slide.", "Tem um erro no segundo slide."),
           R("I'll be at the office until 6 p.m.", "Vou estar no escritório até as 18h."),
@@ -114,7 +114,7 @@ window.WEEKS.push(
         items: [
           R("I enjoy creating content, but I hate waiting for approval.", "Gosto de criar conteúdo, mas odeio esperar aprovação."),
           R("We decided to post three times a week.", "Decidimos postar três vezes por semana."),
-          R("She's really good at writing short captions.", "Ela é muito boa em escrever legendas curtas."),
+          R("She's really good at writing short emails.", "Ela é muito boa em escrever e-mails curtos."),
           R("Before publishing, always check the spelling.", "Antes de publicar, sempre confira a ortografia."),
           R("I'm planning to learn motion design next year.", "Estou planejando aprender motion design no ano que vem."),
           R("Thanks for sending the feedback so quickly.", "Obrigado por mandar o retorno tão rápido.")
