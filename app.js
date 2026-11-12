@@ -436,7 +436,7 @@
       var exp = isExpanded(w, cur), isCur = w === cur;
       var segs = ""; w.sections.forEach(function (s) { segs += '<i class="' + (state.sections[s.id] && state.sections[s.id].done ? "on" : "") + '"></i>'; });
       var status = done ? "Concluído" : isCur ? "Em andamento" : open ? p + " de " + w.sections.length : "Bloqueado", weakN = open ? pendingInModule(w) : 0;
-      html += '<section class="module' + (open ? "" : " is-locked") + (exp ? " expanded" : "") + (isCur ? " current" : "") + (done ? " complete" : "") + '" style="--m:' + col + '" id="mod-' + w.id + '">' +
+      html += '<section class="module' + (open ? "" : " is-locked") + (exp ? " expanded" : "") + (isCur ? " current" : "") + (done ? " complete" : "") + (done && modMastered(w) ? " mastered" : "") + '" style="--m:' + col + '" id="mod-' + w.id + '">' +
         '<button class="banner" data-mod="' + w.id + '" aria-expanded="' + exp + '">' +
         '<span class="m-icon">' + svg(MOD_ICON[w.id] || TROPHY, 2) + (done ? '<span class="m-done">' + I.done + '</span>' : "") + '</span>' +
         '<span class="grow"><span class="b-label">' + esc(w.title) + '<span class="b-status">' + status + '</span>' + (weakN ? '<span class="b-weak">Reforçar ' + weakN + '</span>' : "") + '</span>' +
@@ -447,8 +447,8 @@
       w.sections.forEach(function (s, i) {
         var d = state.sections[s.id], isDone = d && d.done, avail = nodeAvailable(w, s), isNext = avail && !isDone;
         var x = ZIG[(i + w.idx * 3) % ZIG.length] * 40;
-        var cls = isDone ? "done" : isNext ? "next" : "locked", weak = isDone ? pendingOf(s).length : 0;
-        html += '<div class="step' + (cls === "locked" ? " is-locked" : cls === "done" ? " is-done" : "") + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
+        var cls = isDone ? (secMastered(s) ? "done gold" : "done") : isNext ? "next" : "locked", weak = isDone ? pendingOf(s).length : 0;
+        html += '<div class="step' + (cls === "locked" ? " is-locked" : cls.indexOf("done") === 0 ? " is-done" : "") + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
           (isNext ? '<div class="go-tag">' + (w.sections.indexOf(s) === 0 && !Object.keys(state.results).length ? "Começar" : "Continuar") + '</div>' : "") +
           '<button class="node ' + cls + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
           (isNext ? '<span class="ring"></span>' : "") + svg(s.icon || TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + (weak ? '<span class="weak-badge" aria-label="' + weak + ' para reforçar">' + weak + '</span>' : "") + '</button><span class="node-lbl">' + esc(s.title) + '</span>';
@@ -456,7 +456,7 @@
         html += '</div>';
       });
       var lastX = ZIG[(w.sections.length + w.idx * 3) % ZIG.length] * 40;
-      html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? (weakN ? "silver" : "won") : "") + '" aria-label="' + (done ? (weakN ? "Concluído. Supere os erros para o troféu dourado" : "Módulo dominado") : "Fim do " + esc(w.title)) + '">' + svg(TROPHY, 2.1) + '</div></div>';
+      html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? (modMastered(w) ? "won" : "silver") : "") + '" aria-label="' + (done ? (modMastered(w) ? "Módulo dominado" : "Concluído. Refaça as questões erradas para o troféu dourado") : "Fim do " + esc(w.title)) + '">' + svg(TROPHY, 2.1) + '</div></div>';
       html += '</div></section>';
     }
     st.mods.forEach(moduleHtml);
@@ -518,6 +518,15 @@
   }
   function moduleDoneText(m) { var n = WEEKS[m.idx + 1]; return m.title + " concluído" + (n ? ". " + n.title + " liberado" : "!"); }
   function isDoneSec(s) { return !!(state.sections[s.id] && state.sections[s.id].done); }
+  // Dourado = reforçado: a última resposta de todas as questões da etapa está certa.
+  function secMastered(s) {
+    if (!isQuiz(s) || !(s.items || []).length || !isDoneSec(s)) return false;
+    return s.items.every(function (it) { var r = state.results[it.id]; return r && r.streak > 0; });
+  }
+  function modMastered(w) {
+    var qs = w.sections.filter(function (s) { return isQuiz(s) && (s.items || []).length; });
+    return qs.length > 0 && qs.every(secMastered);
+  }
   function nextSectionOf(w) { return w.sections.filter(function (s) { return nodeAvailable(w, s) && !isDoneSec(s); })[0] || null; }
   function nextSection() { var cur = currentModule(); return cur ? nextSectionOf(cur) : null; }
 
@@ -583,7 +592,11 @@
       });
       html += '</div>';
     }
-    html += '<div class="actions" style="margin-top:20px"><button class="btn btn-primary" id="finish">Concluir</button></div>';
+    // Depois da aula, o botão já leva para os exercícios do módulo.
+    var nxt = s.type === "summary" ? nextSectionOf(ref.week) : null;
+    if (nxt === s) nxt = ref.week.sections[ref.week.sections.indexOf(s) + 1] || null;
+    html += '<div class="actions" style="margin-top:20px"><button class="btn btn-primary" id="finish">' +
+      (nxt ? "Começar os exercícios" : "Concluir") + '</button></div>';
     app.innerHTML = html; document.getElementById("back").onclick = function () { backToPath(s.id); };
     app.querySelectorAll("[data-rev]").forEach(function (b) { b.onclick = function () {
       var el = document.getElementById("rev" + b.getAttribute("data-rev")); el.hidden = !el.hidden; b.textContent = el.hidden ? "Ver tradução" : "Esconder"; }; });
@@ -592,8 +605,10 @@
       var open = c.classList.toggle("open"); c.querySelector(".more").hidden = !open; c.querySelector(".hint").hidden = open; }; });
     document.getElementById("finish").onclick = function () {
       var mod = sectionFinished(s.id);
-      if (mod) { celebrate(); toast(moduleDoneText(mod)); } else toast("Seção concluída");
-      backToPath(s.id);
+      if (mod) { celebrate(); toast(moduleDoneText(mod)); backToPath(s.id); return; }
+      var go2 = nxt && nxt !== s ? nxt : null;
+      if (go2) { openSection(go2.id); return; }
+      toast("Seção concluída"); backToPath(s.id);
     };
   }
 
@@ -847,7 +862,7 @@
       var m = S.moduleDone, nxt = WEEKS[m.idx + 1], took = daysBetween((state.modStart || {})[m.id] || today(), today()) + 1;
       html += '<div class="hero" style="--m:' + modColor(m) + '"><div class="hero-trophy">' + svg(TROPHY, 2) + '</div><h1>' + esc(m.title) + ' concluído!</h1>' +
         '<p class="muted">' + (nxt ? esc(nxt.title) + " liberado: " + esc(nxt.subtitle) + "." : "Você terminou todos os módulos.") + '</p>' +
-        (pendingInModule(m) ? '<p class="note">Supere os ' + pendingInModule(m) + ' erros deste módulo para o troféu ficar dourado. Eles voltam na revisão e no botão Reforçar do percurso.</p>' : "") + '</div>';
+        (pendingInModule(m) ? '<p class="note">Refaça as ' + pendingInModule(m) + ' questões que você errou para a etapa e o troféu ficarem dourados. Elas estão no botão Reforçar do percurso e voltam na revisão.</p>' : "") + '</div>';
       if (nxt && took <= 2) html += '<p class="note">Você fechou este módulo em ' + took + (took === 1 ? " dia" : " dias") + '. Antes do próximo, vale fazer a revisão de erros: com alguns dias entre um módulo e outro, o conteúdo fixa melhor.</p>';
     }
     html += '<div class="score">' + right + '<small>/' + total + '</small></div><h2>' + msg + '</h2>' +

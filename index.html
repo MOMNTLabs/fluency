@@ -297,6 +297,9 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .step.is-locked .node-lbl { color: var(--muted); }
 .step.is-next .node-lbl { color: var(--m); font-weight: 700; }
 .node.locked { background: var(--sunk); color: var(--muted); box-shadow: 0 6px 0 var(--line); }
+.node.gold { background: var(--sign); color: #2A2100; box-shadow: 0 6px 0 #C99A00; }
+.step.is-done .node.gold ~ .node-lbl, .node.gold + .node-lbl { color: #A77C00; font-weight: 700; }
+.module.mastered .m-done { background: var(--sign); color: #2A2100; }
 .ring { position: absolute; inset: -11px; border-radius: 50%; border: 5px solid var(--m-soft); pointer-events: none; animation: ring 2.4s ease-in-out infinite; }
 @keyframes ring { 50% { transform: scale(1.06); border-color: color-mix(in srgb, var(--m) 35%, transparent); } }
 .go-tag { position: absolute; bottom: calc(100% + 10px); white-space: nowrap; background: var(--surface); color: var(--m); border: 2px solid var(--line);
