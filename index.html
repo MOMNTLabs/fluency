@@ -600,6 +600,12 @@ html, body { touch-action: manipulation; }
 .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .code-in { text-align: center; font-size: 30px; letter-spacing: 10px; font-weight: 700; margin-top: 12px; }
 .login a, .links a { color: var(--cobalt); font-weight: 600; }
+.card-profile { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; margin-top: 14px; }
+.card-profile .profile { background: none; border: 0; border-radius: 0; margin-top: 0; }
+.acct-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-top: 1px solid var(--line); }
+.acct-row .grow { flex: 1; min-width: 0; }
+.acct-mail { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn-soft.sm { flex: none; padding: 9px 18px; font-size: 14px; }
 .acct { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; margin-top: 12px; }
 .acct h3 { font-size: 16px; word-break: break-all; }
 .acct p { margin: 4px 0 0; }

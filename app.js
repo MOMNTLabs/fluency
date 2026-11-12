@@ -1478,11 +1478,15 @@
   }
   function profileCard() {
     var pr = state.profile || {}, sl = studyLevel();
-    return '<div class="profile"><button class="av-btn" id="av" aria-label="Trocar foto">' + avatarHtml("big") + '<span class="av-cam">' + svg('<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', 2) + '</span></button>' +
+    return '<div class="card-profile"><div class="profile"><button class="av-btn" id="av" aria-label="Trocar foto">' + avatarHtml("big") + '<span class="av-cam">' + svg('<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', 2) + '</span></button>' +
       '<input type="file" id="photo-in" accept="image/*" hidden>' +
       '<div class="grow"><button class="name-btn" id="name-edit">' + (pr.name ? esc(pr.name) : '<span class="muted">Adicionar seu nome</span>') + svg('<path d="M4 20h4L19 9l-4-4L4 16z"/>', 2.2) + '</button>' +
       '<div class="lv-line"><span class="lv-badge sm">' + sl.code + '</span>' + esc(sl.info.name) + '</div>' +
-      '<div class="lv-bar"><i style="width:' + sl.pct + '%"></i></div><div class="tiny muted">' + sl.done + ' de ' + sl.total + ' módulos do ' + sl.code + '</div></div></div>';
+      '<div class="lv-bar"><i style="width:' + sl.pct + '%"></i></div><div class="tiny muted">' + sl.done + ' de ' + sl.total + ' módulos do ' + sl.code + '</div></div></div>' +
+      (auth ? '<div class="acct-row"><div class="grow"><div class="acct-mail">' + esc(auth.user.email) + '</div>' +
+        '<div class="tiny muted" id="sync-line">' + syncLabel() + '</div></div>' +
+        '<button class="btn btn-soft sm" id="acct-out">Sair</button></div>' : "") +
+      '</div>';
   }
   function bindProfile() {
     var inp = document.getElementById("photo-in");
@@ -1706,13 +1710,10 @@
     if (!api.ready && !auth) return "";
     if (!auth) return '<div class="acct off"><div class="grow"><h3>Salve seu progresso na nuvem</h3><p class="muted small">Crie uma conta grátis para não perder nada se trocar de celular.</p></div>' +
       '<button class="btn btn-primary" id="acct-login">Entrar ou criar conta</button></div>';
-    return '<div class="acct"><div class="grow"><div class="tiny muted">Conectado como</div><h3>' + esc(auth.user.email) + '</h3>' +
-      '<p class="muted small" id="sync-line">' + syncLabel() + '</p></div>' +
-      '<div class="actions"><button class="btn btn-soft" id="acct-sync">Sincronizar</button><button class="btn btn-soft" id="acct-out">Sair</button></div></div>';
+    return "";
   }
   function bindAccount() {
     var l = document.getElementById("acct-login"); if (l) l.onclick = function () { go({ name: "login", from: "errors" }); };
-    var s = document.getElementById("acct-sync"); if (s) s.onclick = function () { syncNow().then(function () { toast(syncState === "ok" ? "Tudo sincronizado" : "Não foi possível sincronizar agora"); }); };
     var o = document.getElementById("acct-out"); if (o) o.onclick = function () {
       syncNow().then(function () {
         apiFetch("logout", { method: "POST" }).catch(function () {});
