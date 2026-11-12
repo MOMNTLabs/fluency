@@ -141,7 +141,7 @@ window.WEEKS.push(
           C("realize ≠ realizar", ["realize = perceber", "realizar = carry out, achieve"], "I didn't realize the file was empty."),
           C("pretend ≠ pretender", ["pretend = fingir", "pretender = intend, plan"], "We plan to launch it in March."),
           C("tendency ≠ tendência de mercado", ["tendência, moda, em alta = trend, trending"], "What's trending this week?"),
-          C("assist e attend", ["assistir (TV, vídeo) = watch", "attend = participar de; atender (telefone) = answer"], "I watch tutorials on the bus."),
+          C("assist, attend ≠ assistir", ["assist = ajudar", "attend = participar de, comparecer a", "assistir (TV, vídeo) = watch; atender (telefone) = answer"], "I watch tutorials on the bus."),
           C("Mais alguns", ["eventually = no fim, com o tempo (eventualmente = occasionally)", "parents = pais (parentes = relatives)", "college = faculdade, library = biblioteca"], "Eventually, we finished the project.")
         ] },
       { id: "s7-r1", type: "fill", title: "Rodada 1", subtitle: "Escreva a palavra certa em inglês",

@@ -181,7 +181,7 @@
   function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function plain(t) { return String(t).replace(/[{}]/g, ""); }
   function fullHtml(t) { return esc(t).replace(/\{([^}]*)\}/g, "<b>$1</b>"); }
-  function qHtml(t, fills) {
+  function qHtml(t, fills, verb) {
     var i = 0;
     // Com a lacuna preenchida, a dica entre parênteses sai para a frase ficar limpa.
     if (fills && fills.length && fills[0]) t = t.replace(/\s*\([^()]*\)/g, "");
@@ -190,9 +190,22 @@
       return f ? '<span class="blank filled">' + esc(f) + '</span>' : '<span class="blank"></span>';
     });
     // A dica do verbo vira um botão: toque para ver passado, particípio e gerúndio.
-    return h.replace(/\((not\/)?([a-z]+)\)/g, function (all, neg, verb) {
-      return verbTable(verb) ? '<button class="vhint" data-verb="' + verb + '" aria-label="Formas de ' + verb + '">' + all + '</button>' : all;
+    // Só vale quando a dica é mesmo um verbo em inglês; dicas como "(negativa)" ficam como texto.
+    if (!verb) return h;
+    return h.replace(/\((not\/)?([a-z]+)\)/g, function (all, neg, w) {
+      return w === verb ? '<button class="vhint" data-verb="' + verb + '" aria-label="Formas de ' + verb + '">' + all + '</button>' : all;
     });
+  }
+  // A dica só é tratada como verbo se a resposta usar alguma forma dele.
+  function hintVerb(it) {
+    var m = /\((?:not\/)?([a-z]+)\)/.exec(it.q || "");
+    if (!m) return null;
+    var v = m[1];
+    if (!/^[a-z]{2,}$/.test(v)) return null;
+    var forms = v === "be" ? ["be", "am", "is", "are", "was", "were", "been", "being"]
+      : [v, sOf(v), pastOf(v), ppOf(v), ingOf(v)];
+    var ans = [].concat(it.a || []).join(" | ").toLowerCase();
+    return forms.some(function (f) { return new RegExp("\\b" + f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b").test(ans); }) ? v : null;
   }
   // Formas que ajudam sem entregar a escolha do tempo (o "s" de he/she fica de fora).
   function verbTable(b) {
@@ -824,7 +837,7 @@
     S.tiles = S.tiles || [];
     html += '<div class="qbody' + (ask ? "" : " settled") + '">';
     if (sec.type === "fill") {
-      html += '<div class="q">' + qHtml(it.q, ask ? (m === "tap" && S.pick ? splitFill(S.pick, blanksIn(it)) : null) : answerParts(it.full)) + '</div><div id="vbox"></div>';
+      html += '<div class="q">' + qHtml(it.q, ask ? (m === "tap" && S.pick ? splitFill(S.pick, blanksIn(it)) : null) : answerParts(it.full), ask ? hintVerb(it) : null) + '</div><div id="vbox"></div>';
       if (ask) {
         if (m === "tap") {
           html += '<div class="opts">' + optionsFor(it).map(function (o, k) {
@@ -1564,4 +1577,5 @@
   updateTabAvatar();
   checkOffline();
   loadApiConfig();
+  window.__audit = { isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
 })();
