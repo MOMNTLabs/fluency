@@ -859,7 +859,7 @@
   ];
   function renderWelcome() {
     var k = view.step || 0, s = WELCOME[k];
-    app.innerHTML = '<div class="welcome"><div class="w-art" style="--m:' + MOD_COLORS[k] + '">' + svg(s.ic, 2) + '</div><h1>' + s.t + '</h1><p class="muted">' + s.p + '</p>' +
+    app.innerHTML = '<div class="welcome">' + (k === 0 ? '<div class="w-logo" aria-label="nowish">n<i></i></div>' : '<div class="w-art" style="--m:' + MOD_COLORS[k] + '">' + svg(s.ic, 2) + '</div>') + '<h1>' + s.t + '</h1><p class="muted">' + s.p + '</p>' +
       '<div class="w-dots">' + WELCOME.map(function (_, i) { return '<i class="' + (i === k ? "on" : "") + '"></i>'; }).join("") + '</div></div>' +
       '<div class="dock"><button class="btn btn-primary" id="w-next">' + (k < WELCOME.length - 1 ? "Próximo" : "Começar") + '</button>' +
       (k < WELCOME.length - 1 ? '<button class="text-btn" id="w-skip" style="width:100%">Pular</button>' : "") + '</div>';
