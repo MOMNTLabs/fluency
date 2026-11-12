@@ -389,6 +389,17 @@ body.focus main { padding-bottom: 300px; }
 
 /* ===== Progresso ===== */
 .chart-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px 10px; margin-top: 10px; }
+.climb { background: #2F4BFF; color: #fff; border-radius: var(--r); margin-top: 10px; overflow: hidden; }
+.climb-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 18px 0; }
+.climb-head h3 { margin: 0; font-size: 17px; color: #fff; }
+.climb-head p { margin: 2px 0 0; font-size: 14px; color: rgba(255,255,255,.78); line-height: 1.35; }
+.climb-head b { font-family: "Bricolage", sans-serif; font-size: 28px; line-height: 1; letter-spacing: -.03em; color: #FFD23F; }
+.climb-art { position: relative; margin-top: 4px; }
+.climb-art svg { display: block; width: 100%; height: auto; }
+.climb-lbl { font: 700 11px -apple-system, system-ui, sans-serif; fill: rgba(255,255,255,.6); }
+.climb-lbl.on { fill: #FFD23F; }
+.climb-me { position: absolute; transform: translate(-50%, -50%); width: 34px; height: 34px; border-radius: 50%; box-shadow: 0 0 0 3px #FFD23F, 0 4px 10px rgba(0,0,0,.3); pointer-events: none; }
+.climb-me .avatar { width: 34px !important; height: 34px !important; font-size: 13px !important; }
 .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
 .chart { position: relative; height: 120px; display: flex; gap: 8px; align-items: flex-end; padding-bottom: 20px; }
 .chart .col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; }

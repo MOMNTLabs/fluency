@@ -890,7 +890,7 @@
   function renderErrors() {
     var pend = pendingIds().sort(), answered = 0; for (var k in state.results) answered += state.results[k].seen;
     var doneMods = WEEKS.filter(complete).length;
-    var html = '<h1 style="margin-top:8px">Perfil</h1>' + profileCard() + accountCard() +
+    var html = '<h1 style="margin-top:8px">Perfil</h1>' + profileCard() + mountainCard() + accountCard() +
       '<div class="stats"><div><b>' + streak() + '</b>dias seguidos</div><div><b>' + doneMods + '/' + WEEKS.length + '</b>módulos</div>' +
       '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div></div>' + weekChart() +
       '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
@@ -1013,6 +1013,47 @@
   function avatarHtml(cls) {
     var ph = (state.profile || {}).photo;
     return '<span class="avatar ' + (cls || "") + '">' + (ph ? '<img src="' + ph + '" alt="">' : '<span>' + esc(initials()) + '</span>') + '</span>';
+  }
+  // ---------- Subida até o C2 ----------
+  // Cada nível ocupa 1/6 da trilha. Níveis abaixo do nivelamento contam como já subidos.
+  function climb() {
+    var pl = lvl(placement()), cur = studyLevel(), li = lvl(cur.code), mods = modulesOf(cur.code), part = 0;
+    mods.forEach(function (w) {
+      if (complete(w)) part += 1;
+      else part += w.sections.filter(function (x) { return state.sections[x.id] && state.sections[x.id].done; }).length / w.sections.length;
+    });
+    var t = Math.min(1, (li + (mods.length ? part / mods.length : 0)) / LV.length);
+    var left = WEEKS.filter(function (w) { return lvl(w.level) >= Math.max(pl, 0) && !complete(w); }).length;
+    return { t: t, code: cur.code, left: left, li: li };
+  }
+  // Trilha em zigue-zague: um acampamento por nível, alternando os lados da montanha.
+  var CAMPS = [[70, 182], [252, 170], [138, 146], [242, 118], [172, 94], [218, 66]], SUMMIT = [205, 40];
+  function mountainCard() {
+    var c = climb(), pct = Math.round(c.t * 100), pts = CAMPS.concat([SUMMIT]), seg = [], total = 0, i;
+    for (i = 0; i < 6; i++) { var dd = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(dd); total += dd; }
+    // O ponto anda por nível (cada nível vale 1/6), não por distância.
+    var pos = c.t * 6, k = Math.min(5, Math.floor(pos)), f = c.t >= 1 ? 1 : pos - k;
+    var me = c.t >= 1 ? [SUMMIT[0] - 4, SUMMIT[1] + 4] : [pts[k][0] + (pts[k + 1][0] - pts[k][0]) * f, pts[k][1] + (pts[k + 1][1] - pts[k][1]) * f];
+    var doneLen = 0; for (i = 0; i < k; i++) doneLen += seg[i]; doneLen += seg[k] * f;
+    var d = "M" + pts.map(function (p) { return p[0] + " " + p[1]; }).join(" L");
+    var camps = CAMPS.map(function (p, i) {
+      var on = i <= c.li, side = i % 2 ? 1 : -1;
+      return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="4.5" fill="' + (on ? "#FFD23F" : "#1D33D6") + '" stroke="' + (on ? "#FFD23F" : "rgba(255,255,255,.75)") + '" stroke-width="2"/>' +
+        '<text x="' + (p[0] + side * 20) + '" y="' + (p[1] + 4) + '" text-anchor="' + (side > 0 ? "start" : "end") + '" class="climb-lbl' + (on ? " on" : "") + '">' + LV[i] + '</text>';
+    }).join("");
+    var sub = c.t >= 1 ? "Você chegou ao topo. Inglês proficiente." :
+      "Você está no " + c.code + ". Faltam " + c.left + (c.left === 1 ? " módulo" : " módulos") + " até o topo.";
+    return '<div class="climb"><div class="climb-head"><div><h3>Sua subida até o C2</h3><p>' + sub + '</p></div><b>' + pct + '%</b></div>' +
+      '<div class="climb-art"><svg viewBox="0 8 340 192" aria-hidden="true">' +
+        '<path d="M-10 200 L40 150 L80 168 L130 120 L170 140 L240 70 L300 120 L350 92 L350 200 Z" fill="#4A63FF"/>' +
+        '<path d="M-10 200 L70 130 L110 150 L205 30 L260 95 L290 80 L350 200 Z" fill="#1D33D6"/>' +
+        '<path d="M205 30 L229 58 L218 54 L210 63 L199 55 L188 62 L183 56 Z" fill="#E9EDFF"/>' +
+        '<path d="M-10 200 L60 190 L130 197 L220 189 L300 194 L350 186 L350 200 Z" fill="#14249E"/>' +
+        '<path d="' + d + '" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round" stroke-linejoin="round"/>' +
+        (doneLen > 0 ? '<path d="' + d + '" fill="none" stroke="#FFD23F" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="' + doneLen.toFixed(1) + ' 9999"/>' : "") +
+        camps +
+        '<path d="M205 38 V16" stroke="#fff" stroke-width="2"/><path d="M206 16 L222 21 L206 26 Z" fill="#FFD23F"/>' +
+      '</svg><span class="climb-me" style="left:' + (me[0] / 340 * 100).toFixed(2) + '%;top:' + ((me[1] - 8) / 192 * 100).toFixed(2) + '%">' + avatarHtml() + '</span></div></div>';
   }
   function profileCard() {
     var pr = state.profile || {}, sl = studyLevel();
