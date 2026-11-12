@@ -185,10 +185,27 @@
     var i = 0;
     // Com a lacuna preenchida, a dica entre parênteses sai para a frase ficar limpa.
     if (fills && fills.length && fills[0]) t = t.replace(/\s*\([^()]*\)/g, "");
-    return esc(t).replace(/___/g, function () {
+    var h = esc(t).replace(/___/g, function () {
       var f = fills && fills[i++];
       return f ? '<span class="blank filled">' + esc(f) + '</span>' : '<span class="blank"></span>';
     });
+    // A dica do verbo vira um botão: toque para ver passado, particípio e gerúndio.
+    return h.replace(/\((not\/)?([a-z]+)\)/g, function (all, neg, verb) {
+      return verbTable(verb) ? '<button class="vhint" data-verb="' + verb + '" aria-label="Formas de ' + verb + '">' + all + '</button>' : all;
+    });
+  }
+  // Formas que ajudam sem entregar a escolha do tempo (o "s" de he/she fica de fora).
+  function verbTable(b) {
+    if (!/^[a-z]+$/.test(b) || b.length < 2) return null;
+    var V2 = pastOf(b), V3 = ppOf(b), ing = ingOf(b);
+    if (!V2 || !V3 || !ing) return null;
+    return [["base", b], ["passado", V2], ["particípio", V3], ["gerúndio", ing]];
+  }
+  function verbSheet(b) {
+    var rows = verbTable(b); if (!rows) return "";
+    return '<div class="vsheet" id="vsheet"><div class="vrow">' + rows.map(function (r) {
+      return '<span class="vcell"><span class="vlab">' + r[0] + '</span><b>' + esc(r[1]) + '</b></span>';
+    }).join("") + '</div><p class="tiny muted">Formas do verbo. Qual delas cabe na frase é com você.</p></div>';
   }
   function answerParts(full) { var m = full.match(/\{([^}]*)\}/g) || []; return m.map(function (x) { return x.slice(1, -1); }); }
   function norm(t) {
@@ -684,7 +701,12 @@
     sell: ["sold", "sold"], keep: ["kept", "kept"], read: ["read", "read"], meet: ["met", "met"], win: ["won", "won"], begin: ["began", "begun"],
     bring: ["brought", "brought"], build: ["built", "built"], choose: ["chose", "chosen"], drive: ["drove", "driven"], hear: ["heard", "heard"],
     say: ["said", "said"], drink: ["drank", "drunk"], sleep: ["slept", "slept"], eat: ["ate", "eaten"], cut: ["cut", "cut"],
-    fall: ["fell", "fallen"], lend: ["lent", "lent"], sit: ["sat", "sat"], wear: ["wore", "worn"], understand: ["understood", "understood"], shoot: ["shot", "shot"], show: ["showed", "shown"], teach: ["taught", "taught"], spend: ["spent", "spent"], feel: ["felt", "felt"] };
+    fall: ["fell", "fallen"], lend: ["lent", "lent"], sit: ["sat", "sat"], wear: ["wore", "worn"], understand: ["understood", "understood"], shoot: ["shot", "shot"], show: ["showed", "shown"], teach: ["taught", "taught"], spend: ["spent", "spent"], feel: ["felt", "felt"],
+    lead: ["led", "led"], hold: ["held", "held"], stand: ["stood", "stood"], "catch": ["caught", "caught"], cost: ["cost", "cost"],
+    grow: ["grew", "grown"], hide: ["hid", "hidden"], ride: ["rode", "ridden"], mean: ["meant", "meant"], "let": ["let", "let"],
+    set: ["set", "set"], "break": ["broke", "broken"], fly: ["flew", "flown"], wake: ["woke", "woken"], steal: ["stole", "stolen"],
+    swim: ["swam", "swum"], "throw": ["threw", "thrown"], draw: ["drew", "drawn"], sing: ["sang", "sung"], rise: ["rose", "risen"],
+    shut: ["shut", "shut"], quit: ["quit", "quit"], hurt: ["hurt", "hurt"], fight: ["fought", "fought"], feed: ["fed", "fed"] };
   var DOUBLE = { get: 1, put: 1, stop: 1, plan: 1, run: 1, sit: 1, swim: 1, begin: 1, forget: 1, cut: 1, shop: 1 };
   function pastOf(b) { if (IRR[b]) return IRR[b][0]; if (/e$/.test(b)) return b + "d"; if (/[^aeiou]y$/.test(b)) return b.slice(0, -1) + "ied"; if (DOUBLE[b]) return b + b.slice(-1) + "ed"; return b + "ed"; }
   function ppOf(b) { return IRR[b] ? IRR[b][1] : pastOf(b); }
@@ -802,7 +824,7 @@
     S.tiles = S.tiles || [];
     html += '<div class="qbody' + (ask ? "" : " settled") + '">';
     if (sec.type === "fill") {
-      html += '<div class="q">' + qHtml(it.q, ask ? (m === "tap" && S.pick ? splitFill(S.pick, blanksIn(it)) : null) : answerParts(it.full)) + '</div>';
+      html += '<div class="q">' + qHtml(it.q, ask ? (m === "tap" && S.pick ? splitFill(S.pick, blanksIn(it)) : null) : answerParts(it.full)) + '</div><div id="vbox"></div>';
       if (ask) {
         if (m === "tap") {
           html += '<div class="opts">' + optionsFor(it).map(function (o, k) {
@@ -869,6 +891,14 @@
     if (S.phase === "ask") {
       var ans = document.getElementById("ans");
       if (ans) { ans.oninput = function () { S.draft = ans.value; }; if (sec.type === "fill") ans.focus(); }
+      app.querySelectorAll("[data-verb]").forEach(function (b) { b.onclick = function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var box = document.getElementById("vbox"), v = b.getAttribute("data-verb");
+        if (!box) return;
+        if (box.getAttribute("data-open") === v) { box.innerHTML = ""; box.removeAttribute("data-open"); b.classList.remove("on"); return; }
+        app.querySelectorAll(".vhint.on").forEach(function (x) { x.classList.remove("on"); });
+        box.innerHTML = verbSheet(v); box.setAttribute("data-open", v); b.classList.add("on");
+      }; });
       app.querySelectorAll("[data-opt]").forEach(function (b) { b.onclick = function () { S.pick = optionsFor(it)[+b.getAttribute("data-opt")]; render(); }; });
       app.querySelectorAll("[data-tile]").forEach(function (b) { b.onclick = function () { S.tiles.push(+b.getAttribute("data-tile")); render(); }; });
       app.querySelectorAll("[data-un]").forEach(function (b) { b.onclick = function () { S.tiles.splice(+b.getAttribute("data-un"), 1); render(); }; });
