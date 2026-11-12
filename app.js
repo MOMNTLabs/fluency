@@ -1065,7 +1065,8 @@
     if (al) al.onclick = function () { pend.forEach(function (id) { state.review[id].due = today(); }); save(); startSession("review", shuffle(pend)); };
   }
 
-  // ---------- Palavras: tudo o que já apareceu nas etapas de vocabulário ----------
+  // ---------- Palavras: o que já apareceu nas etapas concluídas ----------
+  // Duas visões: as palavras do vocabulário e as frases traduzidas das leituras e traduções.
   var wordQuery = "", wordOpen = {};
   function learnedWords() {
     var out = [];
@@ -1077,56 +1078,93 @@
     });
     return out;
   }
+  // Frases que a pessoa já viu e que já têm tradução escrita.
+  function learnedLines() {
+    var out = [], seen = {};
+    WEEKS.forEach(function (w) {
+      w.sections.forEach(function (s) {
+        if (!isDoneSec(s)) return;
+        var pares = s.type === "reading" || s.type === "listen" ? (s.items || []).map(function (i) { return { en: i.en, pt: i.pt, id: i.id }; })
+          : s.type === "translate" ? (s.items || []).map(function (i) { return { en: String(i.full).replace(/[{}]/g, ""), pt: i.q, id: i.id }; })
+          : [];
+        pares.forEach(function (x) {
+          if (!x.en || !x.pt) return;
+          var k = x.en.toLowerCase();
+          if (seen[k]) return;
+          seen[k] = 1; out.push({ it: x, week: w, sec: s });
+        });
+      });
+    });
+    return out;
+  }
   function sortKey(en) { return String(en).toLowerCase().replace(/^to /, "").replace(/[^a-z]/g, ""); }
   function wordRow(r) {
     var it = r.it, tapped = !!wordOpen[it.id], open = tapped || !!state.wordsShow;
     return '<button class="word' + (open ? " open" : "") + '" data-word="' + it.id + '">' +
       '<span class="w-en">' + esc(it.en) + '</span>' +
       (open ? '<span class="w-pt">' + esc(it.pt) + '</span>' : '<span class="w-hint">ver</span>') +
-      // O exemplo só aparece na palavra que você tocou, para a lista não virar um muro de texto.
-      (tapped ? '<span class="w-ex">' + esc(it.ex) + '</span>' : "") + '</button>';
+      (tapped && it.ex ? '<span class="w-ex">' + esc(it.ex) + '</span>' : "") + '</button>';
+  }
+  function lineRow(r) {
+    var it = r.it, open = !!wordOpen[it.id] || !!state.wordsShow;
+    return '<button class="line-w' + (open ? " open" : "") + '" data-word="' + it.id + '">' +
+      '<span class="l-en">' + esc(it.en) + '</span>' +
+      (open ? '<span class="l-pt">' + esc(it.pt) + '</span>' : '<span class="w-hint">ver tradução</span>') + '</button>';
   }
   function renderWords() {
-    var all = learnedWords(), q = wordQuery.trim().toLowerCase();
-    var list = q ? all.filter(function (r) { return (r.it.en + " " + r.it.pt + " " + (r.it.ex || "")).toLowerCase().indexOf(q) >= 0; }) : all;
-    var byAZ = state.wordSort === "az";
-    var html = '<h1 style="margin-top:8px">Palavras</h1>';
-    if (!all.length) {
+    var frases = state.wordsView === "frases";
+    var all = frases ? learnedLines() : learnedWords(), q = wordQuery.trim().toLowerCase();
+    var match = function (r) { return (r.it.en + " " + r.it.pt + " " + (r.it.ex || "")).toLowerCase().indexOf(q) >= 0; };
+    var list = q ? all.filter(match) : all;
+    var byAZ = !frases && state.wordSort === "az";
+    var html = '<h1 style="margin-top:8px">Palavras</h1>' +
+      '<div class="seg two"><button data-view="palavras" class="' + (frases ? "" : "on") + '">Vocabulário</button>' +
+      '<button data-view="frases" class="' + (frases ? "on" : "") + '">Frases</button></div>';
+    var vazio = !all.length;
+    if (vazio) {
       html += '<div class="empty"><div class="art">' + svg(TYPE_ICON.vocab || TYPE_ICON.fill, 2) + '</div><h2>Nada por aqui ainda</h2>' +
-        '<p class="muted small">Cada etapa de Vocabulário que você concluir traz as palavras dela para cá.</p></div>';
-      app.innerHTML = html; return;
+        '<p class="muted small">' + (frases ? "As leituras e traduções que você concluir aparecem aqui, com a tradução de cada frase."
+          : "Cada etapa de Vocabulário que você concluir traz as palavras dela para cá.") + '</p></div>';
+    } else {
+      html += '<p class="muted">' + all.length + (frases ? " frases traduzidas das etapas que você concluiu." : " palavras das etapas que você concluiu.") + '</p>' +
+        '<input class="field w-search" id="w-q" type="search" placeholder="Buscar palavra ou tradução" value="' + esc(wordQuery) + '" autocomplete="off">' +
+        '<div class="w-bar">' + (frases ? '<span class="muted small">Por módulo</span>' :
+          '<div class="seg"><button data-sort="mod" class="' + (byAZ ? "" : "on") + '">Por módulo</button><button data-sort="az" class="' + (byAZ ? "on" : "") + '">A a Z</button></div>') +
+        '<button class="text-btn" id="w-all">' + (state.wordsShow ? "Esconder traduções" : "Mostrar traduções") + '</button></div>';
+      if (!list.length) {
+        // A palavra pode não estar no vocabulário, mas aparecer nas frases (ou o contrário).
+        var outra = (frases ? learnedWords() : learnedLines()).filter(match).length;
+        html += '<p class="muted small" style="margin-top:18px">Nenhum resultado para "' + esc(wordQuery) + '".' +
+          (outra ? ' Mas aparece em ' + outra + (frases ? (outra === 1 ? " palavra" : " palavras") : (outra === 1 ? " frase" : " frases")) + '.' : "") + '</p>' +
+          (outra ? '<div class="center"><button class="btn btn-soft" id="w-swap">Ver ' + (frases ? "no vocabulário" : "nas frases") + '</button></div>' : "");
+      }
+      var groups = [], index = {};
+      list.forEach(function (r) {
+        var key = byAZ ? (sortKey(r.it.en)[0] || "#").toUpperCase()
+          : r.week.title + (/^Vocabulário de |^Leitura de |^Escuta de /.test(r.sec.title) ? " · " + r.sec.title.replace(/^.* de /, "") : "");
+        if (!index[key]) { index[key] = { key: key, rows: [] }; groups.push(index[key]); }
+        index[key].rows.push(r);
+      });
+      if (byAZ) groups.sort(function (a, b) { return a.key < b.key ? -1 : 1; });
+      groups.forEach(function (g) {
+        if (byAZ) g.rows.sort(function (a, b) { return sortKey(a.it.en) < sortKey(b.it.en) ? -1 : 1; });
+        html += '<h2 class="w-head">' + esc(g.key) + '<span>' + g.rows.length + '</span></h2><div class="w-list">' +
+          g.rows.map(frases ? lineRow : wordRow).join("") + '</div>';
+      });
     }
-    html += '<p class="muted">' + all.length + ' palavras das etapas que você concluiu.</p>' +
-      '<input class="field w-search" id="w-q" type="search" placeholder="Buscar palavra ou tradução" value="' + esc(wordQuery) + '" autocomplete="off">' +
-      '<div class="w-bar"><div class="seg"><button data-sort="mod" class="' + (byAZ ? "" : "on") + '">Por módulo</button>' +
-      '<button data-sort="az" class="' + (byAZ ? "on" : "") + '">A a Z</button></div>' +
-      '<button class="text-btn" id="w-all">' + (state.wordsShow ? "Esconder traduções" : "Mostrar traduções") + '</button></div>';
-    if (!list.length) html += '<p class="muted small" style="margin-top:18px">Nenhuma palavra com "' + esc(wordQuery) + '".</p>';
-    var groups = [], index = {};
-    list.forEach(function (r) {
-      var key = byAZ ? (sortKey(r.it.en)[0] || "#").toUpperCase()
-        : r.week.title + (r.sec.title !== "Vocabulário" ? " · " + r.sec.title.replace("Vocabulário de ", "") : "");
-      if (!index[key]) { index[key] = { key: key, rows: [] }; groups.push(index[key]); }
-      index[key].rows.push(r);
-    });
-    if (byAZ) groups.sort(function (a, b) { return a.key < b.key ? -1 : 1; });
-    groups.forEach(function (g) {
-      if (byAZ) g.rows.sort(function (a, b) { return sortKey(a.it.en) < sortKey(b.it.en) ? -1 : 1; });
-      html += '<h2 class="w-head">' + esc(g.key) + '<span>' + g.rows.length + '</span></h2><div class="w-list">' +
-        g.rows.map(wordRow).join("") + '</div>';
-    });
     app.innerHTML = html;
+    app.querySelectorAll("[data-view]").forEach(function (b) { b.onclick = function () {
+      state.wordsView = b.getAttribute("data-view"); wordOpen = {}; save(); renderWords(); }; });
+    if (vazio) return;
     var inp = document.getElementById("w-q");
     inp.oninput = function () { wordQuery = inp.value; var at = inp.selectionStart; renderWords(); var n = document.getElementById("w-q"); n.focus(); try { n.setSelectionRange(at, at); } catch (e) {} };
     app.querySelectorAll("[data-sort]").forEach(function (b) { b.onclick = function () { state.wordSort = b.getAttribute("data-sort"); save(); renderWords(); }; });
+    var sw = document.getElementById("w-swap");
+    if (sw) sw.onclick = function () { state.wordsView = frases ? "palavras" : "frases"; save(); renderWords(); };
     document.getElementById("w-all").onclick = function () { state.wordsShow = !state.wordsShow; wordOpen = {}; save(); renderWords(); };
     app.querySelectorAll("[data-word]").forEach(function (b) { b.onclick = function () {
-      var id = b.getAttribute("data-word");
-      wordOpen[id] = !wordOpen[id];
-      renderWords();
-    }; });
+      var id = b.getAttribute("data-word"); wordOpen[id] = !wordOpen[id]; renderWords(); }; });
   }
-
   // ---------- Progresso ----------
   var WD = ["D", "S", "T", "Q", "Q", "S", "S"];
   function weekChart() {
