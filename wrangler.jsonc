@@ -11,7 +11,7 @@
     { "binding": "DB", "database_name": "nowish", "database_id": "7b94246e-8492-4adb-826d-becd5c9a37cc" }
   ],
   "vars": {
-    "GOOGLE_CLIENT_ID": "",
+    "GOOGLE_CLIENT_ID": "537802946183-bctspa4pinenqc3tik8pn99541u914bc.apps.googleusercontent.com",
     "MAIL_FROM": "nowish <entrar@momnt.com.br>",
     "APP_NAME": "nowish"
   }
