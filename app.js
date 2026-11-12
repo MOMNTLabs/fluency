@@ -298,13 +298,13 @@
   });
   function setTabs() {
     var inReview = view.session && view.session.kind === "review";
-    var map = { login: "errors", level: "home", placement: "errors", setup: "home", welcome: "home", home: "home", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
+    var map = { login: "errors", level: "home", placement: "errors", setup: "home", welcome: "home", home: "home", words: "words", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
     document.querySelectorAll(".tab").forEach(function (t) { t.classList.toggle("on", t.getAttribute("data-tab") === map[view.name]); });
   }
   function render() {
     setTabs();
     document.body.classList.toggle("focus", ["quiz", "welcome", "placement", "setup", "login"].indexOf(view.name) >= 0);
-    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors, welcome: renderWelcome, placement: renderPlacement, setup: renderSetup, level: renderLevel, login: renderLogin })[view.name]();
+    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors, words: renderWords, welcome: renderWelcome, placement: renderPlacement, setup: renderSetup, level: renderLevel, login: renderLogin })[view.name]();
   }
   function top(label, title, right) {
     return '<div class="top"><button class="icon-btn" id="back" aria-label="Voltar">' + I.back + '</button>' +
@@ -1063,6 +1063,68 @@
     var st = document.getElementById("start"); if (st) st.onclick = function () { startSession("review", shuffle(due)); };
     var al = document.getElementById("all");
     if (al) al.onclick = function () { pend.forEach(function (id) { state.review[id].due = today(); }); save(); startSession("review", shuffle(pend)); };
+  }
+
+  // ---------- Palavras: tudo o que já apareceu nas etapas de vocabulário ----------
+  var wordQuery = "", wordOpen = {};
+  function learnedWords() {
+    var out = [];
+    WEEKS.forEach(function (w) {
+      w.sections.forEach(function (s) {
+        if (s.type !== "vocab" || !isDoneSec(s)) return;
+        (s.items || []).forEach(function (it) { out.push({ it: it, week: w, sec: s }); });
+      });
+    });
+    return out;
+  }
+  function sortKey(en) { return String(en).toLowerCase().replace(/^to /, "").replace(/[^a-z]/g, ""); }
+  function wordRow(r) {
+    var it = r.it, tapped = !!wordOpen[it.id], open = tapped || !!state.wordsShow;
+    return '<button class="word' + (open ? " open" : "") + '" data-word="' + it.id + '">' +
+      '<span class="w-en">' + esc(it.en) + '</span>' +
+      (open ? '<span class="w-pt">' + esc(it.pt) + '</span>' : '<span class="w-hint">ver</span>') +
+      // O exemplo só aparece na palavra que você tocou, para a lista não virar um muro de texto.
+      (tapped ? '<span class="w-ex">' + esc(it.ex) + '</span>' : "") + '</button>';
+  }
+  function renderWords() {
+    var all = learnedWords(), q = wordQuery.trim().toLowerCase();
+    var list = q ? all.filter(function (r) { return (r.it.en + " " + r.it.pt + " " + (r.it.ex || "")).toLowerCase().indexOf(q) >= 0; }) : all;
+    var byAZ = state.wordSort === "az";
+    var html = '<h1 style="margin-top:8px">Palavras</h1>';
+    if (!all.length) {
+      html += '<div class="empty"><div class="art">' + svg(TYPE_ICON.vocab || TYPE_ICON.fill, 2) + '</div><h2>Nada por aqui ainda</h2>' +
+        '<p class="muted small">Cada etapa de Vocabulário que você concluir traz as palavras dela para cá.</p></div>';
+      app.innerHTML = html; return;
+    }
+    html += '<p class="muted">' + all.length + ' palavras das etapas que você concluiu.</p>' +
+      '<input class="field w-search" id="w-q" type="search" placeholder="Buscar palavra ou tradução" value="' + esc(wordQuery) + '" autocomplete="off">' +
+      '<div class="w-bar"><div class="seg"><button data-sort="mod" class="' + (byAZ ? "" : "on") + '">Por módulo</button>' +
+      '<button data-sort="az" class="' + (byAZ ? "on" : "") + '">A a Z</button></div>' +
+      '<button class="text-btn" id="w-all">' + (state.wordsShow ? "Esconder traduções" : "Mostrar traduções") + '</button></div>';
+    if (!list.length) html += '<p class="muted small" style="margin-top:18px">Nenhuma palavra com "' + esc(wordQuery) + '".</p>';
+    var groups = [], index = {};
+    list.forEach(function (r) {
+      var key = byAZ ? (sortKey(r.it.en)[0] || "#").toUpperCase()
+        : r.week.title + (r.sec.title !== "Vocabulário" ? " · " + r.sec.title.replace("Vocabulário de ", "") : "");
+      if (!index[key]) { index[key] = { key: key, rows: [] }; groups.push(index[key]); }
+      index[key].rows.push(r);
+    });
+    if (byAZ) groups.sort(function (a, b) { return a.key < b.key ? -1 : 1; });
+    groups.forEach(function (g) {
+      if (byAZ) g.rows.sort(function (a, b) { return sortKey(a.it.en) < sortKey(b.it.en) ? -1 : 1; });
+      html += '<h2 class="w-head">' + esc(g.key) + '<span>' + g.rows.length + '</span></h2><div class="w-list">' +
+        g.rows.map(wordRow).join("") + '</div>';
+    });
+    app.innerHTML = html;
+    var inp = document.getElementById("w-q");
+    inp.oninput = function () { wordQuery = inp.value; var at = inp.selectionStart; renderWords(); var n = document.getElementById("w-q"); n.focus(); try { n.setSelectionRange(at, at); } catch (e) {} };
+    app.querySelectorAll("[data-sort]").forEach(function (b) { b.onclick = function () { state.wordSort = b.getAttribute("data-sort"); save(); renderWords(); }; });
+    document.getElementById("w-all").onclick = function () { state.wordsShow = !state.wordsShow; wordOpen = {}; save(); renderWords(); };
+    app.querySelectorAll("[data-word]").forEach(function (b) { b.onclick = function () {
+      var id = b.getAttribute("data-word");
+      wordOpen[id] = !wordOpen[id];
+      renderWords();
+    }; });
   }
 
   // ---------- Progresso ----------
