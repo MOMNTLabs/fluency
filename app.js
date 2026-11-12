@@ -144,6 +144,15 @@
           it.id = s.id + "-" + (i + 1); it.n = i + 1;
           ITEMS[it.id] = { item: it, section: s, week: w };
         });
+        // Banco de frases alternativas: mesma regra, frases novas. Só entram ao refazer.
+        var ex = (window.ALT || {})[s.id];
+        if (ex && ex.length) {
+          s.alt = ex;
+          ex.forEach(function (it, i) {
+            it.id = s.id + "-a" + (i + 1); it.n = (s.items || []).length + i + 1;
+            ITEMS[it.id] = { item: it, section: s, week: w };
+          });
+        }
       });
     });
   }
@@ -606,7 +615,7 @@
   // costuma vir no modo de digitar, mais difícil) e todas as respostas estão certas.
   function secRuns(s) { var d = state.sections[s.id]; return d && d.done ? (d.runs || 1) : 0; }
   function secAllRight(s) {
-    return (s.items || []).every(function (it) { var r = state.results[it.id]; return r && r.streak > 0; });
+    return secItems(s).every(function (it) { var r = state.results[it.id]; return r && r.streak > 0; });
   }
   function secMastered(s) {
     if (!isQuiz(s) || !(s.items || []).length || !isDoneSec(s)) return false;
@@ -643,27 +652,43 @@
   function sessionName(z) { return z.kind === "review" ? "Revisão" : (z.kind === "reinforce" ? "Reforço: " : "") + SECTIONS[z.sectionId].section.title; }
   // Questões de uma seção que ainda estão em revisão (erros não superados).
   // "Reforçar" mostra só os erros ainda não corrigidos: acertou depois de errar, sai daqui (a revisão espaçada continua por conta própria).
-  function pendingOf(s) { return (s.items || []).map(function (it) { return it.id; }).filter(function (id) { var r = state.results[id]; return state.review[id] && !(r && r.streak > 0); }); }
+  // Itens da etapa: os próprios mais as frases alternativas que a pessoa já respondeu.
+  function secItems(s) {
+    var list = (s.items || []).slice();
+    (s.alt || []).forEach(function (it) { if (state.results[it.id]) list.push(it); });
+    return list;
+  }
+  function pendingOf(s) { return secItems(s).map(function (it) { return it.id; }).filter(function (id) { var r = state.results[id]; return state.review[id] && !(r && r.streak > 0); }); }
   function pendingInModule(w) { return w.sections.reduce(function (n, s) { return n + pendingOf(s).length; }, 0); }
   function reinforce(id) { var s = SECTIONS[id].section, ids = pendingOf(s); if (ids.length) startSession("reinforce", shuffle(ids.slice()), s); }
-  // Ao refazer uma lição já concluída, as frases vêm do módulo inteiro, não as mesmas de antes.
-  // Assim você responde pela regra, e não porque decorou a frase.
+  // Ao refazer uma lição já concluída, as frases são outras: primeiro o banco de frases
+  // alternativas da própria lição (mesma regra, frases que você nunca viu), depois o
+  // resto do módulo. Assim você responde pela regra, e não porque decorou a frase.
+  function ordena(ids) {
+    var novas = [], fracas = [], outras = [];
+    shuffle(ids).forEach(function (id) {
+      var r = state.results[id];
+      (!r ? novas : (!r.streak ? fracas : outras)).push(id);
+    });
+    return novas.concat(fracas, outras);
+  }
   function redoIds(s) {
     var proprios = s.items.map(function (it) { return it.id; });
     if (secRuns(s) < 1) return proprios;
-    var ref = SECTIONS[s.id], pool = [];
+    var ref = SECTIONS[s.id], seen = {}, perto = [], longe = [];
+    function add(lista, it) { if (!seen[it.id]) { seen[it.id] = 1; lista.push(it.id); } }
+    (s.alt || []).forEach(function (it) { add(perto, it); });
+    s.items.forEach(function (it) { add(perto, it); });
     ref.week.sections.forEach(function (o) {
-      if (o.type !== s.type || !(o.items || []).length) return;
-      o.items.forEach(function (it) { pool.push(it.id); });
+      if (o === s || o.type !== s.type) return;
+      (o.items || []).forEach(function (it) { add(longe, it); });
+      (o.alt || []).forEach(function (it) { add(longe, it); });
     });
-    if (pool.length <= proprios.length) return proprios;
-    // Primeiro as que você errou ou ainda não viu, depois o resto, sempre embaralhado.
-    var fracas = [], outras = [];
-    shuffle(pool).forEach(function (id) {
-      var r = state.results[id];
-      (!r || !r.streak ? fracas : outras).push(id);
-    });
-    return fracas.concat(outras).slice(0, proprios.length);
+    // Com banco próprio, a lição se repete na mesma regra, com frases novas.
+    // Sem banco, continua sorteando do módulo inteiro para não cair tudo igual.
+    var fila = (s.alt && s.alt.length) ? ordena(perto).concat(ordena(longe)) : ordena(perto.concat(longe));
+    if (fila.length <= proprios.length) return proprios;
+    return fila.slice(0, proprios.length);
   }
   function openSection(id, then) {
     var s = SECTIONS[id].section, z = savedSession();
