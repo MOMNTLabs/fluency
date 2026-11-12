@@ -1,0 +1,242 @@
+// Frases alternativas das rodadas do B2. Mesma regra, frases novas.
+window.ALT = Object.assign(window.ALT || {}, {
+
+  "b2m1-r1": [
+    F("They ___ (live) in Spain for five years.", ["have been living", "'ve been living"], "They {have been living} in Spain for five years.", "Começou e continua → have been living."),
+    F("He ___ (drive) since early morning.", ["has been driving", "'s been driving"], "He {has been driving} since early morning.", "he → has been + -ing."),
+    F("How long ___ she ___ (teach) here?", "has been teaching", "How long {has} she {been teaching} here?", "How long has she been…?"),
+    F("We ___ (look) for a new flat all week.", ["have been looking", "'ve been looking"], "We {have been looking} for a new flat all week.", "Atividade repetida a semana toda."),
+    F("It ___ (snow) since Tuesday.", ["has been snowing", "'s been snowing"], "It {has been snowing} since Tuesday.", "Desde terça e continua."),
+    F("I ___ (not/feel) well lately.", ["haven't been feeling", "have not been feeling"], "I {haven't been feeling} well lately.", "Negativa → haven't been + -ing."),
+    F("She ___ (own) that car since 2019.", ["has owned", "'s owned"], "She {has owned} that car since 2019.", "own é estado: fica no simples."),
+    F("Your eyes are red. ___ you ___ (cry)?", "have been crying", "{Have} you {been crying}?", "Efeito visível agora."),
+    F("The children ___ (play) outside for hours.", ["have been playing", "'ve been playing"], "The children {have been playing} outside for hours.", "Duração → have been playing."),
+    F("He ___ (study) medicine since 2023.", ["has been studying", "'s been studying"], "He {has been studying} medicine since 2023.", "Começou e continua."),
+    F("We ___ (wait) for this moment all year.", ["have been waiting", "'ve been waiting"], "We {have been waiting} for this moment all year.", "Duração → have been waiting."),
+    F("I ___ (believe) that since I was a child.", ["have believed", "'ve believed"], "I {have believed} that since I was a child.", "believe é estado: fica no simples."),
+    F("They ___ (not/speak) to each other since the argument.", ["haven't been speaking", "have not been speaking", "haven't spoken", "have not spoken"], "They {haven't been speaking} to each other since the argument.", "Negativa → haven't been + -ing."),
+    F("Why are you so dirty? ___ you ___ (work) in the garden?", "have been working", "{Have} you {been working} in the garden?", "Efeito visível agora.")
+  ],
+
+  "b2m1-r2": [
+    F("I ___ (read) four books this month.", ["have read", "'ve read"], "I {have read} four books this month.", "Quantidade, resultado → have read."),
+    F("I ___ (read) all afternoon.", ["have been reading", "'ve been reading"], "I {have been reading} all afternoon.", "Duração, atividade → have been reading."),
+    F("She ___ (clean) the whole house.", ["has cleaned", "'s cleaned"], "She {has cleaned} the whole house.", "Resultado completo → has cleaned."),
+    F("He ___ (run) for two hours.", ["has been running", "'s been running"], "He {has been running} for two hours.", "Quanto tempo → has been running."),
+    F("We ___ (sell) the car! It's gone.", ["have sold", "'ve sold"], "We {have sold} the car!", "Concluído → have sold."),
+    F("They ___ (build) that bridge since 2022.", ["have been building", "'ve been building"], "They {have been building} that bridge since 2022.", "Desde 2022 e continua."),
+    F("How many countries ___ you ___ (visit)?", "have visited", "How many countries {have} you {visited}?", "How many = quantidade → have visited."),
+    F("I ___ (know) him since university.", ["have known", "'ve known"], "I {have known} him since university.", "know é estado → have known."),
+    F("She ___ (write) two emails so far.", ["has written", "'s written"], "She {has written} two emails so far.", "Quantidade → has written."),
+    F("He ___ (paint) the kitchen all weekend.", ["has been painting", "'s been painting"], "He {has been painting} the kitchen all weekend.", "Duração → has been painting."),
+    F("We ___ (eat) here three times this week.", ["have eaten", "'ve eaten"], "We {have eaten} here three times this week.", "Quantas vezes → have eaten."),
+    F("They ___ (argue) all morning.", ["have been arguing", "'ve been arguing"], "They {have been arguing} all morning.", "Duração → have been arguing."),
+    F("I ___ (own) this bike for ten years.", ["have owned", "'ve owned"], "I {have owned} this bike for ten years.", "own é estado → have owned."),
+    F("How long ___ they ___ (wait)?", "have been waiting", "How long {have} they {been waiting}?", "How long = duração → have been waiting.")
+  ],
+
+  "s4-r1": [
+    F("She ___ me that the train was late.", "told", "She {told} me that the train was late.", "Tem pessoa logo depois (me) → told."),
+    F("He ___ that he needed more time.", "said", "He {said} that he needed more time.", "Sem pessoa depois → said."),
+    F("\"I love this city.\" → She said she ___ that city.", "loved", "She said she {loved} that city.", "love → loved (recua um tempo)."),
+    F("\"I will travel in June.\" → He said he ___ travel in June.", "would", "He said he {would} travel in June.", "will → would."),
+    F("\"I can cook well.\" → She said she ___ cook well.", "could", "She said she {could} cook well.", "can → could."),
+    F("\"I have finished the book.\" → He said he ___ (finish) the book.", ["had finished", "'d finished"], "He said he {had finished} the book.", "have finished → had finished."),
+    F("\"Where do you work?\" → He asked me where I ___.", "worked", "He asked me where I {worked}.", "Pergunta contada: sem <i>do</i>, e o verbo recua."),
+    F("\"Please wait here.\" → She asked me ___ wait there.", "to", "She asked me {to} wait there.", "Pedido → asked + pessoa + to."),
+    F("My mother ___ me to be careful.", "told", "My mother {told} me to be careful.", "Com pessoa → told."),
+    F("\"I am studying French.\" → He said he ___ (study) French.", "was studying", "He said he {was studying} French.", "am studying → was studying."),
+    F("\"We don't have time.\" → They said they ___ have time.", ["didn't", "did not"], "They said they {didn't} have time.", "don't → didn't."),
+    F("\"I must go now.\" → She said she ___ go then.", ["had to", "must"], "She said she {had to} go then.", "must → had to."),
+    F("\"When does the shop open?\" → I asked when the shop ___.", "opened", "I asked when the shop {opened}.", "Pergunta contada: ordem normal e o verbo recua."),
+    F("He ___ that the food was excellent.", "said", "He {said} that the food was excellent.", "Sem pessoa depois → said.")
+  ],
+
+  "s4-r2": [
+    F("\"Are you ready?\" → He asked me if I ___ ready.", "was", "He asked me if I {was} ready.", "are → was."),
+    F("\"Did you book the hotel?\" → She asked me if I ___ (book) the hotel.", ["had booked", "'d booked"], "She asked me if I {had booked} the hotel.", "did book → had booked."),
+    F("\"Don't touch that.\" → He told me ___ to touch that.", "not", "He told me {not} to touch that.", "Ordem negativa → not to."),
+    F("\"How old is your sister?\" → I asked how old her sister ___.", "was", "I asked how old her sister {was}.", "Pergunta contada: ordem normal, is → was."),
+    F("\"I'm cooking dinner.\" → She said she ___ dinner.", "was cooking", "She said she {was cooking} dinner.", "am cooking → was cooking."),
+    F("\"We will arrive at noon.\" → They said they ___ arrive at noon.", "would", "They said they {would} arrive at noon.", "will → would."),
+    F("\"Can you drive me home?\" → He asked me if I ___ drive him home.", "could", "He asked me if I {could} drive him home.", "can → could."),
+    F("\"Send the email today.\" → She told me ___ send the email that day.", "to", "She told me {to} send the email that day.", "Ordem → told + pessoa + to."),
+    F("\"Do you live here?\" → He asked me if I ___ there.", "lived", "He asked me if I {lived} there.", "do live → lived."),
+    F("\"Don't be late.\" → My boss told me ___ to be late.", "not", "My boss told me {not} to be late.", "Ordem negativa → not to."),
+    F("\"Why are you laughing?\" → She asked why I ___ (laugh).", "was laughing", "She asked why I {was laughing}.", "are laughing → was laughing."),
+    F("\"Have you seen my keys?\" → He asked if I ___ (see) his keys.", ["had seen", "'d seen"], "He asked if I {had seen} his keys.", "have seen → had seen."),
+    F("\"Close the window, please.\" → She asked me ___ close the window.", "to", "She asked me {to} close the window.", "Pedido → asked + pessoa + to."),
+    F("\"What time does it start?\" → I asked what time it ___.", "started", "I asked what time it {started}.", "Pergunta contada: sem <i>does</i>, verbo recua.")
+  ],
+
+  "b2m2-r1": [
+    F("I wish I ___ (live) closer to the beach.", "lived", "I wish I {lived} closer to the beach.", "Desejo sobre o agora → passado."),
+    F("I wish I ___ (play) an instrument.", "played", "I wish I {played} an instrument.", "play → played."),
+    F("I wish I ___ (take) that job offer.", ["had taken", "'d taken"], "I wish I {had taken} that job offer.", "Arrependimento → had taken."),
+    F("He wishes he ___ (be) better at maths.", ["were", "was"], "He wishes he {were} better at maths.", "Com be → were."),
+    F("I wish my neighbour ___ (turn) the music down.", ["would turn", "'d turn"], "I wish my neighbour {would turn} the music down.", "Reclamação → would."),
+    F("If only I ___ (book) the tickets earlier!", ["had booked", "'d booked"], "If only I {had booked} the tickets earlier!", "Arrependimento → had booked."),
+    F("I wish we ___ (not/sell) the old house.", ["hadn't sold", "had not sold"], "I wish we {hadn't sold} the old house.", "Passado → hadn't sold."),
+    F("I wish it ___ (be) summer already.", ["were", "was"], "I wish it {were} summer already.", "Desejo sobre o agora → were."),
+    F("She wishes she ___ (have) a bigger kitchen.", "had", "She wishes she {had} a bigger kitchen.", "Desejo sobre o agora → passado."),
+    F("If only he ___ (be) here with us now.", ["were", "was"], "If only he {were} here with us now.", "Com be → were."),
+    F("I wish you ___ (stop) interrupting me.", ["would stop", "'d stop"], "I wish you {would stop} interrupting me.", "Reclamação → would stop."),
+    F("They wish they ___ (study) harder at school.", ["had studied", "'d studied"], "They wish they {had studied} harder at school.", "Arrependimento → had studied."),
+    F("I wish I ___ (not/say) that yesterday.", ["hadn't said", "had not said"], "I wish I {hadn't said} that yesterday.", "Passado → hadn't said."),
+    F("I wish I ___ (know) the answer.", "knew", "I wish I {knew} the answer.", "Desejo sobre o agora → knew.")
+  ],
+
+  "b2m2-r2": [
+    F("If I had studied law, I ___ (be) a lawyer now.", ["would be", "'d be"], "If I had studied law, I {would be} a lawyer now.", "Resultado agora → would be."),
+    F("If he ___ (not/lose) his passport, he would be on the plane now.", ["hadn't lost", "had not lost"], "If he {hadn't lost} his passport, he would be on the plane now.", "Causa no passado → hadn't lost."),
+    F("If we had bought that flat, we ___ (live) by the sea today.", ["would live", "'d live"], "If we had bought that flat, we {would live} by the sea today.", "Resultado agora → would live."),
+    F("If I ___ (be) braver, I would have said something.", ["were", "was"], "If I {were} braver, I would have said something.", "Característica de sempre → were."),
+    F("I wish the dog ___ (stop) barking at night.", ["would stop", "'d stop"], "I wish the dog {would stop} barking at night.", "Reclamação → would stop."),
+    F("If only she ___ (tell) me the truth last week.", ["had told", "'d told"], "If only she {had told} me the truth last week.", "Semana passada → had told."),
+    F("I wish I ___ (can) swim.", "could", "I wish I {could} swim.", "can → could."),
+    F("If they ___ (move) to Lisbon as kids, they would speak Portuguese now.", ["had moved", "'d moved"], "If they {had moved} to Lisbon as kids, they would speak Portuguese now.", "Passado → agora."),
+    F("If I had saved money, I ___ (travel) more now.", ["would travel", "'d travel"], "If I had saved money, I {would travel} more now.", "Resultado agora → would travel."),
+    F("If only we ___ (leave) ten minutes earlier.", ["had left", "'d left"], "If only we {had left} ten minutes earlier.", "Arrependimento → had left."),
+    F("I wish the weather ___ (be) better today.", ["were", "was"], "I wish the weather {were} better today.", "Desejo sobre o agora → were."),
+    F("If he ___ (be) more patient, he wouldn't have quit.", ["were", "was"], "If he {were} more patient, he wouldn't have quit.", "Característica de sempre → were."),
+    F("I wish people ___ (listen) more and talk less.", ["would listen", "'d listen"], "I wish people {would listen} more and talk less.", "Reclamação → would listen."),
+    F("If she had learned to drive, she ___ (have) a car now.", ["would have", "'d have"], "If she had learned to drive, she {would have} a car now.", "Resultado agora → would have.")
+  ],
+
+  "s8-r1": [
+    F("We need to ___ a name for the band. (bolar)", "come up with", "We need to {come up with} a name for the band.", "Bolar uma ideia = come up with."),
+    F("Can you help me ___ the printer? (configurar)", "set up", "Can you help me {set up} the printer?", "Configurar, montar = set up."),
+    F("I can't ___ how to open this file. (entender)", "figure out", "I can't {figure out} how to open this file.", "Descobrir, entender = figure out."),
+    F("Let's ___ the plan one more time. (revisar)", "go over", "Let's {go over} the plan one more time.", "Revisar = go over."),
+    F("They ___ the wedding until next year. (adiaram)", ["put off", "postponed"], "They {put off} the wedding until next year.", "Adiar = put off (o passado também é put)."),
+    F("We ___ bread this morning. (ficamos sem)", "ran out of", "We {ran out of} bread this morning.", "Ficar sem = run out of. Passado: ran."),
+    F("I'll ___ with the hotel tomorrow. (dar retorno)", "follow up", "I'll {follow up} with the hotel tomorrow.", "Dar retorno, acompanhar = follow up."),
+    F("He ___ the invitation. (recusou)", "turned down", "He {turned down} the invitation.", "Recusar = turn down."),
+    F("She ___ a great solution in five minutes. (bolou)", "came up with", "She {came up with} a great solution in five minutes.", "Bolar = come up with. Passado: came."),
+    F("Can you ___ this contract before I sign it? (revisar)", "go over", "Can you {go over} this contract before I sign it?", "Revisar = go over."),
+    F("The driver ___ petrol on the motorway. (ficou sem)", "ran out of", "The driver {ran out of} petrol on the motorway.", "Ficar sem = run out of."),
+    F("We had to ___ the trip because of the storm. (adiar)", ["put off", "postpone"], "We had to {put off} the trip because of the storm.", "Adiar = put off."),
+    F("I need to ___ my new phone. (configurar)", "set up", "I need to {set up} my new phone.", "Configurar = set up."),
+    F("I couldn't ___ what she meant. (entender)", "figure out", "I couldn't {figure out} what she meant.", "Entender, decifrar = figure out.")
+  ],
+
+  "s8-r2": [
+    F("Please ___ your photos before the trip. (fazer backup)", "back up", "Please {back up} your photos before the trip.", "Fazer backup = back up."),
+    F("Can you ___ the TV? I'm on the phone. (abaixar)", "turn down", "Can you {turn down} the TV?", "Abaixar o volume = turn down."),
+    F("I'll ___ the application tonight. (preencher)", ["fill out", "fill in"], "I'll {fill out} the application tonight.", "Preencher = fill out / fill in."),
+    F("They had to ___ the poster. (tirar)", "take down", "They had to {take down} the poster.", "Tirar do lugar = take down."),
+    F("I ___ an old friend at the airport. (encontrei por acaso)", "ran into", "I {ran into} an old friend at the airport.", "Encontrar por acaso = run into."),
+    F("Don't ___ now, you're almost there! (desistir)", "give up", "Don't {give up} now, you're almost there!", "Desistir = give up."),
+    F("I'm ___ the holidays. (aguardando ansioso)", "looking forward to", "I'm {looking forward to} the holidays.", "Aguardar ansioso = look forward to."),
+    F("Could you ___ my cat this weekend? (cuidar de)", ["look after", "take care of"], "Could you {look after} my cat this weekend?", "Cuidar de = look after / take care of."),
+    F("Can you ___ the heating? It's freezing. (aumentar)", "turn up", "Can you {turn up} the heating?", "Aumentar = turn up."),
+    F("We ___ the old curtains yesterday. (tiramos)", "took down", "We {took down} the old curtains yesterday.", "Tirar = take down. Passado: took."),
+    F("She ___ her brother at the market. (encontrou por acaso)", "ran into", "She {ran into} her brother at the market.", "Encontrar por acaso = run into."),
+    F("Remember to ___ the files to an external drive. (fazer backup)", "back up", "Remember to {back up} the files to an external drive.", "Fazer backup = back up."),
+    F("He ___ smoking two years ago. (parou com)", ["gave up", "quit"], "He {gave up} smoking two years ago.", "Parar com um hábito = give up."),
+    F("Please ___ this form in capital letters. (preencher)", ["fill in", "fill out"], "Please {fill in} this form in capital letters.", "Preencher = fill in / fill out.")
+  ],
+
+  "b2m3-r1": [
+    F("The road ___ (repair) at the moment.", "is being repaired", "The road {is being repaired} at the moment.", "Agora, em andamento → is being + particípio."),
+    F("The form must ___ (complete) in black ink.", "be completed", "The form must {be completed} in black ink.", "Modal + be + particípio."),
+    F("The parcel should ___ (deliver) yesterday.", "have been delivered", "The parcel should {have been delivered} yesterday.", "Deveria ter sido → should have been."),
+    F("The hotel ___ (renovate) when we stayed there.", "was being renovated", "The hotel {was being renovated} when we stayed there.", "Em andamento no passado → was being."),
+    F("This machine can ___ (repair) in an hour.", "be repaired", "This machine can {be repaired} in an hour.", "can + be + particípio."),
+    F("I ___ my suit cleaned before the wedding. (mandei)", "had", "I {had} my suit cleaned before the wedding.", "Mandei fazer → had + coisa + particípio."),
+    F("We're ___ the kitchen renovated. (mandando)", "getting", "We're {getting} the kitchen renovated.", "get something done = mandar fazer."),
+    F("The castle ___ (say) to be haunted.", "is said", "The castle {is said} to be haunted.", "Dizem que → is said to."),
+    F("The documents ___ (check) right now.", "are being checked", "The documents {are being checked} right now.", "Agora, plural → are being + particípio."),
+    F("The bill must ___ (pay) by the end of the month.", "be paid", "The bill must {be paid} by the end of the month.", "Modal + be + particípio."),
+    F("She ___ her windows cleaned every month. (manda)", ["has", "gets"], "She {has} her windows cleaned every month.", "have something done = mandar fazer."),
+    F("The new law ___ (expect) to pass this year.", "is expected", "The new law {is expected} to pass this year.", "Espera-se que → is expected to."),
+    F("The letter should ___ (send) last week.", "have been sent", "The letter should {have been sent} last week.", "Deveria ter sido → should have been sent."),
+    F("The bridge ___ (build) when the war started.", "was being built", "The bridge {was being built} when the war started.", "Em andamento no passado → was being built.")
+  ],
+
+  "b2m3-r2": [
+    F("He had his tooth ___ (take) out yesterday.", "taken", "He had his tooth {taken} out yesterday.", "have + coisa + particípio: take → taken."),
+    F("The menu ___ (update) at the moment.", "is being updated", "The menu {is being updated} at the moment.", "Agora → is being."),
+    F("The results will ___ (announce) on Monday.", "be announced", "The results will {be announced} on Monday.", "will + be + particípio."),
+    F("The train has ___ (delay).", "been delayed", "The train has {been delayed}.", "has been + particípio."),
+    F("I need to get my glasses ___ (fix).", "fixed", "I need to get my glasses {fixed}.", "get + coisa + particípio."),
+    F("Prices ___ (expect) to rise next year.", "are expected", "Prices {are expected} to rise next year.", "Espera-se que → are expected to."),
+    F("The email should have ___ (copy) to the whole team.", "been copied", "The email should have {been copied} to the whole team.", "should have been + particípio."),
+    F("The hotel ___ (clean) when we arrived.", "was being cleaned", "The hotel {was being cleaned} when we arrived.", "Em andamento no passado → was being cleaned."),
+    F("She had her photo ___ (take) at the studio.", "taken", "She had her photo {taken} at the studio.", "have + coisa + particípio."),
+    F("The streets ___ (decorate) for the festival right now.", "are being decorated", "The streets {are being decorated} for the festival right now.", "Agora, plural → are being."),
+    F("The package must ___ (open) by the customer.", "be opened", "The package must {be opened} by the customer.", "Modal + be + particípio."),
+    F("The match has ___ (cancel) because of the rain.", ["been cancelled", "been canceled"], "The match has {been cancelled} because of the rain.", "has been + particípio."),
+    F("We got the car ___ (wash) on the way home.", "washed", "We got the car {washed} on the way home.", "get + coisa + particípio."),
+    F("The museum ___ (believe) to be the oldest in the country.", "is believed", "The museum {is believed} to be the oldest in the country.", "Acredita-se que → is believed to.")
+  ],
+
+  "b2m4-r1": [
+    F("The lights are off. They ___ (go) to bed.", "must have gone", "They {must have gone} to bed.", "Quase certeza → must have."),
+    F("He's not answering. He ___ (lose) his phone.", ["might have lost", "may have lost", "could have lost"], "He {might have lost} his phone.", "Possibilidade → might have."),
+    F("You ___ (tell) me it was her birthday!", "should have told", "You {should have told} me it was her birthday!", "Crítica → should have."),
+    F("She ___ (read) the whole book in one hour.", ["can't have read", "couldn't have read"], "She {can't have read} the whole book in one hour.", "Impossível → can't have."),
+    F("I ___ (buy) that jacket. It was too expensive.", ["shouldn't have bought", "should not have bought"], "I {shouldn't have bought} that jacket.", "Arrependimento → shouldn't have."),
+    F("The kitchen smells great. Someone ___ (cook).", "must have cooked", "Someone {must have cooked}.", "Dedução forte → must have cooked."),
+    F("They ___ (not/get) my message yet.", ["might not have gotten", "may not have gotten", "might not have got", "may not have got"], "They {might not have gotten} my message yet.", "Possibilidade negativa → might not have."),
+    F("We ___ (bring) an umbrella. Now we're soaked.", "should have brought", "We {should have brought} an umbrella.", "Arrependimento → should have."),
+    F("Her car isn't here. She ___ (leave) already.", "must have left", "She {must have left} already.", "Dedução forte → must have left."),
+    F("I can't find my wallet. I ___ (drop) it on the bus.", ["might have dropped", "may have dropped", "could have dropped"], "I {might have dropped} it on the bus.", "Possibilidade → might have."),
+    F("He ___ (be) at the party. He was in Rio that weekend.", ["can't have been", "couldn't have been"], "He {can't have been} at the party.", "Impossível → can't have been."),
+    F("You ___ (ask) for help instead of doing it alone.", "should have asked", "You {should have asked} for help.", "Crítica → should have."),
+    F("The windows are open. Someone ___ (be) here.", "must have been", "Someone {must have been} here.", "Dedução → must have been."),
+    F("I ___ (say) anything. It wasn't my business.", ["shouldn't have said", "should not have said"], "I {shouldn't have said} anything.", "Arrependimento → shouldn't have.")
+  ],
+
+  "b2m4-r2": [
+    F("She's smiling. The news ___ (be) good.", "must have been", "The news {must have been} good.", "Dedução → must have been."),
+    F("The door is open. Someone ___ (forget) to lock it.", ["might have forgotten", "may have forgotten", "could have forgotten"], "Someone {might have forgotten} to lock it.", "Possibilidade → might have."),
+    F("You ___ (warn) us about the traffic!", "should have warned", "You {should have warned} us about the traffic!", "Crítica → should have."),
+    F("He ___ (finish) the marathon. He hurt his knee at kilometre five.", ["can't have finished", "couldn't have finished"], "He {can't have finished} the marathon.", "Impossível → can't have."),
+    F("They ___ (miss) the exit on the motorway.", ["may have missed", "might have missed", "could have missed"], "They {may have missed} the exit on the motorway.", "Possibilidade → may have."),
+    F("I ___ (drink) that second coffee. Now I can't sleep.", ["shouldn't have drunk", "should not have drunk"], "I {shouldn't have drunk} that second coffee.", "Arrependimento → shouldn't have."),
+    F("The grass is wet. It ___ (rain) in the night.", "must have rained", "It {must have rained} in the night.", "Dedução → must have rained."),
+    F("We ___ (reserve) a table. The place is full.", "should have reserved", "We {should have reserved} a table.", "Arrependimento → should have."),
+    F("His bag is gone. He ___ (go) home.", "must have gone", "He {must have gone} home.", "Dedução forte → must have gone."),
+    F("She didn't reply. She ___ (not/see) the message.", ["might not have seen", "may not have seen"], "She {might not have seen} the message.", "Possibilidade negativa → might not have."),
+    F("You ___ (check) the price before buying it.", "should have checked", "You {should have checked} the price before buying it.", "Crítica → should have."),
+    F("That ___ (be) my sister. She's in Japan.", ["can't have been", "couldn't have been"], "That {can't have been} my sister.", "Impossível → can't have been."),
+    F("The cake is gone. The children ___ (eat) it.", "must have eaten", "The children {must have eaten} it.", "Dedução → must have eaten."),
+    F("I ___ (stay) up so late last night.", ["shouldn't have stayed", "should not have stayed"], "I {shouldn't have stayed} up so late last night.", "Arrependimento → shouldn't have.")
+  ],
+
+  "s11-r1": [
+    F("The hotel was lovely. ___, the food was poor. (No entanto)", "however", "{However}, the food was poor.", "Início de frase, com vírgula → However."),
+    F("___ it was raining, we went for a walk. (Embora)", ["although", "even though", "though"], "{Although} it was raining, we went for a walk.", "+ frase completa → although."),
+    F("___ the traffic, we arrived on time. (Apesar de)", ["despite", "in spite of"], "{Despite} the traffic, we arrived on time.", "+ substantivo → despite."),
+    F("The film was long, ___ it was worth it. (mas)", "but", "The film was long, {but} it was worth it.", "Meio da frase → but."),
+    F("The alarm didn't ring, ___ I woke up late. (então)", "so", "The alarm didn't ring, {so} I woke up late.", "Resultado → so."),
+    F("I took a taxi ___ I was in a hurry. (porque)", ["because", "since", "as"], "I took a taxi {because} I was in a hurry.", "Causa → because."),
+    F("___ having little money, they travelled a lot. (Apesar de)", ["despite", "in spite of"], "{Despite} having little money, they travelled a lot.", "+ -ing → despite."),
+    F("___ the room was small, it felt comfortable. (Mesmo que)", ["even though", "although", "though"], "{Even though} the room was small, it felt comfortable.", "+ frase completa → even though."),
+    F("She studied hard. ___, she failed the exam. (No entanto)", "however", "{However}, she failed the exam.", "Início de frase → However."),
+    F("___ his age, he still runs every morning. (Apesar de)", ["despite", "in spite of"], "{Despite} his age, he still runs every morning.", "+ substantivo → despite."),
+    F("It was cold, ___ we stayed inside. (então)", "so", "It was cold, {so} we stayed inside.", "Resultado → so."),
+    F("___ she speaks three languages, she's shy about it. (Embora)", ["although", "even though", "though"], "{Although} she speaks three languages, she's shy about it.", "+ frase completa → although."),
+    F("We cancelled the picnic ___ the forecast was bad. (porque)", ["because", "since", "as"], "We cancelled the picnic {because} the forecast was bad.", "Causa → because."),
+    F("The flat is tiny, ___ the location is perfect. (mas)", "but", "The flat is tiny, {but} the location is perfect.", "Meio da frase → but.")
+  ],
+
+  "s11-r2": [
+    F("I love the city. ___, the winters are hard. (Porém)", "however", "{However}, the winters are hard.", "Início de frase → However."),
+    F("We left early, ___ we avoided the traffic. (por isso)", "so", "We left early, {so} we avoided the traffic.", "Resultado → so."),
+    F("___ the bus arrives, we'll go. (Assim que)", "as soon as", "{As soon as} the bus arrives, we'll go.", "Assim que = as soon as + presente."),
+    F("Wait here ___ I come back. (até)", "until", "Wait here {until} I come back.", "Até (tempo) = until."),
+    F("___ you leave, turn off the lights. (Antes de)", "before", "{Before} you leave, turn off the lights.", "Antes de = before."),
+    F("I walked home ___ the buses were on strike. (porque)", ["because", "since", "as"], "I walked home {because} the buses were on strike.", "Causa → because."),
+    F("___ he's young, he's very responsible. (Embora)", ["although", "even though", "though"], "{Although} he's young, he's very responsible.", "+ frase completa → although."),
+    F("In spite of ___ (have) a cold, she went to work.", "having", "In spite of {having} a cold, she went to work.", "in spite of + -ing."),
+    F("___ I finish this chapter, I'll make dinner. (Depois que)", "after", "{After} I finish this chapter, I'll make dinner.", "Depois que = after."),
+    F("The shop was closed. ___, we found another one. (Porém)", "however", "{However}, we found another one.", "Início de frase → However."),
+    F("It started to rain, ___ we ran inside. (então)", "so", "It started to rain, {so} we ran inside.", "Resultado → so."),
+    F("Call me ___ you land. (assim que)", "as soon as", "Call me {as soon as} you land.", "Assim que = as soon as."),
+    F("Despite ___ (be) nervous, he gave a great speech.", "being", "Despite {being} nervous, he gave a great speech.", "despite + -ing."),
+    F("Don't open the door ___ you know who it is. (até)", "until", "Don't open the door {until} you know who it is.", "Até = until.")
+  ]
+
+});
