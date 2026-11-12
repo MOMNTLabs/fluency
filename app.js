@@ -821,6 +821,38 @@
   }
 
   // ---------- Revisão ----------
+  // Lista das questões que ainda estão na revisão (aba Revisão).
+  var LIST_PREVIEW = 3;
+  function errItem(id) {
+    var ref = ITEMS[id], r = state.results[id] || {}, rv = state.review[id], isDue = rv.due <= today();
+    var dots = ""; for (var k2 = 0; k2 < 3; k2++) dots += '<i class="' + (k2 < rv.box ? "on" : "") + '"></i>';
+    return '<div class="item"><div class="where">' + esc(ref.week.title + ", " + ref.section.title + ", questão " + ref.item.n) + '</div>' +
+      '<p class="sentence" style="font-size:17px;margin:0 0 4px">' + fullHtml(ref.item.full) + '</p>' +
+      (r.last ? '<div class="yours" style="margin:0">Você respondeu <s>' + esc(r.last) + '</s></div>' : "") +
+      '<div class="row"><span class="chip' + (isDue ? " today" : "") + '">' + (isDue ? "Revisar hoje" : "Revisar em " + shortDate(rv.due)) + '</span>' +
+      '<span class="dots" title="Acertos na revisão">' + dots + '</span>' + listen(ref.item.full) + '</div></div>';
+  }
+  function errList(pend) {
+    // As que vencem antes aparecem primeiro.
+    var ids = pend.slice().sort(function (a, b) { return state.review[a].due < state.review[b].due ? -1 : state.review[a].due > state.review[b].due ? 1 : 0; });
+    var html = '<div class="list-head"><h2>Suas questões <span class="muted">' + ids.length + '</span></h2><button class="text-btn" id="copy">Compartilhar</button></div>' +
+      '<div class="panel" id="err-panel">' + ids.slice(0, LIST_PREVIEW).map(errItem).join("") + '</div>';
+    if (ids.length > LIST_PREVIEW) html += '<div class="center"><button class="btn btn-soft" id="err-more">Mostrar todas (' + ids.length + ')</button></div>';
+    return { html: html, bind: function () {
+      var m = document.getElementById("err-more");
+      if (m) m.onclick = function () { document.getElementById("err-panel").innerHTML = ids.map(errItem).join(""); m.parentNode.remove(); };
+      var c = document.getElementById("copy");
+    if (c) c.onclick = function () {
+      var lines = ["Minhas questões para reforçar no nowish:"];
+      pend.forEach(function (id) {
+        var ref = ITEMS[id], r = state.results[id] || {};
+        lines.push("- " + ref.week.title + ", " + ref.section.title + ", questão " + ref.item.n + ": " + plain(ref.item.q || ref.item.full) +
+          " | Minha resposta: " + (r.last || "-") + " | Certo: " + plain(ref.item.full) + " | Errei " + (r.wrong || 1) + "x");
+      });
+      share(lines.join("\n"), "Minhas questões para reforçar", "Lista copiada");
+    };
+    } };
+  }
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function renderReview() {
     var due = dueIds(), pend = pendingIds(), z = savedSession();
@@ -834,7 +866,10 @@
         (pend.length ? '<p class="muted small">' + pend.length + (pend.length === 1 ? " questão espera" : " questões esperam") + ' os próximos dias.</p><div class="actions"><button class="btn btn-soft" id="all">Revisar agora mesmo assim</button></div>'
           : '<p class="muted small">Quando você errar uma questão, ela aparece aqui.</p>') + '</div>';
     }
+    var list = pend.length ? errList(pend) : null;
+    if (list) html += list.html;
     app.innerHTML = html;
+    if (list) list.bind();
     var rs = document.getElementById("resume"); if (rs) rs.onclick = resumeSession;
     var st = document.getElementById("start"); if (st) st.onclick = function () { startSession("review", shuffle(due)); };
     var al = document.getElementById("all");
@@ -859,23 +894,7 @@
       '<div class="stats"><div><b>' + streak() + '</b>dias seguidos</div><div><b>' + doneMods + '/' + WEEKS.length + '</b>módulos</div>' +
       '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div></div>' + weekChart() +
       '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
-      '<h2 style="margin-top:28px">Para reforçar</h2><p class="muted small">As questões que você errou. Cada uma volta na revisão até você acertar em três dias diferentes.</p>';
-    if (!pend.length) {
-      html += '<div class="empty"><div class="art">' + I.check + '</div><h2>Nenhum erro pendente</h2><p class="muted small">' +
-        (state.mastered ? "Você já superou " + state.mastered + (state.mastered === 1 ? " erro." : " erros.") : "Faça uma rodada para começar.") + '</p></div>';
-    } else {
-      html += '<div class="actions"><button class="btn btn-primary" id="rev-all">Revisar agora</button><button class="btn btn-soft" id="copy">Compartilhar</button></div><div class="panel">';
-      pend.forEach(function (id) {
-        var ref = ITEMS[id], r = state.results[id] || {}, rv = state.review[id], isDue = rv.due <= today();
-        var dots = ""; for (var k2 = 0; k2 < 3; k2++) dots += '<i class="' + (k2 < rv.box ? "on" : "") + '"></i>';
-        html += '<div class="item"><div class="where">' + esc(ref.week.title + ", " + ref.section.title + ", questão " + ref.item.n) + '</div>' +
-          '<p class="sentence" style="font-size:17px;margin:0 0 4px">' + fullHtml(ref.item.full) + '</p>' +
-          (r.last ? '<div class="yours" style="margin:0">Você respondeu <s>' + esc(r.last) + '</s></div>' : "") +
-          '<div class="row"><span class="chip' + (isDue ? " today" : "") + '">' + (isDue ? "Revisar hoje" : "Revisar em " + shortDate(rv.due)) + '</span>' +
-          '<span class="dots" title="Acertos na revisão">' + dots + '</span>' + listen(ref.item.full) + '</div></div>';
-      });
-      html += '</div>';
-    }
+      '';
     var last = state.lastBackup;
     html += '<details class="advanced"' + (auth ? "" : " open") + '><summary>Backup manual</summary><section class="backup"><p class="muted small">' +
       (last ? "Último backup em " + shortDate(last) + "." : "Você ainda não fez nenhum backup.") +
@@ -897,18 +916,6 @@
       if (!s) { toast("Código inválido. Copie o backup inteiro"); return; }
       state = s; state.lastBackup = state.lastBackup || today(); state.onboarded = true; save(); updateDot(); toast("Progresso restaurado"); go({ name: "home" });
     };
-    var c = document.getElementById("copy");
-    if (c) c.onclick = function () {
-      var lines = ["Minhas questões para reforçar no nowish:"];
-      pend.forEach(function (id) {
-        var ref = ITEMS[id], r = state.results[id] || {};
-        lines.push("- " + ref.week.title + ", " + ref.section.title + ", questão " + ref.item.n + ": " + plain(ref.item.q || ref.item.full) +
-          " | Minha resposta: " + (r.last || "-") + " | Certo: " + plain(ref.item.full) + " | Errei " + (r.wrong || 1) + "x");
-      });
-      share(lines.join("\n"), "Minhas questões para reforçar", "Lista copiada");
-    };
-    var ra = document.getElementById("rev-all");
-    if (ra) ra.onclick = function () { pend.forEach(function (id) { state.review[id].due = today(); }); save(); startSession("review", shuffle(pend.slice())); };
   }
   // Usa a folha de compartilhar do celular quando existe; senão, copia.
   function share(text, title, okMsg) {
