@@ -43,7 +43,7 @@ window.WEEKS.push(
           T("Eu tenho 25 anos.", "I'm 25 years old.", "Idade usa to be, não have.")
         ] },
       { id: "a1m1-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões para fixar", count: 8 },
-      { id: "a1m1-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a1m1-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Hi, I'm Lucas. I'm a salesperson.", "Oi, eu sou o Lucas. Sou vendedor."),
           R("I'm from Brazil, and I'm 27 years old.", "Sou do Brasil e tenho 27 anos."),
@@ -106,7 +106,7 @@ window.WEEKS.push(
           T("A loja abre às 9.", "The store opens at 9.", "store → opens.")
         ] },
       { id: "a1m2-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "a1m2-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a1m2-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I work in an agency with twenty people.", "Trabalho numa agência com vinte pessoas."),
           R("I start at nine and finish at six.", "Começo às nove e termino às seis."),
@@ -169,7 +169,7 @@ window.WEEKS.push(
           T("Temos muitas pessoas na equipe.", "We have a lot of people on the team.", "person → people.")
         ] },
       { id: "a1m3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "a1m3-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a1m3-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("This is my desk, and that is my manager's office.", "Esta é a minha mesa, e aquela é a sala do meu gestor."),
           R("I have an important meeting today.", "Tenho uma reunião importante hoje."),
@@ -232,7 +232,7 @@ window.WEEKS.push(
           T("Não tem cadeiras.", "There aren't any chairs.", "Plural negativo → there aren't any.")
         ] },
       { id: "a1m4-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "a1m4-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a1m4-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("There is a small kitchen on our floor.", "Há uma pequena cozinha no nosso andar."),
           R("There are two meeting rooms and a big open space.", "Há duas salas de reunião e um grande espaço aberto."),
@@ -295,7 +295,7 @@ window.WEEKS.push(
           T("Hoje é dia 12 de novembro.", "Today is November 12th.", "Data com ordinal: twelfth.")
         ] },
       { id: "a1m5-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "a1m5-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a1m5-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("The office opens at eight thirty.", "O escritório abre às oito e meia."),
           R("Our weekly meeting is on Monday at ten.", "Nossa reunião semanal é na segunda às dez."),
@@ -359,7 +359,7 @@ window.WEEKS.push(
         ] },
       { id: "a1m6-mix1", type: "mix", title: "Revisão do A1, parte 1", subtitle: "Tudo o que você viu no A1", count: 8 },
       { id: "a1m6-mix2", type: "mix", title: "Revisão do A1, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
-      { id: "a1m6-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a1m6-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("My name is Paula, and I work in operations.", "Meu nome é Paula, e trabalho em operações."),
           R("My team is small, but we can do a lot.", "Minha equipe é pequena, mas conseguimos fazer muito."),

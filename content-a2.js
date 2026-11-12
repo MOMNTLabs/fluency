@@ -44,7 +44,7 @@ window.WEEKS.push(
           T("Eles estavam no escritório.", "They were at the office.", "they → were.")
         ] },
       { id: "a2m1-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões para fixar", count: 8 },
-      { id: "a2m1-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a2m1-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I started a new job last month.", "Comecei num emprego novo no mês passado."),
           R("On my first day, I met the whole team.", "No primeiro dia, conheci a equipe toda."),
@@ -107,7 +107,7 @@ window.WEEKS.push(
           T("O que você está fazendo?", "What are you doing?", "Agora → are … doing.")
         ] },
       { id: "a2m2-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "a2m2-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a2m2-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I work in the operations team.", "Trabalho na equipe de operações."),
           R("Every morning, I check the orders and talk to the suppliers.", "Toda manhã, confiro os pedidos e falo com os fornecedores."),
@@ -170,7 +170,7 @@ window.WEEKS.push(
           T("Vamos encontrar o fornecedor na sexta.", "We're meeting the supplier on Friday.", "Compromisso marcado → presente contínuo.")
         ] },
       { id: "a2m3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "a2m3-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a2m3-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Next month, our team is going to start a new project.", "No mês que vem, nossa equipe vai começar um projeto novo."),
           R("I'm meeting the client on Thursday to present the plan.", "Vou encontrar o cliente na quinta para apresentar o plano."),
@@ -233,7 +233,7 @@ window.WEEKS.push(
           T("Meu inglês está melhor agora.", "My English is better now.", "good → better.")
         ] },
       { id: "a2m4-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "a2m4-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a2m4-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Our new office is bigger and brighter than the old one.", "Nosso escritório novo é maior e mais iluminado que o antigo."),
           R("The sales team had its best month this year.", "A equipe comercial teve seu melhor mês este ano."),
@@ -287,7 +287,7 @@ window.WEEKS.push(
         ] },
       { id: "a2m5-mix1", type: "mix", title: "Revisão do A2, parte 1", subtitle: "Tudo o que você viu no A2", count: 8 },
       { id: "a2m5-mix2", type: "mix", title: "Revisão do A2, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
-      { id: "a2m5-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "a2m5-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("We have a lot of orders this week, so everyone is busy.", "Temos muitos pedidos esta semana, então todo mundo está ocupado."),
           R("Do we have any boxes left in the warehouse?", "Ainda sobraram caixas no depósito?"),

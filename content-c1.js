@@ -44,7 +44,7 @@ window.WEEKS.push(
           T("Raramente recebemos reclamações.", "Rarely do we receive complaints.", "Rarely + do + we.")
         ] },
       { id: "c1m1-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "c1m1-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c1m1-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Never before have we had so many leads in a single month.", "Nunca antes tivemos tantos leads num único mês."),
           R("Not only did the project hit its target, but it also lowered our costs.", "O projeto não só bateu a meta como reduziu nossos custos."),
@@ -108,7 +108,7 @@ window.WEEKS.push(
           T("Sendo nova na equipe, ela fez muitas perguntas.", "Being new to the team, she asked a lot of questions.", "Being = causa.")
         ] },
       { id: "c1m2-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "c1m2-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c1m2-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Having analyzed the data, we changed our strategy.", "Depois de analisar os dados, mudamos nossa estratégia."),
           R("Founded in 2015, the agency now has fifty employees.", "Fundada em 2015, a agência hoje tem cinquenta funcionários."),
@@ -171,7 +171,7 @@ window.WEEKS.push(
           T("O que me surpreendeu foi a qualidade.", "What surprised me was the quality.", "What + was.")
         ] },
       { id: "c1m3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "c1m3-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c1m3-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("What our clients value most is quick answers.", "O que nossos clientes mais valorizam são respostas rápidas."),
           R("It was the design team that suggested the new layout.", "Foi a equipe de design que sugeriu o novo layout."),
@@ -235,7 +235,7 @@ window.WEEKS.push(
           T("Leve o notebook caso a reunião seja online.", "Take your laptop in case the meeting is online.", "in case.")
         ] },
       { id: "c1m4-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "c1m4-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c1m4-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("We can offer a discount provided that you sign a two-year contract.", "Podemos dar desconto desde que você assine um contrato de dois anos."),
           R("Should you have any questions, don't hesitate to contact us.", "Caso tenha alguma dúvida, não hesite em nos contatar."),
@@ -298,7 +298,7 @@ window.WEEKS.push(
           T("Vou fazer o meu melhor.", "I'll do my best.", "do your best.")
         ] },
       { id: "c1m5-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "c1m5-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c1m5-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("We made a lot of progress this quarter, but we still have a long way to go.", "Avançamos muito neste trimestre, mas ainda temos um longo caminho."),
           R("Before making a decision, let's do some research.", "Antes de tomar uma decisão, vamos pesquisar um pouco."),
@@ -361,7 +361,7 @@ window.WEEKS.push(
         ] },
       { id: "c1m6-mix1", type: "mix", title: "Revisão do C1, parte 1", subtitle: "Tudo o que você viu no C1", count: 8 },
       { id: "c1m6-mix2", type: "mix", title: "Revisão do C1, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
-      { id: "c1m6-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Um e-mail formal, frase a frase",
+      { id: "c1m6-leitura", type: "reading", title: "Leitura", subtitle: "Um e-mail formal, frase a frase",
         items: [
           R("Dear Mr. Smith, I am writing to follow up on our meeting last week.", "Prezado Sr. Smith, escrevo para dar continuidade à nossa reunião da semana passada."),
           R("Please find attached the revised proposal.", "Segue em anexo a proposta revisada."),

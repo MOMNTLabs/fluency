@@ -43,7 +43,7 @@ window.WEEKS.push(
           T("Conheço ele há anos.", "I've known him for years.", "know é estado: fica no simples.")
         ] },
       { id: "b2m1-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "b2m1-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "b2m1-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I've been working on this proposal since Monday.", "Estou trabalhando nesta proposta desde segunda."),
           R("We've been getting more leads since we changed the website.", "Estamos recebendo mais leads desde que mudamos o site."),
@@ -107,7 +107,7 @@ window.WEEKS.push(
           T("Queria saber falar francês.", "I wish I could speak French.", "can → could.")
         ] },
       { id: "b2m2-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "b2m2-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "b2m2-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I wish I had more time to study, but work is busy.", "Queria ter mais tempo para estudar, mas o trabalho está corrido."),
           R("If only we had booked the tickets a week earlier!", "Se ao menos tivéssemos comprado as passagens uma semana antes!"),
@@ -170,7 +170,7 @@ window.WEEKS.push(
           T("Vamos mandar redesenhar o site.", "We're going to get the website redesigned.", "get + coisa + particípio.")
         ] },
       { id: "b2m3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "b2m3-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "b2m3-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Our website is being redesigned, so some pages are offline.", "Nosso site está sendo redesenhado, então algumas páginas estão fora do ar."),
           R("All invoices must be paid within thirty days.", "Todas as faturas devem ser pagas em até trinta dias."),
@@ -233,7 +233,7 @@ window.WEEKS.push(
           T("Alguém deve ter contado para ele.", "Someone must have told him.", "Dedução → must have.")
         ] },
       { id: "b2m4-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "b2m4-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "b2m4-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("The client hasn't answered. He must have been busy all day.", "O cliente não respondeu. Deve ter ficado ocupado o dia todo."),
           R("I should have checked the numbers before sending the report.", "Eu deveria ter conferido os números antes de mandar o relatório."),

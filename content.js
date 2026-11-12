@@ -136,7 +136,7 @@ window.WEEKS = [
       {
         id: "s1-leitura",
         type: "reading",
-        title: "Para ler no caminho",
+        title: "Leitura",
         subtitle: "Tente entender antes de ver a tradução",
         items: [
           { en: "I take the bus to work every morning.", pt: "Pego ônibus para o trabalho toda manhã." },

@@ -43,7 +43,7 @@ window.WEEKS.push(
           T("Estava chovendo quando eu saí.", "It was raining when I left.", "Cena → was raining.")
         ] },
       { id: "b1m3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "b1m3-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "b1m3-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I was preparing the report when my manager called me.", "Eu estava preparando o relatório quando meu gestor me ligou."),
           R("While we were talking, the client arrived.", "Enquanto conversávamos, o cliente chegou."),
@@ -108,7 +108,7 @@ window.WEEKS.push(
           T("Pessoas que trabalham com vendas falam muito.", "People who work in sales talk a lot.", "Pessoas → who.")
         ] },
       { id: "b1m6-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "b1m6-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "b1m6-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("The client who visited us yesterday signed a two-year contract.", "O cliente que nos visitou ontem assinou um contrato de dois anos."),
           R("This is the tool that saves me the most time.", "Essa é a ferramenta que mais me economiza tempo."),

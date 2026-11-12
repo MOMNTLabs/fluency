@@ -46,7 +46,7 @@ window.WEEKS.push(
           T("Nunca usei o After Effects.", "I've never used After Effects.", "Experiência → have never + particípio.")
         ] },
       { id: "s2-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "s2-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s2-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I've just finished the first draft of the report.", "Acabei de terminar o primeiro rascunho do relatório."),
           R("Has the client approved the video yet?", "O cliente já aprovou o vídeo?"),
@@ -110,7 +110,7 @@ window.WEEKS.push(
           T("O que você faria se fosse o chefe?", "What would you do if you were the boss?", "Imaginação → would + were.")
         ] },
       { id: "s3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "s3-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s3-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("If the video does well, we'll need more people to answer the messages.", "Se o vídeo for bem, vamos precisar de mais gente para responder as mensagens."),
           R("If I had more time, I would learn another language.", "Se eu tivesse mais tempo, eu aprenderia outra língua."),
@@ -175,7 +175,7 @@ window.WEEKS.push(
         ] },
       { id: "s4-mix1", type: "mix", title: "Revisão dos módulos, parte 1", subtitle: "Tudo o que você viu até aqui", count: 8 },
       { id: "s4-mix2", type: "mix", title: "Revisão dos módulos, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
-      { id: "s4-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s4-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("My boss told me the new plan was the best one this month.", "Meu chefe me disse que o novo plano era o melhor do mês."),
           R("The client asked if we could deliver the video by Friday.", "O cliente perguntou se podíamos entregar o vídeo até sexta."),

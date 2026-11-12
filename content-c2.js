@@ -43,7 +43,7 @@ window.WEEKS.push(
           T("Mantenha o cliente informado.", "Keep the client in the loop.", "in the loop.")
         ] },
       { id: "c2m1-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "c2m1-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c2m1-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Let's touch base on Monday and see where we are.", "Vamos nos falar na segunda e ver onde estamos."),
           R("The bottom line is that the investment didn't pay off.", "O resumo é que o investimento não deu retorno."),
@@ -106,7 +106,7 @@ window.WEEKS.push(
           T("As pessoas costumam comprar mais em dezembro.", "People tend to buy more in December.", "tend to.")
         ] },
       { id: "c2m2-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "c2m2-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c2m2-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("It would seem that our message isn't reaching the right audience.", "Parece que nossa mensagem não está chegando ao público certo."),
           R("Arguably, this is the most important decision of the year.", "Pode-se dizer que esta é a decisão mais importante do ano."),
@@ -170,7 +170,7 @@ window.WEEKS.push(
           T("Seja como for, precisamos entregar.", "Be that as it may, we still need to deliver.", "Be that as it may.")
         ] },
       { id: "c2m3-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "c2m3-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c2m3-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("The client requested that all changes be approved in writing.", "O cliente pediu que todas as alterações sejam aprovadas por escrito."),
           R("It's high time we invested in better tools.", "Já passou da hora de investirmos em ferramentas melhores."),
@@ -233,7 +233,7 @@ window.WEEKS.push(
           T("Discordo da proposta.", "I disagree with the proposal.", "disagree with.")
         ] },
       { id: "c2m4-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "c2m4-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c2m4-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("The announcement of the merger surprised everyone.", "O anúncio da fusão surpreendeu todo mundo."),
           R("Our main goal this year is to increase brand awareness.", "Nosso principal objetivo este ano é aumentar o reconhecimento da marca."),
@@ -297,7 +297,7 @@ window.WEEKS.push(
         ] },
       { id: "c2m5-mix1", type: "mix", title: "Revisão final, parte 1", subtitle: "Questões de todo o curso", count: 10 },
       { id: "c2m5-mix2", type: "mix", title: "Revisão final, parte 2", subtitle: "Questões de todo o curso", count: 10 },
-      { id: "c2m5-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "c2m5-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I was wondering if we could move the meeting to Thursday.", "Queria saber se poderíamos mudar a reunião para quinta."),
           R("The launch didn't go exactly as planned, to put it mildly.", "O lançamento não saiu bem como planejado, para dizer o mínimo."),

@@ -44,7 +44,7 @@ window.WEEKS.push(
           T("Começo a trabalhar às 8h da manhã.", "I start work at 8 a.m.", "Hora → at.")
         ] },
       { id: "s5-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "s5-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s5-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I study English on the bus every morning.", "Estudo inglês no ônibus toda manhã."),
           R("The new course starts on Monday at 9 a.m.", "O curso novo começa na segunda às 9h."),
@@ -110,7 +110,7 @@ window.WEEKS.push(
           T("Obrigado por me ajudar com o roteiro.", "Thanks for helping me with the script.", "for + -ing.")
         ] },
       { id: "s6-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "s6-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s6-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("I enjoy creating content, but I hate waiting for approval.", "Gosto de criar conteúdo, mas odeio esperar aprovação."),
           R("We decided to post three times a week.", "Decidimos postar três vezes por semana."),
@@ -176,7 +176,7 @@ window.WEEKS.push(
           T("Eu assisto vídeos de marketing em inglês.", "I watch marketing videos in English.", "Assistir = watch.")
         ] },
       { id: "s7-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "s7-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s7-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Actually, I prefer editing to filming.", "Na verdade, prefiro editar a filmar."),
           R("Currently, we post five times a week.", "Atualmente, postamos cinco vezes por semana."),
@@ -241,7 +241,7 @@ window.WEEKS.push(
         ] },
       { id: "s8-mix1", type: "mix", title: "Revisão dos módulos, parte 1", subtitle: "Tudo o que você viu até aqui", count: 8 },
       { id: "s8-mix2", type: "mix", title: "Revisão dos módulos, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
-      { id: "s8-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s8-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("We ran out of ideas, so we went over our best posts from last year.", "Ficamos sem ideias, então revisamos nossos melhores posts do ano passado."),
           R("Can you help me set up the lights for the shoot?", "Pode me ajudar a montar as luzes para a gravação?"),

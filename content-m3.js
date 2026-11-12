@@ -45,7 +45,7 @@ window.WEEKS.push(
           T("Ele deve estar cansado.", "He must be tired.", "Certeza lógica = must.")
         ] },
       { id: "s9-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "s9-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s9-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("You should check the weather before you leave.", "Você deveria ver a previsão do tempo antes de sair."),
           R("Could you review the message before I send it?", "Você poderia revisar a mensagem antes de eu enviar?"),
@@ -110,7 +110,7 @@ window.WEEKS.push(
           T("Esse app pode ser usado offline.", "This app can be used offline.", "can be used.")
         ] },
       { id: "s10-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "s10-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s10-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("This website was created in less than two hours.", "Este site foi criado em menos de duas horas."),
           R("All our contracts are reviewed by a lawyer.", "Todos os nossos contratos são revisados por um advogado."),
@@ -175,7 +175,7 @@ window.WEEKS.push(
           T("Assim que o cliente aprovar, eu posto.", "As soon as the client approves, I'll post it.", "as soon as + presente, depois will.")
         ] },
       { id: "s11-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
-      { id: "s11-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
+      { id: "s11-leitura", type: "reading", title: "Leitura", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("Although the video was short, it got a lot of shares.", "Embora o vídeo fosse curto, teve muitos compartilhamentos."),
           R("Despite the low budget, the event looked professional.", "Apesar do orçamento baixo, o evento ficou profissional."),
@@ -222,7 +222,7 @@ window.WEEKS.push(
           T("O vídeo foi editado em menos de uma hora.", "The video was edited in less than an hour.", "Passiva no passado."),
           T("Embora seja difícil, eu não vou desistir.", "Although it's hard, I won't give up.", "although + frase; give up.")
         ] },
-      { id: "s12-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Um texto para fechar o curso",
+      { id: "s12-leitura", type: "reading", title: "Leitura", subtitle: "Um texto para fechar o curso",
         items: [
           R("Three months ago, I couldn't use \"had\" without thinking.", "Três meses atrás, eu não conseguia usar \"had\" sem pensar."),
           R("I've studied English on the bus almost every day since November.", "Estudo inglês no ônibus quase todo dia desde novembro."),
