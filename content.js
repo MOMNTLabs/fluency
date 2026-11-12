@@ -1,7 +1,7 @@
 // Conteúdo das semanas. Para adicionar uma semana nova, acrescente um objeto ao array WEEKS.
 // Respostas: {chaves} marcam a parte que é a resposta na frase completa.
 // Atalhos para escrever as semanas seguintes.
-window.F = function (q, a, full, why) { return { q: q, a: [].concat(a), full: full, why: why }; };
+window.F = function (q, a, full, why, o) { return { q: q, a: [].concat(a), full: full, why: why, o: o }; };
 window.T = function (q, full, why) { return { q: q, full: full, why: why }; };
 window.R = function (en, pt) { return { en: en, pt: pt }; };
 window.V = function (en, pt, ex) { return { en: en, pt: pt, ex: ex }; };

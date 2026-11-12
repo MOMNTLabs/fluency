@@ -284,6 +284,17 @@
     b2m2: '<path d="M12 3l2.3 5.2L20 9l-4.3 3.8L17 18.5 12 15.6 7 18.5l1.3-5.7L4 9l5.7-.8z"/>',
     b2m3: '<path d="M14.5 5.5a4 4 0 0 0-5 5L4 16l4 4 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-3-3z"/>',
     b2m4: '<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/>',
+    c1m1: '<path d="M8 20V4M4 8l4-4 4 4M16 4v16M12 16l4 4 4-4"/>',
+    c1m2: '<circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8 7.5L20 18M8 16.5L20 6"/>',
+    c1m3: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5.5M12 16.3v.1"/>',
+    c1m4: '<rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="2.3"/>',
+    c1m5: '<path d="M6 4v8a6 6 0 0 0 12 0V4h-4v8a2 2 0 0 1-4 0V4z"/><path d="M6 8h4M14 8h4"/>',
+    c1m6: '<rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M4 7l8 6 8-6"/>',
+    c2m1: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+    c2m2: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
+    c2m3: '<path d="M7 4h11a2 2 0 0 1 2 2v1h-4M7 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V6"/><path d="M9 10h6M9 14h6"/>',
+    c2m4: '<path d="M3 18l4.5-12L12 18M4.7 14h5.6"/><path d="M15 12.5c.5-1 1.5-1.5 2.7-1.5 1.7 0 2.8 1 2.8 2.8V18M20.5 15.5c-3 0-5 .4-5 1.6 0 .8.7 1.2 1.6 1.2 1.9 0 3.4-1.2 3.4-3"/>',
+    c2m5: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
     b1m6: '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.3 11l7.4-3.8M8.3 13l7.4 3.8"/>'
   };
   var MOD_OPEN_KEY = "fluency-open-modules";
@@ -335,7 +346,7 @@
         '<span class="lt-state">' + (st.locked && !st.soon ? I.lock : "") + esc(st.label) + '</span>' +
         (st.soon ? "" : '<span class="lv-bar"><i style="width:' + st.pct + '%"></i></span>') + '</button>';
     });
-    html += '</div><p class="foot">Novos níveis chegam com as atualizações.</p>';
+    html += '</div><p class="foot">Do A1 ao C2, no seu ritmo.</p>';
     app.innerHTML = html;
     bindTopBar();
     app.querySelectorAll("[data-open-level]").forEach(function (b) { b.onclick = function () { go({ name: "level", code: b.getAttribute("data-open-level") }); }; });
@@ -566,6 +577,8 @@
   function optionsFor(it) {
     if (it._opts) return it._opts;
     var correct = it.a[0].replace(/^'/, ""), accepted = it.a.map(norm), ref = ITEMS[it.id], pool = [];
+    // Alternativas escritas à mão no conteúdo têm prioridade.
+    if (it.o && it.o.length) { it._opts = sshuffle([correct].concat(it.o), it.id + "o"); return it._opts; }
     var hint = (it.q.match(/\(([^()]+)\)\s*[^()]*$/) || [])[1];
     var passive = it.a.some(function (x) { return /\b(is|are|was|were|be|been)\b/.test(x) && /\b(\w+ed|\w+en|found|sent|taken|given|spoken|written)$/.test(x); });
     var forms = hint ? verbForms(hint.toLowerCase(), passive) : null;
@@ -961,13 +974,13 @@
     for (var k = 0; k < order.length; k++) {
       if (ok.slice(k * 3, k * 3 + 3).filter(Boolean).length >= 2) est = order[k]; else break;
     }
-    var start = lvl(est) > lvl("B2") ? "B2" : est;
+    var start = est;
     return { est: est, start: start };
   }
   function renderPlaced(P) {
     var r = placementResult(P.ok), L = levelInfo(r.est), S = levelInfo(r.start);
     var note = r.est === "A1" ? "Você começa do básico, com calma. Cada módulo leva poucos dias." :
-      r.est === "C1" ? "Os módulos de C1 chegam em breve. Por enquanto, você começa pelo B2 para manter o ritmo." :
+      r.est === "C1" ? "Excelente! Você começa no avançado. Os níveis abaixo ficam liberados para revisar quando quiser." :
       "Os níveis abaixo ficam liberados para você praticar quando quiser.";
     app.innerHTML = '<div class="welcome"><div class="lv-hero">' + r.est + '</div><h1>Seu nível: ' + r.est + '</h1><p class="muted">' + esc(L.name || "Iniciante") + '. Você acertou ' + P.ok.filter(Boolean).length + ' de ' + PLACEMENT.length + '.</p>' +
       '<p class="muted small" style="margin-top:14px">' + note + '</p></div>' +
@@ -1055,7 +1068,7 @@
   }
 
   // ---------- Indicador offline ----------
-  var OFFLINE_FILES = ["./", "index.html", "app.js", "content.js", "content-a2.js", "content-b1.js", "content-a1.js", "content-b2.js", "content-m1.js", "content-m2.js", "content-m3.js", "course.js", "fonts/bricolage.woff2"];
+  var OFFLINE_FILES = ["./", "index.html", "app.js", "content.js", "content-a2.js", "content-b1.js", "content-a1.js", "content-b2.js", "content-c1.js", "content-c2.js", "content-m1.js", "content-m2.js", "content-m3.js", "course.js", "fonts/bricolage.woff2"];
   var offline = { state: "checking" };
   function offlineIcon() {
     var cloud = '<path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0 0 9z"/>';
