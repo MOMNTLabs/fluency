@@ -279,7 +279,7 @@
 
   function renderHome() {
     var due = dueIds().length, cur = currentModule();
-    var html = '<header class="bar-top"><div class="wordmark">Fluency<i></i></div><div class="brand-right">' +
+    var html = '<header class="bar-top"><div class="wordmark">nowish<i></i></div><div class="brand-right">' +
       (due ? '<button class="due-pill" id="due" aria-label="Revisão de hoje">' + svg('<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>', 2.4) + due + '</button>' : "") +
       '<button class="offline ' + offline.state + '" id="offline" aria-label="Status offline">' + offlineIcon() + '</button>' +
       goalChip() + '</div></header>';
@@ -830,7 +830,7 @@
     };
     var c = document.getElementById("copy");
     if (c) c.onclick = function () {
-      var lines = ["Meus erros no Fluency:"];
+      var lines = ["Meus erros no nowish:"];
       pend.forEach(function (id) {
         var ref = ITEMS[id], r = state.results[id] || {};
         lines.push("- " + ref.week.title + ", " + ref.section.title + ", questão " + ref.item.n + ": " + plain(ref.item.q || ref.item.full) +
@@ -853,7 +853,7 @@
 
   // ---------- Boas-vindas ----------
   var WELCOME = [
-    { t: "Seu percurso de inglês", p: "Do básico ao avançado, um passo de cada vez. Uns 20 minutos por dia, no seu ritmo.", ic: '<path d="M5 19c3-6 11-4 14-12"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="7" r="2"/>' },
+    { t: "Bem-vindo ao nowish.", p: "Inglês nos intervalos do dia: no ônibus, na fila, no café. Do básico ao avançado, um momento de cada vez.", ic: '<path d="M5 19c3-6 11-4 14-12"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="7" r="2"/>' },
     { t: "Funciona sem internet", p: "No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. A nuvem verde no topo mostra que está tudo salvo.", ic: '<path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0 0 9z"/><path d="M9.5 14l2 2 3.5-3.5"/>' },
     { t: "Erre à vontade", p: "Cada erro volta na revisão até você acertar três vezes. Faça backup do progresso uma vez por semana, na aba Perfil.", ic: '<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>' }
   ];
