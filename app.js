@@ -1321,7 +1321,7 @@
       '<div id="bk-restore" hidden><textarea class="field" id="bk-text" placeholder="Cole aqui o código do backup" style="margin-top:12px;min-height:90px;font-size:15px"></textarea>' +
       '<div class="actions"><button class="btn btn-primary" id="bk-go">Restaurar progresso</button></div></div></section></details>';
     html += '<div class="center" style="margin-top:18px"><button class="text-btn" id="redo-pl">Refazer o teste de nível</button></div>';
-    html += '<div class="center links"><a href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a>' + (auth ? '<button class="text-btn" id="acct-del">Excluir minha conta</button>' : "") + '</div>';
+    html += '<div class="center links"><a href="privacy.html" target="_blank" rel="noopener">Política de privacidade</a><a href="termos.html" target="_blank" rel="noopener">Termos de uso</a>' + (auth ? '<button class="text-btn" id="acct-del">Excluir minha conta</button>' : "") + '</div>';
     html += '<p class="foot">' + (auth ? "Seu progresso fica salvo neste aparelho e na sua conta." : "Seu progresso fica salvo neste aparelho.") + '</p>';
     app.innerHTML = html;
     bindProfile(); bindAccount();
@@ -1656,7 +1656,7 @@
         '<div class="actions"><button class="btn btn-primary" id="lg-send">Receber código por e-mail</button></div>';
       if (!c.googleClientId && !c.emailLogin) html += '<p class="tip" style="margin-top:20px">O login ainda está sendo configurado. Volte em breve.</p>';
     }
-    html += '<p class="tiny muted center" style="margin-top:22px">Ao entrar, você concorda com a <a href="privacy.html" target="_blank" rel="noopener">política de privacidade</a>.</p></div>';
+    html += '<p class="tiny muted center" style="margin-top:22px">Ao entrar, você concorda com os <a href="termos.html" target="_blank" rel="noopener">termos de uso</a> e a <a href="privacy.html" target="_blank" rel="noopener">política de privacidade</a>.</p></div>';
     app.innerHTML = html;
     document.getElementById("lg-back").onclick = function () { go({ name: V.from || "home" }); };
     var err = function (r) {
