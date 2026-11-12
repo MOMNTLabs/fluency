@@ -39,16 +39,6 @@
   var WEEKS = window.WEEKS || [];
   var ITEMS = {}, SECTIONS = {};
   // Tema do curso: a gramática é a mesma para todos, muda só o vocabulário.
-  var THEMES = [
-    { id: "trabalho", name: "Trabalho", short: "Trabalho", sub: "Reuniões, prazos, clientes", base: true, packs: [] },
-    { id: "viagem", name: "Viagem", short: "Viagem", sub: "Aeroporto, hotel, cidade", base: false, packs: ["viagem"] },
-    { id: "ambos", name: "Os dois", short: "Ambos", sub: "Leitura e vocabulário dos dois", base: true, packs: ["viagem"] }
-  ];
-  function theme() { return state.theme || "trabalho"; }
-  function themeDef() {
-    for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === theme()) return THEMES[i];
-    return THEMES[0];
-  }
   // ---------- Treino de vocabulário ----------
   // Monta uma rodada a partir das palavras do próprio módulo: a frase de exemplo
   // com a palavra escondida e as outras palavras da lista como alternativas.
@@ -91,51 +81,41 @@
   }
   // Leitura, escuta e vocabulário seguem o tema escolhido. Cada tema tem as suas
   // etapas, com id próprio, para que o progresso de um não se misture com o do outro.
-  function applyPack() {
-    var def = themeDef(), TYPES = ["reading", "listen", "vocab"];
+  // Cada módulo tem uma leitura, uma escuta e um vocabulário. A escuta sai das frases
+  // da leitura; o treino de vocabulário sai das palavras do próprio módulo.
+  function buildSections() {
+    var TYPES = ["reading", "listen", "vocab"];
     WEEKS.forEach(function (w) {
       if (!w.baseSec) {
         w.baseSec = {};
         TYPES.forEach(function (t) { w.baseSec[t] = w.sections.filter(function (x) { return x.type === t; })[0] || null; });
-        w.packSec = {};
+        w.gen = {};
       }
       w.sections = w.sections.filter(function (x) { return TYPES.indexOf(x.type) < 0; });
-      // Quais versões de uma etapa entram, conforme o tema.
-      function variants(kind) {
-        var base = w.baseSec[kind], out = [];
-        if (!base) return out;
-        if (def.base) out.push({ pid: "", sec: base });
-        def.packs.forEach(function (pid) {
-          var pk = (window.PACKS || {})[pid], alt = pk && pk[kind] && pk[kind][base.id];
-          if (!alt) return;
-          var id = base.id + "-" + pid;
-          if (!w.packSec[id]) w.packSec[id] = { id: id, type: base.type, subtitle: base.subtitle,
-            title: (pk.titles && pk.titles[kind]) || base.title, items: alt,
-            icon: kind === "vocab" ? pk.icon : null };
-          out.push({ pid: pid, sec: w.packSec[id] });
-        });
-        return out.length ? out : [{ pid: "", sec: base }];
+      // Conteúdo misto: uma leitura e um vocabulário por módulo, com trabalho e viagem juntos.
+      var mix = (window.MIX || {})[w.id];
+      if (mix) {
+        if (w.baseSec.reading && mix.reading) w.baseSec.reading.items = mix.reading;
+        if (w.baseSec.vocab && mix.vocab) w.baseSec.vocab.items = mix.vocab;
       }
-      var add = [];
-      variants("reading").forEach(function (v) {
-        add.push(v.sec);
-        // A escuta é feita com as frases da leitura do mesmo tema.
-        var lid = w.id + "-escuta" + (v.pid ? "-" + v.pid : ""), pk = (window.PACKS || {})[v.pid];
-        if (!w.packSec[lid]) w.packSec[lid] = { id: lid, type: "listen", subtitle: "Ouça e monte a frase",
-          title: (pk && pk.titles && pk.titles.listen) || "Escuta",
-          items: v.sec.items.map(function (x) { return { en: x.en, pt: x.pt, full: x.en }; }) };
-        add.push(w.packSec[lid]);
-      });
-      variants("vocab").forEach(function (v) {
-        add.push(v.sec);
-        var tid = v.sec.id + "-treino";
-        if (!w.packSec[tid]) { var dr = vocabDrill(v.sec, v.pid); if (dr) w.packSec[tid] = dr; }
-        if (w.packSec[tid]) add.push(w.packSec[tid]);
-      });
+      var add = [], r = w.baseSec.reading, v = w.baseSec.vocab;
+      if (r) {
+        add.push(r);
+        var lid = w.id + "-escuta";
+        if (!w.gen[lid]) w.gen[lid] = { id: lid, type: "listen", title: "Escuta", subtitle: "Ouça e monte a frase",
+          items: r.items.map(function (x) { return { en: x.en, pt: x.pt, full: x.en }; }) };
+        add.push(w.gen[lid]);
+      }
+      if (v) {
+        add.push(v);
+        var tid = v.id + "-treino";
+        if (!w.gen[tid]) { var dr = vocabDrill(v, ""); if (dr) w.gen[tid] = dr; }
+        if (w.gen[tid]) add.push(w.gen[tid]);
+      }
       w.sections = w.sections.concat(add);
     });
   }
-  applyPack();
+  buildSections();
   function indexContent() {
     WEEKS.forEach(function (w) {
       w.sections.forEach(function (s) {
@@ -157,7 +137,6 @@
     });
   }
   indexContent();
-  function setTheme(id) { state.theme = id; save(); applyPack(); indexContent(); render(); }
   function isQuiz(s) { return s.type === "fill" || s.type === "translate" || s.type === "listen"; }
   function goal() { return state.goal || 20; }
   WEEKS.forEach(function (w, i) { w.idx = i; w.num = i + 1; });
@@ -1336,7 +1315,6 @@
       '<div class="stats"><div><b>' + streak() + '</b>dias<br>seguidos</div><div><b>' + doneMods + '</b>de ' + WEEKS.length + '<br>módulos</div>' +
       '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros<br>superados</div></div>' + weekChart() +
       '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
-      '<div class="goal-set"><span>Vocabulário</span><div class="seg">' + THEMES.map(function (t) { return '<button data-theme="' + t.id + '" class="' + (theme() === t.id ? "on" : "") + '">' + t.short + '</button>'; }).join("") + '</div></div>' +
       '';
     var last = state.lastBackup;
     html += '<details class="advanced"' + (auth ? "" : " open") + '><summary>Backup manual</summary><section class="backup"><p class="muted small">' +
@@ -1352,7 +1330,6 @@
     bindProfile(); bindAccount();
     document.getElementById("redo-pl").onclick = function () { go({ name: "placement" }); };
     app.querySelectorAll("[data-goal]").forEach(function (b) { b.onclick = function () { state.goal = +b.getAttribute("data-goal"); save(); render(); }; });
-    app.querySelectorAll("[data-theme]").forEach(function (b) { b.onclick = function () { setTheme(b.getAttribute("data-theme")); toast(theme() === "ambos" ? "Vocabulário de trabalho e de viagem" : "Vocabulário de " + b.textContent.toLowerCase()); }; });
     document.getElementById("bk-copy").onclick = function () { state.lastBackup = today(); save(); share(makeBackup(), "Backup do nowish", "Backup copiado. Guarde no seu app de notas"); setTimeout(render, 2300); };
     document.getElementById("bk-open").onclick = function () { var box = document.getElementById("bk-restore"); box.hidden = !box.hidden; if (!box.hidden) document.getElementById("bk-text").focus(); };
     document.getElementById("bk-go").onclick = function () {
@@ -1543,13 +1520,10 @@
   function renderSetup() {
     app.innerHTML = '<div class="welcome setup"><div class="w-art" style="--m:' + MOD_COLORS[3] + '">' + svg('<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>', 2) + '</div>' +
       '<h1>Como podemos te chamar?</h1><input class="field" id="su-name" maxlength="40" placeholder="Seu nome" style="margin-top:18px;text-align:center" value="' + esc((state.profile || {}).name || "") + '">' +
-      '<h2 class="sub-h" style="margin:18px 0 8px">Para que você vai usar o inglês?</h2><div class="pick">' +
-      THEMES.map(function (t) { return '<button class="pick-op' + (theme() === t.id ? " on" : "") + '" data-theme="' + t.id + '"><b>' + t.name + '</b><span>' + t.sub + '</span></button>'; }).join("") +
-      '</div><p class="muted small" style="margin-top:14px">Dá para trocar depois no Perfil. Em seguida, um teste de 12 questões coloca você no nível certo.</p></div>' +
+      '<p class="muted small" style="margin-top:14px">Um teste de 12 questões coloca você no nível certo. Dá para pular e começar do zero.</p></div>' +
       (api.ready && !auth ? '<div class="center" style="margin-top:14px"><button class="text-btn" id="su-login">Já tenho conta: entrar</button></div>' : "") +
       '<div class="dock"><button class="btn btn-primary" id="su-test">Fazer o teste de nível</button><button class="text-btn" id="su-a2" style="width:100%">Pular e começar do zero (A1)</button></div>';
     var keep = function () { state.profile = state.profile || {}; state.profile.name = document.getElementById("su-name").value.trim(); save(); };
-    app.querySelectorAll("[data-theme]").forEach(function (b) { b.onclick = function () { keep(); setTheme(b.getAttribute("data-theme")); }; });
     document.getElementById("su-test").onclick = function () { keep(); go({ name: "placement" }); };
     var sl = document.getElementById("su-login"); if (sl) sl.onclick = function () { keep(); go({ name: "login", from: "setup" }); };
     document.getElementById("su-a2").onclick = function () { keep(); state.placement = "A1"; state.onboarded = true; save(); go({ name: "home" }); };
