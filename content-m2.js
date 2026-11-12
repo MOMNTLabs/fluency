@@ -198,7 +198,7 @@ window.WEEKS.push(
   },
   {
     id: "s8", title: "Módulo 8",
-    subtitle: "Phrasal verbs do trabalho + revisão geral",
+    subtitle: "Phrasal verbs do trabalho",
     sections: [
       { id: "s8-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
         intro: "Phrasal verb é <b>verbo + partícula</b> com sentido novo. Decore como um bloco, igual a uma palavra.",

@@ -1,7 +1,7 @@
 // Mude a versão a cada atualização de conteúdo para o iPhone baixar os arquivos novos.
-const VERSION = "2026-11-12-4";
+const VERSION = "2026-11-12-6";
 const CACHE = "ingles-" + VERSION;
-const FILES = ["./", "index.html", "app.js", "content.js", "content-m1.js", "content-m2.js", "content-m3.js", "content-a2.js", "content-b1.js", "course.js", "manifest.webmanifest",
+const FILES = ["./", "index.html", "app.js", "content.js", "content-m1.js", "content-m2.js", "content-m3.js", "content-a2.js", "content-b1.js", "content-a1.js", "content-b2.js", "course.js", "manifest.webmanifest",
   "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "fonts/bricolage.woff2"];
 
 self.addEventListener("install", (e) => {

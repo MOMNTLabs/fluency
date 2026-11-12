@@ -132,7 +132,7 @@ window.WEEKS.push(
   },
   {
     id: "s4", title: "Módulo 4",
-    subtitle: "Contando o que alguém disse + revisão geral",
+    subtitle: "Contando o que alguém disse",
     sections: [
       { id: "s4-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
         intro: "Quando você conta o que alguém disse no passado, <b>o verbo recua um tempo</b>.",

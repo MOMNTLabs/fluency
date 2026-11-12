@@ -274,6 +274,16 @@
     a2m4: '<path d="M6 20V11M12 20V4M18 20v-6"/>',
     a2m5: '<rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/><rect x="8.5" y="4" width="7" height="7" rx="1.5"/>',
     b1m3: '<rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M3.5 10h17M8 6l-1.5 4M13 6l-1.5 4M18 6l-1.5 4"/>',
+    a1m1: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.5 7-5.5s5.8 1.9 7 5.5"/>',
+    a1m2: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+    a1m3: '<path d="M4 12V5a1 1 0 0 1 1-1h7l8 8-8 8z"/><circle cx="8.5" cy="8.5" r="1.3"/>',
+    a1m4: '<circle cx="12" cy="12" r="4"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/>',
+    a1m5: '<path d="M9.5 4L7.5 20M16.5 4l-2 16M4.5 9h16M3.5 15h16"/>',
+    a1m6: '<circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 19c.8-3 3.2-4.5 6-4.5s5.2 1.5 6 4.5M15.5 14.6c2.3-.2 4.2 1 5 3.4"/>',
+    b2m1: '<path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2M17 3.5l1.5 2.5 2.5 1"/>',
+    b2m2: '<path d="M12 3l2.3 5.2L20 9l-4.3 3.8L17 18.5 12 15.6 7 18.5l1.3-5.7L4 9l5.7-.8z"/>',
+    b2m3: '<path d="M14.5 5.5a4 4 0 0 0-5 5L4 16l4 4 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-3-3z"/>',
+    b2m4: '<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/>',
     b1m6: '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.3 11l7.4-3.8M8.3 13l7.4 3.8"/>'
   };
   var MOD_OPEN_KEY = "fluency-open-modules";
@@ -523,8 +533,9 @@
     forget: ["forgot", "forgotten"], "do": ["did", "done"], make: ["made", "made"], put: ["put", "put"], run: ["ran", "run"], think: ["thought", "thought"],
     sell: ["sold", "sold"], keep: ["kept", "kept"], read: ["read", "read"], meet: ["met", "met"], win: ["won", "won"], begin: ["began", "begun"],
     bring: ["brought", "brought"], build: ["built", "built"], choose: ["chose", "chosen"], drive: ["drove", "driven"], hear: ["heard", "heard"],
-    say: ["said", "said"], shoot: ["shot", "shot"], show: ["showed", "shown"], teach: ["taught", "taught"], spend: ["spent", "spent"], feel: ["felt", "felt"] };
-  var DOUBLE = { get: 1, put: 1, stop: 1, plan: 1, run: 1, sit: 1, swim: 1, begin: 1 };
+    say: ["said", "said"], drink: ["drank", "drunk"], sleep: ["slept", "slept"], eat: ["ate", "eaten"], cut: ["cut", "cut"],
+    fall: ["fell", "fallen"], lend: ["lent", "lent"], sit: ["sat", "sat"], wear: ["wore", "worn"], understand: ["understood", "understood"], shoot: ["shot", "shot"], show: ["showed", "shown"], teach: ["taught", "taught"], spend: ["spent", "spent"], feel: ["felt", "felt"] };
+  var DOUBLE = { get: 1, put: 1, stop: 1, plan: 1, run: 1, sit: 1, swim: 1, begin: 1, forget: 1, cut: 1, shop: 1 };
   function pastOf(b) { if (IRR[b]) return IRR[b][0]; if (/e$/.test(b)) return b + "d"; if (/[^aeiou]y$/.test(b)) return b.slice(0, -1) + "ied"; if (DOUBLE[b]) return b + b.slice(-1) + "ed"; return b + "ed"; }
   function ppOf(b) { return IRR[b] ? IRR[b][1] : pastOf(b); }
   function ingOf(b) { if (b === "be") return "being"; if (/[^e]e$/.test(b)) return b.slice(0, -1) + "ing"; if (DOUBLE[b]) return b + b.slice(-1) + "ing"; return b + "ing"; }
@@ -534,9 +545,12 @@
     if (!/^[a-z]+$/.test(b)) return null;
     var V2 = pastOf(b), V3 = ppOf(b), neg = adv === "not";
     var list = neg ? (passive ? ["hasn't been " + V3, "wasn't " + V3, "isn't " + V3, "won't be " + V3, "hadn't " + V3, "didn't " + b] :
-      ["didn't " + b, "don't " + b, "hadn't " + V3, "haven't " + V3, "wouldn't " + b, "wouldn't have " + V3, "won't " + b]) :
-      [b, sOf(b), V2, "have " + V3, "has " + V3, "had " + V3, "would " + b, "will " + b, "would have " + V3, "to " + b, ingOf(b)];
-    if (passive && !neg) list = ["is " + V3, "are " + V3, "was " + V3, "were " + V3, "has been " + V3, "will be " + V3, "be " + V3, "been " + V3, V2, "have " + V3, "would " + b];
+      ["didn't " + b, "don't " + b, "doesn't " + b, "hadn't " + V3, "haven't " + V3, "wouldn't " + b, "wouldn't have " + V3, "won't " + b,
+        "isn't " + ingOf(b), "aren't " + ingOf(b), "weren't " + ingOf(b), "haven't been " + ingOf(b), "didn't use to " + b, "might not have " + V3, "shouldn't have " + V3]) :
+      [b, sOf(b), V2, "have " + V3, "has " + V3, "had " + V3, "would " + b, "will " + b, "would have " + V3, "to " + b, ingOf(b),
+        "did " + b, "do " + b, "does " + b, "is " + ingOf(b), "are " + ingOf(b), "was " + ingOf(b), "were " + ingOf(b), "used to " + b,
+        "have been " + ingOf(b), "has been " + ingOf(b), "had been " + ingOf(b), "must have " + V3, "might have " + V3, "should have " + V3, "can't have " + V3, "could have " + V3];
+    if (passive && !neg) list = ["is being " + V3, "was being " + V3, "are being " + V3, "should have been " + V3, "must be " + V3, "can be " + V3, "is " + V3, "are " + V3, "was " + V3, "were " + V3, "has been " + V3, "will be " + V3, "be " + V3, "been " + V3, V2, "have " + V3, "would " + b];
     if (b === "be") list = list.concat(["were", "was", "is", "are", "am"]);
     if (adv && !neg) list = list.filter(function (f) { return !/^to |ing$/.test(f); }).map(function (f) { var w = f.split(" "); return w.length > 1 ? [w[0], adv].concat(w.slice(1)).join(" ") : adv + " " + f; });
     return list;
@@ -557,6 +571,8 @@
     var forms = hint ? verbForms(hint.toLowerCase(), passive) : null;
     var useForms = forms && forms.some(function (f) { return accepted.indexOf(norm(f)) >= 0; });
     var plainItem = function (x) { var h = (x.q.match(/\(([^()]+)\)\s*[^()]*$/) || [])[1]; return !h || !verbForms(h.toLowerCase()); };
+    // No A1 e A2, nada de formas avançadas como distratoras.
+    if (useForms && (ref.week.level === "A1" || ref.week.level === "A2")) forms = forms.filter(function (f) { return accepted.indexOf(norm(f)) >= 0 || !/(ha(ve|s|d) been|haven't been|(must|might|should|can't|could|would|wouldn't|shouldn't) (not )?have |used to|use to)/.test(f); });
     if (useForms) pool = forms;
     else {
       ref.section.items.forEach(function (x) { if (x !== it && plainItem(x)) pool.push(x.a[0].replace(/^'/, "")); });
@@ -570,6 +586,13 @@
       if (!useForms && n.split(" ").length !== wc) later.push(p); else d.push(p);
     });
     if (d.length < 3) d = d.concat(later);
+    // Poucas alternativas? Completa com respostas de outras questões da seção e do módulo.
+    if (d.length < 3) {
+      var extra = [];
+      ref.section.items.concat.apply(ref.section.items, ref.week.sections.filter(function (x) { return x.type === "fill" && x !== ref.section; }).map(function (x) { return x.items; }))
+        .forEach(function (x) { if (x !== it) extra.push(x.a[0].replace(/^'/, "")); });
+      sshuffle(extra, it.id + "x").forEach(function (p) { var n = norm(p); if (n && !seen[n] && accepted.indexOf(n) < 0) { seen[n] = 1; d.push(p); } });
+    }
     var nb = blanksIn(it); if (nb > 1) d = d.filter(function (p) { return p.split(" ").length >= nb; });
     if (useForms) { var same = d.filter(function (p) { return p.split(" ").length === correct.split(" ").length; }); d = same.slice(0, 2).concat(d.filter(function (p) { return same.indexOf(p) < 0; })); }
     it._opts = sshuffle([correct].concat(d.slice(0, 3)), it.id + "o");
@@ -938,18 +961,18 @@
     for (var k = 0; k < order.length; k++) {
       if (ok.slice(k * 3, k * 3 + 3).filter(Boolean).length >= 2) est = order[k]; else break;
     }
-    var start = est === "A1" ? "A2" : (lvl(est) > lvl("B2") ? "B2" : est);
+    var start = lvl(est) > lvl("B2") ? "B2" : est;
     return { est: est, start: start };
   }
   function renderPlaced(P) {
     var r = placementResult(P.ok), L = levelInfo(r.est), S = levelInfo(r.start);
-    var note = r.est === "A1" ? "O A1 chega em breve. Por enquanto, você começa pelo A2, que retoma o básico com calma." :
+    var note = r.est === "A1" ? "Você começa do básico, com calma. Cada módulo leva poucos dias." :
       r.est === "C1" ? "Os módulos de C1 chegam em breve. Por enquanto, você começa pelo B2 para manter o ritmo." :
       "Os níveis abaixo ficam liberados para você praticar quando quiser.";
     app.innerHTML = '<div class="welcome"><div class="lv-hero">' + r.est + '</div><h1>Seu nível: ' + r.est + '</h1><p class="muted">' + esc(L.name || "Iniciante") + '. Você acertou ' + P.ok.filter(Boolean).length + ' de ' + PLACEMENT.length + '.</p>' +
       '<p class="muted small" style="margin-top:14px">' + note + '</p></div>' +
       '<div class="dock"><button class="btn btn-primary" id="go-start">Começar no ' + r.start + '</button>' +
-      (r.start !== "A2" ? '<button class="text-btn" id="go-a2" style="width:100%">Prefiro começar do A2</button>' : "") + '</div>';
+      (lvl(r.start) > lvl("A2") ? '<button class="text-btn" id="go-a2" style="width:100%">Prefiro começar do A2</button>' : "") + '</div>';
     if (lvl(r.est) >= lvl("B1")) celebrate();
     var fin = function (code) { state.placement = code; state.estLevel = r.est; state.onboarded = true; save(); scrolledOnce = false; go({ name: "home" }); };
     document.getElementById("go-start").onclick = function () { fin(r.start); };
@@ -1007,10 +1030,10 @@
     app.innerHTML = '<div class="welcome"><div class="w-art" style="--m:' + MOD_COLORS[3] + '">' + svg('<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>', 2) + '</div>' +
       '<h1>Como podemos te chamar?</h1><input class="field" id="su-name" maxlength="40" placeholder="Seu nome" style="margin-top:18px;text-align:center" value="' + esc((state.profile || {}).name || "") + '">' +
       '<p class="muted small" style="margin-top:22px">Agora, um teste rápido (12 questões, uns 2 minutos) para você começar no nível certo.</p></div>' +
-      '<div class="dock"><button class="btn btn-primary" id="su-test">Fazer o teste de nível</button><button class="text-btn" id="su-a2" style="width:100%">Pular e começar do básico (A2)</button></div>';
+      '<div class="dock"><button class="btn btn-primary" id="su-test">Fazer o teste de nível</button><button class="text-btn" id="su-a2" style="width:100%">Pular e começar do zero (A1)</button></div>';
     var keep = function () { state.profile = state.profile || {}; state.profile.name = document.getElementById("su-name").value.trim(); save(); };
     document.getElementById("su-test").onclick = function () { keep(); go({ name: "placement" }); };
-    document.getElementById("su-a2").onclick = function () { keep(); state.placement = "A2"; state.onboarded = true; save(); go({ name: "home" }); };
+    document.getElementById("su-a2").onclick = function () { keep(); state.placement = "A1"; state.onboarded = true; save(); go({ name: "home" }); };
   }
 
   // ---------- Backup ----------
@@ -1032,7 +1055,7 @@
   }
 
   // ---------- Indicador offline ----------
-  var OFFLINE_FILES = ["./", "index.html", "app.js", "content.js", "content-a2.js", "content-b1.js", "content-m1.js", "content-m2.js", "content-m3.js", "course.js", "fonts/bricolage.woff2"];
+  var OFFLINE_FILES = ["./", "index.html", "app.js", "content.js", "content-a2.js", "content-b1.js", "content-a1.js", "content-b2.js", "content-m1.js", "content-m2.js", "content-m3.js", "course.js", "fonts/bricolage.woff2"];
   var offline = { state: "checking" };
   function offlineIcon() {
     var cloud = '<path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0 0 9z"/>';
