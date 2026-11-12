@@ -858,12 +858,12 @@
       '<div class="stats"><div><b>' + streak() + '</b>dias seguidos</div><div><b>' + doneMods + '/' + WEEKS.length + '</b>módulos</div>' +
       '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div></div>' + weekChart() +
       '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
-      '<h2 style="margin-top:28px">Meus erros</h2><p class="muted small">No fim de semana, copie a lista e mande para o Claude. Ele usa para ajustar os próximos módulos.</p>';
+      '<h2 style="margin-top:28px">Para reforçar</h2><p class="muted small">As questões que você errou. Cada uma volta na revisão até você acertar em três dias diferentes.</p>';
     if (!pend.length) {
       html += '<div class="empty"><div class="art">' + I.check + '</div><h2>Nenhum erro pendente</h2><p class="muted small">' +
         (state.mastered ? "Você já superou " + state.mastered + (state.mastered === 1 ? " erro." : " erros.") : "Faça uma rodada para começar.") + '</p></div>';
     } else {
-      html += '<div class="actions"><button class="btn btn-primary" id="copy">Copiar lista para o Claude</button></div><div class="panel">';
+      html += '<div class="actions"><button class="btn btn-primary" id="rev-all">Revisar agora</button><button class="btn btn-soft" id="copy">Compartilhar</button></div><div class="panel">';
       pend.forEach(function (id) {
         var ref = ITEMS[id], r = state.results[id] || {}, rv = state.review[id], isDue = rv.due <= today();
         var dots = ""; for (var k2 = 0; k2 < 3; k2++) dots += '<i class="' + (k2 < rv.box ? "on" : "") + '"></i>';
@@ -878,17 +878,17 @@
     var last = state.lastBackup;
     html += '<section class="backup"><h2>Backup do progresso</h2><p class="muted small">' +
       (last ? "Último backup em " + shortDate(last) + "." : "Você ainda não fez nenhum backup.") +
-      ' Cole o código no app Notas ou na conversa com o Claude. Se trocar de iPhone ou reinstalar o app, é só restaurar.</p>' +
-      '<div class="actions"><button class="btn btn-soft" id="bk-copy">Copiar backup</button><button class="btn btn-soft" id="bk-open">Restaurar</button></div>' +
+      ' Guarde o código no app de notas ou mande para você mesmo por e-mail. Se trocar de celular ou reinstalar o app, é só restaurar.</p>' +
+      '<div class="actions"><button class="btn btn-soft" id="bk-copy">Salvar backup</button><button class="btn btn-soft" id="bk-open">Restaurar</button></div>' +
       '<div id="bk-restore" hidden><textarea class="field" id="bk-text" placeholder="Cole aqui o código do backup" style="margin-top:12px;min-height:90px;font-size:15px"></textarea>' +
       '<div class="actions"><button class="btn btn-primary" id="bk-go">Restaurar progresso</button></div></div></section>';
     html += '<div class="center" style="margin-top:18px"><button class="text-btn" id="redo-pl">Refazer o teste de nível</button></div>';
-    html += '<p class="foot">Seu progresso fica salvo neste iPhone.</p>';
+    html += '<p class="foot">Seu progresso fica salvo neste aparelho.</p>';
     app.innerHTML = html;
     bindProfile();
     document.getElementById("redo-pl").onclick = function () { go({ name: "placement" }); };
     app.querySelectorAll("[data-goal]").forEach(function (b) { b.onclick = function () { state.goal = +b.getAttribute("data-goal"); save(); render(); }; });
-    document.getElementById("bk-copy").onclick = function () { state.lastBackup = today(); save(); copy(makeBackup(), "Backup copiado. Cole no Notas ou no Claude"); setTimeout(render, 2300); };
+    document.getElementById("bk-copy").onclick = function () { state.lastBackup = today(); save(); share(makeBackup(), "Backup do nowish", "Backup copiado. Guarde no seu app de notas"); setTimeout(render, 2300); };
     document.getElementById("bk-open").onclick = function () { var box = document.getElementById("bk-restore"); box.hidden = !box.hidden; if (!box.hidden) document.getElementById("bk-text").focus(); };
     document.getElementById("bk-go").onclick = function () {
       var s = readBackup(document.getElementById("bk-text").value);
@@ -897,14 +897,21 @@
     };
     var c = document.getElementById("copy");
     if (c) c.onclick = function () {
-      var lines = ["Meus erros no nowish:"];
+      var lines = ["Minhas questões para reforçar no nowish:"];
       pend.forEach(function (id) {
         var ref = ITEMS[id], r = state.results[id] || {};
         lines.push("- " + ref.week.title + ", " + ref.section.title + ", questão " + ref.item.n + ": " + plain(ref.item.q || ref.item.full) +
           " | Minha resposta: " + (r.last || "-") + " | Certo: " + plain(ref.item.full) + " | Errei " + (r.wrong || 1) + "x");
       });
-      copy(lines.join("\n"));
+      share(lines.join("\n"), "Minhas questões para reforçar", "Lista copiada");
     };
+    var ra = document.getElementById("rev-all");
+    if (ra) ra.onclick = function () { pend.forEach(function (id) { state.review[id].due = today(); }); save(); startSession("review", shuffle(pend.slice())); };
+  }
+  // Usa a folha de compartilhar do celular quando existe; senão, copia.
+  function share(text, title, okMsg) {
+    if (navigator.share) { navigator.share({ title: title, text: text }).catch(function (e) { if (e && e.name !== "AbortError") copy(text, okMsg); }); }
+    else copy(text, okMsg);
   }
   function copy(text, okMsg) {
     okMsg = okMsg || "Lista copiada";
@@ -921,7 +928,7 @@
   // ---------- Boas-vindas ----------
   var WELCOME = [
     { t: "Bem-vindo ao nowish.", p: "Inglês nos intervalos do dia: no ônibus, na fila, no café. Do básico ao avançado, um momento de cada vez.", ic: '<path d="M5 19c3-6 11-4 14-12"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="7" r="2"/>' },
-    { t: "Funciona sem internet", p: "No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. A nuvem verde no topo mostra que está tudo salvo.", ic: '<path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0 0 9z"/><path d="M9.5 14l2 2 3.5-3.5"/>' },
+    { t: "Funciona sem internet", p: "Instale na tela de início: no iPhone, Safari → Compartilhar → Adicionar à Tela de Início. No Android, menu do Chrome → Instalar app. A nuvem verde no topo mostra que está tudo salvo.", ic: '<path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0 0 9z"/><path d="M9.5 14l2 2 3.5-3.5"/>' },
     { t: "Erre à vontade", p: "Cada erro volta na revisão até você acertar três vezes. Faça backup do progresso uma vez por semana, na aba Perfil.", ic: '<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>' }
   ];
   function renderWelcome() {
@@ -1076,7 +1083,7 @@
     return svg(cloud + mark, 1.9);
   }
   function offlineMessage() {
-    if (offline.state === "ok") return "Tudo salvo no iPhone: " + WEEKS.length + " módulos funcionam sem internet";
+    if (offline.state === "ok") return "Tudo salvo neste aparelho: " + WEEKS.length + " módulos funcionam sem internet";
     if (offline.state === "partial") return "Ainda falta baixar parte do app. Abra com internet";
     return "Baixando o app para usar sem internet…";
   }
