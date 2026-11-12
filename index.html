@@ -416,20 +416,24 @@ body.focus main { padding-bottom: 300px; }
 .bar-v.hit { background: var(--cobalt); }
 .goal-line { position: absolute; left: 0; right: 0; border-top: 2px dashed var(--line); height: 0; }
 .goal-line span { position: absolute; right: 0; top: -18px; font-size: 11px; color: var(--muted); }
-.pick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.pick-op { display: flex; flex-direction: column; gap: 2px; text-align: left; cursor: pointer; background: var(--surface); color: var(--ink);
-  border: 1.5px solid var(--line); border-radius: 16px; padding: 13px 14px; font-family: var(--text); }
+.pick { display: grid; gap: 8px; }
+.pick-op { display: flex; flex-direction: column; gap: 1px; text-align: left; cursor: pointer; background: var(--surface); color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: 15px; padding: 10px 14px; font-family: var(--text); }
 .pick-op b { font-size: 16px; }
 .pick-op span { font-size: 13px; color: var(--muted); line-height: 1.25; }
 .pick-op.on { border-color: var(--cobalt); box-shadow: 0 0 0 3px var(--cobalt-soft); }
 .pick-op.on b { color: var(--cobalt); }
 .goal-set { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; font-weight: 600; }
 .seg { display: flex; background: var(--sunk); border-radius: 12px; padding: 3px; }
-.seg button { border: 0; background: none; border-radius: 9px; padding: 6px 14px; font-weight: 700; color: var(--muted); cursor: pointer; }
+.seg button { border: 0; background: none; border-radius: 9px; padding: 6px 12px; font-size: 15px; font-weight: 700; color: var(--muted); cursor: pointer; }
 .seg button.on { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
 
 /* ===== Boas-vindas ===== */
 .welcome { text-align: center; padding: 12vh 8px 0; }
+.welcome.setup { padding-top: 4vh; padding-bottom: 140px; }
+.welcome.setup .w-art { width: 76px; height: 76px; border-radius: 24px; margin-bottom: 16px; }
+.welcome.setup .w-art svg { width: 38px; height: 38px; }
+.welcome.setup h1 { font-size: 25px; }
 .w-art { width: 120px; height: 120px; border-radius: 36px; margin: 0 auto 24px; background: var(--m); color: #fff; display: grid; place-items: center;
   box-shadow: 0 7px 0 color-mix(in srgb, var(--m) 70%, #000); }
 .w-art svg { width: 58px; height: 58px; }

@@ -40,19 +40,32 @@
   var ITEMS = {}, SECTIONS = {};
   // Tema do curso: a gramática é a mesma para todos, muda só o vocabulário.
   var THEMES = [
-    { id: "trabalho", name: "Trabalho", sub: "Reuniões, prazos, clientes" },
-    { id: "viagem", name: "Viagem", sub: "Aeroporto, hotel, cidade" }
+    { id: "trabalho", name: "Trabalho", short: "Trabalho", sub: "Reuniões, prazos, clientes", base: true, packs: [] },
+    { id: "viagem", name: "Viagem", short: "Viagem", sub: "Aeroporto, hotel, cidade", base: false, packs: ["viagem"] },
+    { id: "ambos", name: "Os dois", short: "Ambos", sub: "O dobro de palavras, das duas áreas", base: true, packs: ["viagem"] }
   ];
   function theme() { return state.theme || "trabalho"; }
+  function themeDef() {
+    for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === theme()) return THEMES[i];
+    return THEMES[0];
+  }
+  // Monta o vocabulário de cada módulo a partir do tema escolhido. Só as seções de
+  // vocabulário mudam, e nunca muda a quantidade de etapas, para não mexer no progresso.
   function applyPack() {
-    var pk = (window.PACKS || {})[theme()];
+    var def = themeDef();
     WEEKS.forEach(function (w) {
       w.sections.forEach(function (s) {
         if (s.type !== "vocab") return;
         if (!s.base) s.base = { items: s.items, title: s.title };
-        var alt = pk && pk.vocab[s.id];
-        s.items = alt || s.base.items;
-        s.title = alt ? (pk.title || s.base.title) : s.base.title;
+        var list = def.base ? s.base.items.slice() : [], title = s.base.title;
+        def.packs.forEach(function (pid) {
+          var pk = (window.PACKS || {})[pid], alt = pk && pk.vocab[s.id];
+          if (!alt) return;
+          list = list.concat(alt);
+          if (!def.base) title = pk.title || title;
+        });
+        s.items = list.length ? list : s.base.items;
+        s.title = title;
       });
     });
   }
@@ -932,7 +945,7 @@
       '<div class="stats"><div><b>' + streak() + '</b>dias<br>seguidos</div><div><b>' + doneMods + '</b>de ' + WEEKS.length + '<br>módulos</div>' +
       '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros<br>superados</div></div>' + weekChart() +
       '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
-      '<div class="goal-set"><span>Vocabulário</span><div class="seg">' + THEMES.map(function (t) { return '<button data-theme="' + t.id + '" class="' + (theme() === t.id ? "on" : "") + '">' + t.name + '</button>'; }).join("") + '</div></div>' +
+      '<div class="goal-set"><span>Vocabulário</span><div class="seg">' + THEMES.map(function (t) { return '<button data-theme="' + t.id + '" class="' + (theme() === t.id ? "on" : "") + '">' + t.short + '</button>'; }).join("") + '</div></div>' +
       '';
     var last = state.lastBackup;
     html += '<details class="advanced"' + (auth ? "" : " open") + '><summary>Backup manual</summary><section class="backup"><p class="muted small">' +
@@ -948,7 +961,7 @@
     bindProfile(); bindAccount();
     document.getElementById("redo-pl").onclick = function () { go({ name: "placement" }); };
     app.querySelectorAll("[data-goal]").forEach(function (b) { b.onclick = function () { state.goal = +b.getAttribute("data-goal"); save(); render(); }; });
-    app.querySelectorAll("[data-theme]").forEach(function (b) { b.onclick = function () { setTheme(b.getAttribute("data-theme")); toast("Vocabulário de " + b.textContent.toLowerCase()); }; });
+    app.querySelectorAll("[data-theme]").forEach(function (b) { b.onclick = function () { setTheme(b.getAttribute("data-theme")); toast(theme() === "ambos" ? "Vocabulário de trabalho e de viagem" : "Vocabulário de " + b.textContent.toLowerCase()); }; });
     document.getElementById("bk-copy").onclick = function () { state.lastBackup = today(); save(); share(makeBackup(), "Backup do nowish", "Backup copiado. Guarde no seu app de notas"); setTimeout(render, 2300); };
     document.getElementById("bk-open").onclick = function () { var box = document.getElementById("bk-restore"); box.hidden = !box.hidden; if (!box.hidden) document.getElementById("bk-text").focus(); };
     document.getElementById("bk-go").onclick = function () {
@@ -1137,11 +1150,11 @@
 
   // ---------- Configuração inicial (nome e nível) ----------
   function renderSetup() {
-    app.innerHTML = '<div class="welcome"><div class="w-art" style="--m:' + MOD_COLORS[3] + '">' + svg('<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>', 2) + '</div>' +
+    app.innerHTML = '<div class="welcome setup"><div class="w-art" style="--m:' + MOD_COLORS[3] + '">' + svg('<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>', 2) + '</div>' +
       '<h1>Como podemos te chamar?</h1><input class="field" id="su-name" maxlength="40" placeholder="Seu nome" style="margin-top:18px;text-align:center" value="' + esc((state.profile || {}).name || "") + '">' +
-      '<h2 class="sub-h" style="margin:28px 0 8px">Para que você vai usar o inglês?</h2><div class="pick">' +
+      '<h2 class="sub-h" style="margin:18px 0 8px">Para que você vai usar o inglês?</h2><div class="pick">' +
       THEMES.map(function (t) { return '<button class="pick-op' + (theme() === t.id ? " on" : "") + '" data-theme="' + t.id + '"><b>' + t.name + '</b><span>' + t.sub + '</span></button>'; }).join("") +
-      '</div><p class="muted small" style="margin-top:20px">Dá para trocar depois no Perfil. Agora, um teste rápido (12 questões, uns 2 minutos) para você começar no nível certo.</p></div>' +
+      '</div><p class="muted small" style="margin-top:14px">Dá para trocar depois no Perfil. Em seguida, um teste de 12 questões coloca você no nível certo.</p></div>' +
       (api.ready && !auth ? '<div class="center" style="margin-top:14px"><button class="text-btn" id="su-login">Já tenho conta: entrar</button></div>' : "") +
       '<div class="dock"><button class="btn btn-primary" id="su-test">Fazer o teste de nível</button><button class="text-btn" id="su-a2" style="width:100%">Pular e começar do zero (A1)</button></div>';
     var keep = function () { state.profile = state.profile || {}; state.profile.name = document.getElementById("su-name").value.trim(); save(); };
