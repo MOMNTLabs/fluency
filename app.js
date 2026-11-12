@@ -302,10 +302,8 @@
   function isExpanded(w, cur) { return w.id in openMods ? openMods[w.id] : w === cur; }
 
   function topBarHtml() {
-    var due = dueIds().length;
     return '<header class="bar-top"><div class="wordmark">nowish<i></i></div><div class="brand-right">' +
-      (due ? '<button class="due-pill" id="due" aria-label="Revisão de hoje">' + svg('<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>', 2.4) + due + '</button>' : "") +
-      '<button class="offline ' + offline.state + '" id="offline" aria-label="Status offline">' + offlineIcon() + '</button>' +
+      (offline.state === "ok" || offline.state === "checking" ? "" : '<button class="offline ' + offline.state + '" id="offline" aria-label="Status offline">' + offlineIcon() + '</button>') +
       goalChip() + '</div></header>';
   }
   function bindTopBar() {
@@ -326,29 +324,49 @@
     return { soon: false, mods: mods, dn: dn, pct: pct, label: label, locked: !anyOpen };
   }
 
-  // ---------- Início: resumo dos níveis ----------
+  // ---------- Início: o que estudar agora ----------
+  // Um cartão só: nível, módulo, progresso das lições e o botão.
+  function heroCard(cur) {
+    if (!cur) return "";
+    var z = savedSession(), L = levelInfo(cur.level), st = levelState(L), mi = st.mods.indexOf(cur) + 1;
+    var nx = nextSectionOf(cur), dn = 0, segs = "";
+    cur.sections.forEach(function (s) { var d = isDoneSec(s); if (d) dn++; segs += '<i class="' + (d ? "on" : "") + '"></i>'; });
+    var meta, cta;
+    if (z) { meta = sessionName(z) + ", " + z.log.length + " de " + z.ids.length + " questões"; cta = "Continuar"; studyAction = resumeSession; }
+    else if (nx) { meta = "Lição " + (cur.sections.indexOf(nx) + 1) + " de " + cur.sections.length; cta = dn ? "Continuar" : "Começar"; studyAction = function () { openSection(nx.id); }; }
+    else { meta = "Módulo concluído"; cta = "Ver o percurso"; studyAction = function () { go({ name: "level", code: cur.level }); }; }
+    return '<div class="hero" style="--m:' + modColor(cur) + '">' +
+      '<button class="hero-lv" data-open-level="' + L.id + '"><b>' + L.id + '</b><span>' + esc(L.name) + ', módulo ' + mi + ' de ' + st.mods.length + '</span>' + I.next + '</button>' +
+      '<h2>' + esc(cur.subtitle) + '</h2>' +
+      '<div class="hero-segs">' + segs + '</div><p class="hero-meta">' + esc(meta) + '</p>' +
+      '<button class="hero-cta" id="study">' + cta + '</button></div>';
+  }
+  // Faixa de revisão: só aparece quando há questões para hoje.
+  function revStrip() {
+    var due = dueIds().length;
+    if (!due) return "";
+    return '<button class="rev-strip" id="rev-go">' + svg('<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>', 2.4) +
+      '<span>' + due + (due === 1 ? " questão para revisar" : " questões para revisar") + '</span>' + I.next + '</button>';
+  }
   function renderHome() {
     var cur = currentModule(), html = topBarHtml();
     if (needsBackup()) html += '<button class="nudge" id="bk-tip">Faça o backup da semana na aba Perfil</button>';
-    html += studyCard(cur) + loginNudge();
-    if (cur) {
-      var L = levelInfo(cur.level), st = levelState(L);
-      html += '<button class="lv-current" data-open-level="' + L.id + '" style="--m:' + modColor(cur) + '">' +
-        '<span class="lvc-top"><span class="lv-badge">' + L.id + '</span><span class="grow"><span class="lvc-kicker">Seu nível</span><span class="lv-name">' + esc(L.name) + '</span></span><span class="s-go">' + I.next + '</span></span>' +
-        '<span class="lvc-mod"><span class="m-icon sm">' + svg(MOD_ICON[cur.id] || TROPHY, 2) + '</span><span class="grow"><span class="tiny muted">' + esc(cur.title) + '</span><span class="lvc-sub">' + esc(cur.subtitle) + '</span></span></span>' +
-        '<span class="lv-bar"><i style="width:' + st.pct + '%"></i></span><span class="tiny muted">' + st.dn + ' de ' + st.mods.length + ' módulos concluídos</span></button>';
-    }
-    html += '<h2 class="sub-h" style="margin-top:22px">Todos os níveis</h2><div class="lv-grid">';
+    html += heroCard(cur) + revStrip() + loginNudge();
+    html += '<h2 class="sub-h" style="margin-top:26px">Todos os níveis</h2><div class="lv-list">';
     LEVELS.forEach(function (L) {
-      var st = levelState(L), isCur = cur && cur.level === L.id;
-      html += '<button class="lv-tile' + (st.soon ? " soon" : "") + (isCur ? " cur" : "") + (st.label === "Concluído" ? " done" : "") + '"' + (st.soon ? " disabled" : ' data-open-level="' + L.id + '"') + '>' +
-        '<span class="lv-badge">' + L.id + '</span><span class="lt-name">' + esc(L.name) + '</span>' +
-        '<span class="lt-state">' + (st.locked && !st.soon ? I.lock : "") + esc(st.label) + '</span>' +
-        (st.soon ? "" : '<span class="lv-bar"><i style="width:' + st.pct + '%"></i></span>') + '</button>';
+      var st = levelState(L), isCur = cur && cur.level === L.id, lab;
+      if (st.soon) lab = "Em breve";
+      else if (st.label === "Concluído") lab = "Concluído";
+      else if (st.locked) lab = I.lock;
+      else if (lvl(L.id) < lvl(placement()) && !st.dn) lab = "Para praticar";
+      else lab = st.dn + " de " + st.mods.length + " módulos";
+      html += '<button class="lv-row' + (st.soon || st.locked ? " off" : "") + (isCur ? " cur" : "") + (st.label === "Concluído" ? " done" : "") + '"' +
+        (st.soon ? " disabled" : ' data-open-level="' + L.id + '"') + '><b>' + L.id + '</b><span class="n">' + esc(L.name) + '</span><span class="s">' + lab + '</span></button>';
     });
     html += '</div><p class="foot">Do A1 ao C2, no seu ritmo.</p>';
     app.innerHTML = html;
     bindTopBar(); bindNudge();
+    var rg = document.getElementById("rev-go"); if (rg) rg.onclick = function () { go({ name: "review" }); };
     app.querySelectorAll("[data-open-level]").forEach(function (b) { b.onclick = function () { go({ name: "level", code: b.getAttribute("data-open-level") }); }; });
   }
 
@@ -356,8 +374,10 @@
   function renderLevel() {
     var code = view.code, L = levelInfo(code), st = levelState(L), cur = currentModule();
     var html = '<div class="lv-head"><button class="icon-btn" id="back" aria-label="Voltar">' + I.back + '</button>' +
-      '<span class="lv-badge">' + L.id + '</span><span class="grow"><span class="lv-name">' + esc(L.name) + '</span><span class="lv-sub">' + st.dn + ' de ' + st.mods.length + ' módulos concluídos</span></span></div>' +
-      '<p class="muted small" style="margin:4px 0 10px">' + esc(L.about) + '</p>';
+      '<span class="lv-badge sm">' + L.id + '</span><span class="grow"><span class="lv-name">' + esc(L.name) + '</span></span>' +
+      '<span class="lv-count">' + st.dn + '/' + st.mods.length + '</span></div>';
+    // A descrição do nível aparece só enquanto ele não foi começado.
+    if (!st.mods.some(started)) html += '<p class="muted small" style="margin:2px 0 10px">' + esc(L.about) + '</p>';
     if (lvl(code) < lvl(placement())) html += '<div class="tip" style="margin-bottom:12px">Este nível está abaixo do seu. Use para revisar a base quando quiser.</div>';
     function moduleHtml(w) {
       var open = unlocked(w), done = complete(w), col = modColor(w);
@@ -369,22 +389,22 @@
         '<button class="banner" data-mod="' + w.id + '" aria-expanded="' + exp + '">' +
         '<span class="m-icon">' + svg(MOD_ICON[w.id] || TROPHY, 2) + (done ? '<span class="m-done">' + I.done + '</span>' : "") + '</span>' +
         '<span class="grow"><span class="b-label">' + esc(w.title) + '<span class="b-status">' + status + '</span>' + (weakN ? '<span class="b-weak">Reforçar ' + weakN + '</span>' : "") + '</span>' +
-        '<span class="b-title">' + esc(w.subtitle) + '</span><span class="segs">' + segs + '</span></span>' +
+        '<span class="b-title">' + esc(w.subtitle) + '</span>' + (exp ? "" : '<span class="segs">' + segs + '</span>') + '</span>' +
         '<span class="b-chev">' + (open ? I.next : I.lock) + '</span></button>';
       if (!exp) { html += '</section>'; return; }
       html += '<div class="path">';
       w.sections.forEach(function (s, i) {
         var d = state.sections[s.id], isDone = d && d.done, avail = nodeAvailable(w, s), isNext = avail && !isDone;
-        var x = ZIG[(i + w.idx * 3) % ZIG.length] * 46;
+        var x = ZIG[(i + w.idx * 3) % ZIG.length] * 40;
         var cls = isDone ? "done" : isNext ? "next" : "locked", weak = isDone ? pendingOf(s).length : 0;
-        html += '<div class="step' + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
+        html += '<div class="step' + (cls === "locked" ? " is-locked" : cls === "done" ? " is-done" : "") + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
           (isNext ? '<div class="go-tag">' + (w.sections.indexOf(s) === 0 && !Object.keys(state.results).length ? "Começar" : "Continuar") + '</div>' : "") +
           '<button class="node ' + cls + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
-          (isNext ? '<span class="ring"></span>' : "") + svg(TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + (weak ? '<span class="weak-badge" aria-label="' + weak + ' para reforçar">' + weak + '</span>' : "") + '</button>';
+          (isNext ? '<span class="ring"></span>' : "") + svg(TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + (weak ? '<span class="weak-badge" aria-label="' + weak + ' para reforçar">' + weak + '</span>' : "") + '</button><span class="node-lbl">' + esc(s.title) + '</span>';
         if (bubble === s.id) html += bubbleHtml(w, s, avail, d);
         html += '</div>';
       });
-      var lastX = ZIG[(w.sections.length + w.idx * 3) % ZIG.length] * 46;
+      var lastX = ZIG[(w.sections.length + w.idx * 3) % ZIG.length] * 40;
       html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? (weakN ? "silver" : "won") : "") + '" aria-label="' + (done ? (weakN ? "Concluído. Supere os erros para o troféu dourado" : "Módulo dominado") : "Fim do " + esc(w.title)) + '">' + svg(TROPHY, 2.1) + '</div></div>';
       html += '</div></section>';
     }
@@ -427,15 +447,6 @@
       I.flame + '</span>' + streak() + '</button>';
   }
   var studyAction = null;
-  function studyCard(cur) {
-    var z = savedSession(), due = dueIds(), nx = nextSection(), col = cur ? modColor(cur) : MOD_COLORS[0], t, sub;
-    if (z) { t = "Continuar: " + sessionName(z); sub = z.log.length + " de " + z.ids.length + " questões feitas"; studyAction = resumeSession; }
-    else if (due.length && nx) { t = "Estudar agora"; sub = "Revisão de " + due.length + (due.length === 1 ? " erro" : " erros") + ", depois " + nx.title; studyAction = function () { startSession("review", shuffle(due.slice()), null, nx.id); }; }
-    else if (due.length) { t = "Estudar agora"; sub = "Revisão de " + due.length + (due.length === 1 ? " erro" : " erros"); studyAction = function () { startSession("review", shuffle(due.slice())); }; }
-    else if (nx) { t = "Estudar agora"; sub = cur.title + ": " + nx.title; studyAction = function () { openSection(nx.id); }; }
-    else return "";
-    return '<button class="study" id="study" style="--m:' + col + '"><span class="grow"><span class="s-title">' + esc(t) + '</span><span class="s-sub">' + esc(sub) + '</span></span><span class="s-go">' + I.next + '</span></button>';
-  }
   function renderKeepScroll() { var y = window.scrollY; render(); window.scrollTo(0, y); }
   document.addEventListener("click", function (e) {
     if (bubble && view.name === "level" && !e.target.closest(".bubble")) { bubble = null; renderKeepScroll(); }
@@ -659,9 +670,10 @@
     var isMix = S.section && S.section.type === "mix";
     var ctx = S.kind === "reinforce" ? "Reforço: " + ref.week.title + ", " + sec.title : S.kind === "review" ? "Revisão: " + ref.week.title + ", " + sec.title : isMix ? S.section.title + ": " + ref.week.title + ", " + sec.title : ref.week.title + ", " + sec.title;
     var html = '<div class="qtop"><button class="icon-btn" id="close" aria-label="Sair e continuar depois">' + I.x + '</button>' + progressBar(S) +
-      '<span class="count">' + (S.i + 1) + '/' + S.ids.length + '</span></div><div class="qctx">' + esc(ctx) + (S.mode.why && S.phase === "ask" ? '<span class="mode-tag">' + svg('<path d="M4 20h4L19 9l-4-4L4 16z"/>', 2.4) + esc(S.mode.why) + '</span>' : "") + '</div>';
+      '</div><div class="qctx">' + esc(ctx) + (S.mode.why && S.phase === "ask" ? '<span class="mode-tag">' + svg('<path d="M4 20h4L19 9l-4-4L4 16z"/>', 2.4) + esc(S.mode.why) + '</span>' : "") + '</div>';
     var ask = S.phase === "ask", dock = "";
     S.tiles = S.tiles || [];
+    html += '<div class="qbody' + (ask ? "" : " settled") + '">';
     if (sec.type === "fill") {
       html += '<div class="q">' + qHtml(it.q, ask ? (m === "tap" && S.pick ? splitFill(S.pick, blanksIn(it)) : null) : answerParts(it.full)) + '</div>';
       if (ask) {
@@ -698,6 +710,7 @@
           '<div class="actions"><button class="btn btn-soft" id="g-bad">Errei</button><button class="btn btn-primary" id="g-ok">Acertei</button></div></div>';
       }
     }
+    html += '</div>';
     if (S.phase === "fb") dock = feedbackHtml(S, it, sec);
     app.innerHTML = html + '<div class="dock' + (S.phase === "fb" ? " fb" : "") + '">' + dock + '</div>';
     bindQuiz(S, id, it, sec, m);
@@ -705,9 +718,9 @@
   function feedbackHtml(S, it, sec) {
     var canOverride = !S.ok && S.answer && S.answer !== "(não soube)" && (S.mode.m === "type" || sec.type === "translate" || sec.type === "listen");
     var h = '<div class="sheet ' + (S.ok ? "ok" : "bad") + '"><div class="verdict"><span class="mark">' + (S.ok ? I.check : I.x) + '</span>' +
-      (S.ok ? PRAISE[pickN++ % PRAISE.length] : "Resposta certa:") + '</div>';
+      (S.ok ? PRAISE[pickN++ % PRAISE.length] : "Não foi dessa vez") + '</div>';
     if (!S.ok && S.answer && S.answer !== "(não soube)") h += '<div class="yours">Você respondeu <s>' + esc(S.answer) + '</s></div>';
-    h += '<p class="sentence">' + fullHtml(it.full) + '</p>' + (it.pt && sec.type === "listen" ? '<div class="why">' + esc(it.pt) + '</div>' : '<div class="why">' + (it.why || "") + '</div>') +
+    h += (S.ok ? "" : '<div class="tiny muted" style="margin-bottom:2px">Resposta certa</div>') + '<p class="sentence">' + fullHtml(it.full) + '</p>' + (it.pt && sec.type === "listen" ? '<div class="why">' + esc(it.pt) + '</div>' : '<div class="why">' + (it.why || "") + '</div>') +
       '<div class="row">' + listen(it.full) + (canOverride ? '<button class="text-btn" id="override">Eu tinha acertado</button>' : "") + '</div>' +
       '<button class="btn ' + (S.ok ? "btn-ok" : "btn-bad") + '" id="next">Continuar</button></div>';
     return h;
@@ -891,8 +904,8 @@
     var pend = pendingIds().sort(), answered = 0; for (var k in state.results) answered += state.results[k].seen;
     var doneMods = WEEKS.filter(complete).length;
     var html = '<h1 style="margin-top:8px">Perfil</h1>' + profileCard() + mountainCard() + accountCard() +
-      '<div class="stats"><div><b>' + streak() + '</b>dias seguidos</div><div><b>' + doneMods + '/' + WEEKS.length + '</b>módulos</div>' +
-      '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div></div>' + weekChart() +
+      '<div class="stats"><div><b>' + streak() + '</b>dias<br>seguidos</div><div><b>' + doneMods + '</b>de ' + WEEKS.length + '<br>módulos</div>' +
+      '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros<br>superados</div></div>' + weekChart() +
       '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
       '';
     var last = state.lastBackup;
