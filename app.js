@@ -353,14 +353,16 @@
     if (needsBackup()) html += '<button class="nudge" id="bk-tip">Faça o backup da semana na aba Perfil</button>';
     html += heroCard(cur) + revStrip() + loginNudge();
     html += '<h2 class="sub-h" style="margin-top:26px">Todos os níveis</h2><div class="lv-list">';
+    // A trilha fica verde nos níveis já vencidos, azul no atual e apagada no que vem.
     LEVELS.forEach(function (L) {
       var st = levelState(L), isCur = cur && cur.level === L.id, lab;
+      var done = !st.soon && st.label === "Concluído", past = !st.soon && !isCur && (done || lvl(L.id) < lvl(placement()));
       if (st.soon) lab = "Em breve";
-      else if (st.label === "Concluído") lab = "Concluído";
+      else if (done) lab = I.check + "Concluído";
+      else if (past) lab = I.check + (st.dn ? st.dn + " de " + st.mods.length : "Para praticar");
       else if (st.locked) lab = I.lock;
-      else if (lvl(L.id) < lvl(placement()) && !st.dn) lab = "Para praticar";
       else lab = st.dn + " de " + st.mods.length + " módulos";
-      html += '<button class="lv-row' + (st.soon || st.locked ? " off" : "") + (isCur ? " cur" : "") + (st.label === "Concluído" ? " done" : "") + '"' +
+      html += '<button class="lv-row' + (st.soon || st.locked ? " off" : "") + (isCur ? " cur" : "") + (past ? " past" : "") + (done ? " done" : "") + '"' +
         (st.soon ? " disabled" : ' data-open-level="' + L.id + '"') + '><b>' + L.id + '</b><span class="n">' + esc(L.name) + '</span><span class="s">' + lab + '</span></button>';
     });
     html += '</div><p class="foot">Do A1 ao C2, no seu ritmo.</p>';

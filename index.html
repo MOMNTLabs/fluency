@@ -494,16 +494,25 @@ html, body { touch-action: manipulation; }
   background: var(--sign-soft); color: var(--rev-ink); border-radius: 18px; padding: 13px 16px; font: 600 16px var(--text); }
 .rev-strip span { flex: 1; min-width: 0; }
 .rev-strip svg { width: 19px; height: 19px; flex: none; }
-.lv-list { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 0 16px; }
-.lv-row { display: flex; align-items: center; gap: 13px; width: 100%; padding: 11px 0; border: 0; border-top: 1px solid var(--line); background: none; cursor: pointer; text-align: left; color: var(--ink); font-family: var(--text); }
+.lv-list { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 0 16px; overflow: hidden; }
+.lv-row { position: relative; display: flex; align-items: center; gap: 13px; width: 100%; padding: 11px 0; border: 0; border-top: 1px solid var(--line); background: none; cursor: pointer; text-align: left; color: var(--ink); font-family: var(--text); }
 .lv-row:first-child { border-top: 0; }
 .lv-row b { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 15px; background: var(--sunk); color: var(--ink-2); }
 .lv-row .n { flex: 1; min-width: 0; font-weight: 600; font-size: 16px; }
 .lv-row .s { display: flex; align-items: center; font-size: 14px; color: var(--muted); }
 .lv-row .s svg { width: 15px; height: 15px; }
-.lv-row.cur b { background: var(--cobalt); color: var(--cobalt-ink); }
+.lv-row::before { content: ""; position: absolute; left: 18px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.lv-row:first-child::before { top: 50%; }
+.lv-row:last-child::before { bottom: 50%; }
+.lv-row b { position: relative; z-index: 1; }
+.lv-row.past::before, .lv-row.past + .lv-row::before { background: var(--ok); }
+.lv-row.cur::before { background: linear-gradient(var(--ok), var(--cobalt) 50%, var(--line) 50%); }
+.lv-row.past b { background: var(--ok-soft); color: var(--ok); }
+.lv-row.past .s { color: var(--ok); font-weight: 600; }
+.lv-row.done b { background: var(--ok); color: #fff; }
+.lv-row .s svg { margin-right: 4px; }
+.lv-row.cur b { background: var(--cobalt); color: var(--cobalt-ink); box-shadow: 0 0 0 4px color-mix(in srgb, var(--cobalt) 22%, transparent); }
 .lv-row.cur .s { color: var(--cobalt); font-weight: 600; }
-.lv-row.done .s { color: var(--ok); font-weight: 600; }
 .lv-row.off .n { color: var(--muted); }
 .lv-row:disabled { cursor: default; }
 .lv-head { display: flex; align-items: center; gap: 10px; margin: 2px 0 8px; }
