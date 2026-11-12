@@ -9,7 +9,7 @@ window.WEEKS.push(
         cards: [
           C("at = ponto exato", ["Horas, lugares específicos.", "at 7 a.m., at night, at the bus stop, at work"], "I'm at the bus stop."),
           C("on = dias, datas e superfícies", ["Inclui plataformas e o ônibus.", "on Monday, on December 25th, on Instagram, on the bus"], "I study English on the bus."),
-          C("in = períodos e dentro de lugares", ["Meses, anos, partes do dia, cidades.", "in December, in 2027, in the morning, in Vitória, in a car"], "We post more in the evening."),
+          C("in = períodos e dentro de lugares", ["Meses, anos, partes do dia, cidades.", "in December, in 2027, in the morning, in São Paulo, in a car"], "We post more in the evening."),
           C("Pegadinhas", ["at night, mas in the morning", "on the bus, mas in a car / in an Uber", "on the weekend (EUA)"], "I usually edit videos at night.")
         ] },
       { id: "s5-r1", type: "fill", title: "Rodada 1", subtitle: "Tempo: quando?",
@@ -28,7 +28,7 @@ window.WEEKS.push(
           F("I study English ___ the bus.", "on", "I study English {on} the bus.", "Ônibus, trem e avião → on."),
           F("I'm waiting ___ the bus stop.", "at", "I'm waiting {at} the bus stop.", "Ponto específico → at."),
           F("We have 10k followers ___ Instagram.", "on", "We have 10k followers {on} Instagram.", "Plataformas e redes → on."),
-          F("I live ___ Espírito Santo.", "in", "I live {in} Espírito Santo.", "Cidade, estado, país → in."),
+          F("Our client is based ___ Brazil.", "in", "Our client is based {in} Brazil.", "Cidade, estado, país → in."),
           F("There's a typo ___ the video.", "in", "There's a typo {in} the video.", "Dentro do vídeo → in."),
           F("She's ___ work right now.", "at", "She's {at} work right now.", "at work = no trabalho."),
           F("Look at the text ___ the screen.", "on", "Look at the text {on} the screen.", "Superfície → on."),
@@ -72,7 +72,7 @@ window.WEEKS.push(
         intro: "Não tem regra lógica: alguns verbos pedem <b>-ing</b>, outros pedem <b>to</b>. Aprenda em blocos.",
         cards: [
           C("Verbos + -ing", ["enjoy, finish, avoid, keep, mind, suggest"], "I enjoy editing videos."),
-          C("Verbos + to", ["want, need, decide, plan, hope, learn"], "I want to learn color grading."),
+          C("Verbos + to", ["want, need, decide, plan, hope, learn"], "I want to learn Excel."),
           C("Os dois funcionam", ["like, love, hate, start"], "I love editing. / I love to edit."),
           C("Depois de preposição: sempre -ing", ["good at, thanks for, before, after, about"], "Thanks for helping me."),
           C("would like / would love + to", ["Desejo educado ou sonho."], "I'd like to work abroad."),
@@ -81,7 +81,7 @@ window.WEEKS.push(
       { id: "s6-r1", type: "fill", title: "Rodada 1", subtitle: "-ing ou to?",
         items: [
           F("I enjoy ___ (edit) videos.", "editing", "I enjoy {editing} videos.", "enjoy + -ing."),
-          F("I want ___ (learn) color grading.", "to learn", "I want {to learn} color grading.", "want + to."),
+          F("I want ___ (learn) Excel.", "to learn", "I want {to learn} Excel.", "want + to."),
           F("We need ___ (post) more often.", "to post", "We need {to post} more often.", "need + to."),
           F("Have you finished ___ (write) the caption?", "writing", "Have you finished {writing} the caption?", "finish + -ing."),
           F("She decided ___ (change) the font.", "to change", "She decided {to change} the font.", "decide + to."),
@@ -103,7 +103,7 @@ window.WEEKS.push(
       { id: "s6-r3", type: "translate", title: "Rodada 3", subtitle: "Traduza para o inglês",
         items: [
           T("Eu adoro editar vídeos.", "I love editing videos.", "love aceita os dois: <i>I love to edit videos</i> também vale."),
-          T("Preciso terminar o carrossel hoje.", "I need to finish the carousel today.", "need + to."),
+          T("Preciso terminar o relatório hoje.", "I need to finish the report today.", "need + to."),
           T("Ela é boa em escrever legendas.", "She's good at writing captions.", "good at + -ing."),
           T("Paramos de postar aos domingos.", "We stopped posting on Sundays.", "stop + -ing = parar de."),
           T("Quero aprender a usar o After Effects.", "I want to learn how to use After Effects.", "want to + learn how to. <i>I want to learn to use…</i> também vale."),

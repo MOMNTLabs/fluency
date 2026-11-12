@@ -23,18 +23,18 @@ window.WEEKS.push(
           F("Don't worry, I've ___ fixed the subtitles.", ["already", "just"], "Don't worry, I've {already} fixed the subtitles.", "\"Já corrigi\" → already."),
           F("We haven't decided the colors ___.", "yet", "We haven't decided the colors {yet}.", "\"Ainda não decidimos\" → yet no fim."),
           F("She has ___ left the office. You can still catch her at the bus stop.", "just", "She has {just} left the office.", "\"Acabou de sair\" → just."),
-          F("Have you ___ worked with a LUT before?", "ever", "Have you {ever} worked with a LUT before?", "Experiência, \"alguma vez\" → ever.")
+          F("Have you ___ worked with this client before?", "ever", "Have you {ever} worked with this client before?", "Experiência, \"alguma vez\" → ever.")
         ] },
       { id: "s2-r2", type: "fill", title: "Rodada 2", subtitle: "for, since, ever e never",
         items: [
-          F("I've worked at Overload ___ October.", "since", "I've worked at Overload {since} October.", "Outubro é o ponto de partida → since."),
+          F("I've worked at the agency ___ October.", "since", "I've worked at the agency {since} October.", "Outubro é o ponto de partida → since."),
           F("I've studied English on the bus ___ two weeks.", "for", "I've studied English on the bus {for} two weeks.", "Duas semanas é duração → for."),
           F("We've used this template ___ a long time.", "for", "We've used this template {for} a long time.", "Duração → for."),
           F("She has been my boss ___ 2024.", "since", "She has been my boss {since} 2024.", "Ponto de partida → since."),
           F("I've ___ seen such good engagement!", "never", "I've {never} seen such good engagement!", "\"Nunca vi\" → never (o verbo fica na afirmativa)."),
           F("Have you ___ been to São Paulo?", "ever", "Have you {ever} been to São Paulo?", "Pergunta sobre experiência → ever."),
           F("I ___ (know) him for five years.", ["have known", "'ve known"], "I {have known} him for five years.", "Começou no passado e continua → have known."),
-          F("How long ___ you ___ (live) in Vitória?", "have lived", "How long {have} you {lived} in Vitória?", "\"Há quanto tempo você mora\" → How long have you lived.")
+          F("How long ___ you ___ (live) in this city?", "have lived", "How long {have} you {lived} in this city?", "\"Há quanto tempo você mora\" → How long have you lived.")
         ] },
       { id: "s2-r3", type: "translate", title: "Rodada 3", subtitle: "Traduza para o inglês",
         items: [
@@ -125,7 +125,7 @@ window.WEEKS.push(
           V("script", "roteiro", "I wrote the script for the reel."),
           V("to approve", "aprovar", "My boss approved the new layout."),
           V("to miss", "perder (ônibus, prazo); sentir falta", "I missed the bus again."),
-          V("to save", "salvar; economizar", "Save the project before closing Premiere."),
+          V("to save", "salvar; economizar", "Save the file before closing the program."),
           V("unless", "a menos que", "We won't post unless the client approves.")
         ] }
     ]
@@ -166,7 +166,7 @@ window.WEEKS.push(
         ] },
       { id: "s4-r3", type: "translate", title: "Rodada 3", subtitle: "Traduza para o inglês",
         items: [
-          T("Ele me disse que tinha gostado do carrossel.", "He told me he had liked the carousel.", "Com pessoa → told me; \"tinha gostado\" → had liked."),
+          T("Ele me disse que tinha gostado da proposta.", "He told me he had liked the proposal.", "Com pessoa → told me; \"tinha gostado\" → had liked."),
           T("Ela perguntou onde eu trabalhava.", "She asked me where I worked.", "Pergunta contada, sem did."),
           T("O cliente disse que ia ligar amanhã.", "The client said he would call tomorrow.", "\"Ia ligar\" → would call."),
           T("Meu chefe me pediu para mandar o arquivo.", "My boss asked me to send the file.", "Pedido → asked me to."),
@@ -177,7 +177,7 @@ window.WEEKS.push(
       { id: "s4-mix2", type: "mix", title: "Revisão dos módulos, parte 2", subtitle: "Mais uma rodada misturada", count: 8 },
       { id: "s4-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
-          R("My boss told me the new carousel was the best one this month.", "Meu chefe me disse que o novo carrossel era o melhor do mês."),
+          R("My boss told me the new campaign was the best one this month.", "Meu chefe me disse que a nova campanha era a melhor do mês."),
           R("The client asked if we could deliver the video by Friday.", "O cliente perguntou se podíamos entregar o vídeo até sexta."),
           R("She said she had never seen so much engagement.", "Ela disse que nunca tinha visto tanto engajamento."),
           R("I told him not to worry about the deadline.", "Eu disse para ele não se preocupar com o prazo."),

@@ -416,6 +416,38 @@ body.focus main { padding-bottom: 300px; }
 @media (prefers-color-scheme: dark) { .b-weak { color: #FFB066; } }
 .trophy.silver { background: var(--surface); color: var(--m); border: 3px solid var(--m-soft); box-shadow: 0 6px 0 var(--line); }
 .bub-link { display: block; width: 100%; margin-top: 8px; background: none; border: 0; color: inherit; opacity: .9; font-weight: 700; font-size: 15px; padding: 8px; cursor: pointer; }
+/* ===== Níveis ===== */
+.level { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; background: none; border: 0; padding: 18px 2px 12px; cursor: pointer; color: var(--ink); }
+.level .grow { flex: 1; min-width: 0; }
+.lv-badge { flex: none; width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 20px;
+  letter-spacing: -.02em; background: var(--ink); color: var(--bg); }
+.lv-badge.sm { width: auto; height: 24px; padding: 0 8px; border-radius: 8px; font-size: 13px; margin-right: 8px; }
+.lv-name { display: block; font-family: var(--display); font-weight: 750; font-size: 20px; letter-spacing: -.02em; }
+.lv-sub { display: block; font-size: 13px; color: var(--muted); margin-top: 1px; }
+.lv-bar { display: block; height: 5px; border-radius: 3px; background: var(--line); margin-top: 8px; overflow: hidden; }
+.lv-bar i { display: block; height: 100%; background: var(--ink); border-radius: 3px; }
+.level .b-chev.open { transform: rotate(90deg); }
+.level.soon { cursor: default; opacity: .75; }
+.level.soon .lv-badge { background: var(--sunk); color: var(--muted); }
+.lv-pill { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: var(--sunk); color: var(--muted); white-space: nowrap; }
+.more-soon { text-align: center; font-size: 13px; color: var(--muted); border: 2px dashed var(--line); border-radius: 16px; padding: 12px; margin: 4px 0 12px; }
+.lv-hero { width: 120px; height: 120px; margin: 0 auto 22px; border-radius: 36px; background: var(--ink); color: var(--bg); display: grid; place-items: center;
+  font-family: var(--display); font-weight: 800; font-size: 48px; letter-spacing: -.04em; animation: popin .5s cubic-bezier(.2,1.6,.4,1); }
+
+/* ===== Perfil ===== */
+.profile { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 16px; margin-top: 14px; }
+.profile .grow { flex: 1; min-width: 0; }
+.av-btn { position: relative; border: 0; background: none; padding: 0; cursor: pointer; flex: none; }
+.avatar { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--cobalt-soft); color: var(--cobalt); font-weight: 800; }
+.avatar.big { width: 76px; height: 76px; font-size: 26px; font-family: var(--display); }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.av-cam { position: absolute; right: -2px; bottom: -2px; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; border: 3px solid var(--surface); }
+.av-cam svg { width: 14px; height: 14px; }
+.name-btn { display: flex; align-items: center; gap: 6px; border: 0; background: none; padding: 0; font-family: var(--display); font-weight: 750; font-size: 22px; letter-spacing: -.02em; color: var(--ink); cursor: pointer; text-align: left; }
+.name-btn svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
+.name-in { font-size: 18px; padding: 8px 12px; }
+.lv-line { display: flex; align-items: center; font-size: 15px; font-weight: 600; margin-top: 6px; }
+.tab-av { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
 .foot { text-align: center; color: var(--muted); font-size: 13px; margin-top: 24px; }
 </style>
 </head>
@@ -424,13 +456,16 @@ body.focus main { padding-bottom: 300px; }
 <nav class="tabbar" id="tabbar" aria-label="Navegação">
   <button class="tab" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg><span>Início</span></button>
   <button class="tab" data-tab="review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg><span>Revisão</span><span class="dot" id="dot" hidden></span></button>
-  <button class="tab" data-tab="errors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg><span>Progresso</span></button>
+  <button class="tab" data-tab="errors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Perfil</span></button>
 </nav>
 <div class="toast" id="toast" role="status"></div>
 <script src="content.js"></script>
 <script src="content-m1.js"></script>
 <script src="content-m2.js"></script>
 <script src="content-m3.js"></script>
+<script src="content-a2.js"></script>
+<script src="content-b1.js"></script>
+<script src="course.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

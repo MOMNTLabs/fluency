@@ -113,7 +113,7 @@ window.WEEKS.push(
       { id: "s10-leitura", type: "reading", title: "Para ler no caminho", subtitle: "Tente entender antes de ver a tradução",
         items: [
           R("This carousel was created in less than two hours.", "Este carrossel foi criado em menos de duas horas."),
-          R("All our videos are edited in Premiere.", "Todos os nossos vídeos são editados no Premiere."),
+          R("All our contracts are reviewed by a lawyer.", "Todos os nossos contratos são revisados por um advogado."),
           R("The campaign will be launched after Carnival.", "A campanha vai ser lançada depois do Carnaval."),
           R("The post has been shared more than 500 times.", "O post foi compartilhado mais de 500 vezes."),
           R("Our logo was redesigned last year.", "Nosso logo foi redesenhado no ano passado."),
@@ -197,9 +197,9 @@ window.WEEKS.push(
   },
   {
     id: "s12", title: "Módulo 12",
-    subtitle: "revisão final e teste",
+    subtitle: "Revisão do B1 e B2 + teste final",
     sections: [
-      { id: "s12-resumo", type: "summary", title: "Resumo dos 12 módulos", subtitle: "Tudo o que você estudou, numa tela",
+      { id: "s12-resumo", type: "summary", title: "Resumo do curso até aqui", subtitle: "Tudo o que você estudou, numa tela",
         intro: "Releia com calma. Se algo parecer estranho, volte na semana correspondente.",
         cards: [
           C("Tempos verbais", ["Momento definido → passado simples", "Já, até agora → have + particípio", "\"tinha\" → had, \"-ria\" → would"], "I've already posted it."),

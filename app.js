@@ -60,11 +60,30 @@
   WEEKS.forEach(function (w, i) { w.idx = i; w.num = i + 1; });
   function complete(w) { return w.sections.every(function (s) { return state.sections[s.id] && state.sections[s.id].done; }); }
   function started(w) { return w.sections.some(function (s) { return state.sections[s.id]; }); }
+  // Níveis: o nivelamento define onde a pessoa começa. Níveis abaixo ficam livres para praticar.
+  var LEVELS = window.LEVELS || [], LV = ["A1", "A2", "B1", "B2", "C1", "C2"];
+  function lvl(code) { return LV.indexOf(code); }
+  function placement() { return state.placement || "A2"; }
+  function levelInfo(code) { return LEVELS.filter(function (L) { return L.id === code; })[0] || { id: code, name: "" }; }
+  function modulesOf(code) { return WEEKS.filter(function (w) { return w.level === code; }); }
   // Um módulo libera quando o anterior é concluído.
-  function unlocked(w) { return w.idx === 0 || complete(WEEKS[w.idx - 1]) || started(w); }
+  function unlocked(w) {
+    var pl = lvl(placement()), wl = lvl(w.level);
+    if (wl < pl) return true;
+    if (w.idx === 0 || (wl === pl && modulesOf(w.level)[0] === w)) return true;
+    return complete(WEEKS[w.idx - 1]) || started(w);
+  }
   function currentModule() {
-    var open = WEEKS.filter(unlocked);
+    var pl = lvl(placement());
+    var mine = WEEKS.filter(function (w) { return lvl(w.level) >= pl && unlocked(w); });
+    var open = mine.length ? mine : WEEKS.filter(unlocked);
     return open.filter(function (w) { return !complete(w); })[0] || open[open.length - 1];
+  }
+  // Nível que a pessoa está estudando e quanto já fez dele.
+  function studyLevel() {
+    var cur = currentModule(), code = cur ? cur.level : placement(), mods = modulesOf(code);
+    var done = mods.filter(complete).length;
+    return { code: code, info: levelInfo(code), done: done, total: mods.length, pct: mods.length ? Math.round(done / mods.length * 100) : 0 };
   }
   function daysBetween(a, b) { return Math.round((new Date(b + "T12:00:00") - new Date(a + "T12:00:00")) / 86400000); }
   // Chamado quando uma seção é concluída. Devolve o módulo, se ele acabou de ser concluído.
@@ -84,6 +103,8 @@
     WEEKS.forEach(function (x) {
       if (x.idx < wk.idx) x.sections.forEach(function (s) { if (s.type === "fill") s.items.forEach(function (it) { pool.push(it.id); }); });
     });
+    // No primeiro módulo do curso ainda não há passado: usa as questões do próprio módulo.
+    if (!pool.length) wk.sections.forEach(function (s) { if (s.type === "fill") s.items.forEach(function (it) { pool.push(it.id); }); });
     var weak = shuffle(pool.filter(function (id) { return state.results[id] && state.results[id].wrong > 0; }));
     var rest = shuffle(pool.filter(function (id) { return weak.indexOf(id) < 0; }));
     var n = sec.count || 8, half = Math.ceil(n / 2);
@@ -194,13 +215,13 @@
   });
   function setTabs() {
     var inReview = view.session && view.session.kind === "review";
-    var map = { welcome: "home", home: "home", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
+    var map = { placement: "errors", setup: "home", welcome: "home", home: "home", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
     document.querySelectorAll(".tab").forEach(function (t) { t.classList.toggle("on", t.getAttribute("data-tab") === map[view.name]); });
   }
   function render() {
     setTabs();
-    document.body.classList.toggle("focus", view.name === "quiz" || view.name === "welcome");
-    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors, welcome: renderWelcome })[view.name]();
+    document.body.classList.toggle("focus", ["quiz", "welcome", "placement", "setup"].indexOf(view.name) >= 0);
+    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors, welcome: renderWelcome, placement: renderPlacement, setup: renderSetup })[view.name]();
   }
   function top(label, title, right) {
     return '<div class="top"><button class="icon-btn" id="back" aria-label="Voltar">' + I.back + '</button>' +
@@ -243,7 +264,14 @@
     s9: '<circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
     s10: '<path d="M7 4L4 7l3 3M4 7h11a5 5 0 0 1 5 5M17 20l3-3-3-3M20 17H9a5 5 0 0 1-5-5"/>',
     s11: '<path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/>',
-    s12: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'
+    s12: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+    a2m1: '<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4.5v4h4"/><path d="M12 8v4l3 2"/>',
+    a2m2: '<circle cx="12" cy="12" r="8.5"/><path d="M10 8.5l5 3.5-5 3.5z"/>',
+    a2m3: '<path d="M4 12h15M13 6l6 6-6 6"/>',
+    a2m4: '<path d="M6 20V11M12 20V4M18 20v-6"/>',
+    a2m5: '<rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/><rect x="8.5" y="4" width="7" height="7" rx="1.5"/>',
+    b1m3: '<rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M3.5 10h17M8 6l-1.5 4M13 6l-1.5 4M18 6l-1.5 4"/>',
+    b1m6: '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.3 11l7.4-3.8M8.3 13l7.4 3.8"/>'
   };
   var MOD_OPEN_KEY = "fluency-open-modules";
   var openMods = (function () { try { return JSON.parse(localStorage.getItem(MOD_OPEN_KEY)) || {}; } catch (e) { return {}; } })();
@@ -255,9 +283,9 @@
       (due ? '<button class="due-pill" id="due" aria-label="Revisão de hoje">' + svg('<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>', 2.4) + due + '</button>' : "") +
       '<button class="offline ' + offline.state + '" id="offline" aria-label="Status offline">' + offlineIcon() + '</button>' +
       goalChip() + '</div></header>';
-    if (needsBackup()) html += '<button class="nudge" id="bk-tip">Faça o backup da semana na aba Progresso</button>';
+    if (needsBackup()) html += '<button class="nudge" id="bk-tip">Faça o backup da semana na aba Perfil</button>';
     html += studyCard(cur);
-    WEEKS.forEach(function (w) {
+    function moduleHtml(w) {
       var open = unlocked(w), done = complete(w), col = modColor(w);
       var p = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) p++; });
       var exp = isExpanded(w, cur), isCur = w === cur;
@@ -285,13 +313,34 @@
       var lastX = ZIG[(w.sections.length + w.idx * 3) % ZIG.length] * 46;
       html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? (weakN ? "silver" : "won") : "") + '" aria-label="' + (done ? (weakN ? "Concluído. Supere os erros para o troféu dourado" : "Módulo dominado") : "Fim do " + esc(w.title)) + '">' + svg(TROPHY, 2.1) + '</div></div>';
       html += '</div></section>';
+    }
+    var pl = lvl(placement());
+    LEVELS.forEach(function (L) {
+      var mods = modulesOf(L.id), below = lvl(L.id) < pl, lk = "L-" + L.id;
+      var lopen = lk in openMods ? openMods[lk] : !below;
+      if (!L.ready || !mods.length) {
+        html += '<div class="level soon"><span class="lv-badge">' + L.id + '</span><span class="grow"><span class="lv-name">' + esc(L.name) + '</span><span class="lv-sub">' + esc(L.about) + '</span></span><span class="lv-pill">Em breve</span></div>';
+        return;
+      }
+      var dn = mods.filter(complete).length;
+      html += '<button class="level" data-level="' + L.id + '" aria-expanded="' + lopen + '"><span class="lv-badge">' + L.id + '</span><span class="grow"><span class="lv-name">' + esc(L.name) + '</span>' +
+        '<span class="lv-sub">' + (below ? "Abaixo do seu nível: pratique quando quiser" : dn + " de " + mods.length + " módulos concluídos") + '</span>' +
+        '<span class="lv-bar"><i style="width:' + Math.round(dn / mods.length * 100) + '%"></i></span></span><span class="b-chev' + (lopen ? " open" : "") + '">' + I.next + '</span></button>';
+      if (lopen) { mods.forEach(moduleHtml); if (L.partial) html += '<div class="more-soon">Mais módulos de ' + L.id + ' em breve</div>'; }
     });
-    html += '<p class="foot">Fim do curso. Novos módulos podem chegar em atualizações.</p>';
+    html += '<p class="foot">Novos módulos chegam com as atualizações.</p>';
     app.innerHTML = html;
     app.querySelectorAll("[data-node]").forEach(function (b) { b.onclick = function (e) {
       e.stopPropagation(); var id = b.getAttribute("data-node"); bubble = bubble === id ? null : id; renderKeepScroll();
       var bb = app.querySelector(".bubble");
       if (bb) { var r = bb.getBoundingClientRect(), lim = window.innerHeight - 100; if (r.bottom > lim) window.scrollBy({ top: r.bottom - lim, behavior: "smooth" }); }
+    }; });
+    app.querySelectorAll("[data-level]").forEach(function (b) { b.onclick = function (e) {
+      e.stopPropagation(); var k = "L-" + b.getAttribute("data-level"), below = lvl(b.getAttribute("data-level")) < lvl(placement());
+      openMods[k] = !(k in openMods ? openMods[k] : !below); bubble = null;
+      try { localStorage.setItem(MOD_OPEN_KEY, JSON.stringify(openMods)); } catch (err) {}
+      var before = b.getBoundingClientRect().top; render();
+      var nb = app.querySelector('[data-level="' + b.getAttribute("data-level") + '"]'); if (nb) window.scrollBy(0, nb.getBoundingClientRect().top - before);
     }; });
     app.querySelectorAll("[data-mod]").forEach(function (b) { b.onclick = function (e) {
       e.stopPropagation(); var w = WEEKS.filter(function (x) { return x.id === b.getAttribute("data-mod"); })[0];
@@ -738,7 +787,7 @@
   function renderErrors() {
     var pend = pendingIds().sort(), answered = 0; for (var k in state.results) answered += state.results[k].seen;
     var doneMods = WEEKS.filter(complete).length;
-    var html = '<h1 style="margin-top:8px">Progresso</h1>' +
+    var html = '<h1 style="margin-top:8px">Perfil</h1>' + profileCard() +
       '<div class="stats"><div><b>' + streak() + '</b>dias seguidos</div><div><b>' + doneMods + '/' + WEEKS.length + '</b>módulos</div>' +
       '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros superados</div></div>' + weekChart() +
       '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goal() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
@@ -766,8 +815,11 @@
       '<div class="actions"><button class="btn btn-soft" id="bk-copy">Copiar backup</button><button class="btn btn-soft" id="bk-open">Restaurar</button></div>' +
       '<div id="bk-restore" hidden><textarea class="field" id="bk-text" placeholder="Cole aqui o código do backup" style="margin-top:12px;min-height:90px;font-size:15px"></textarea>' +
       '<div class="actions"><button class="btn btn-primary" id="bk-go">Restaurar progresso</button></div></div></section>';
+    html += '<div class="center" style="margin-top:18px"><button class="text-btn" id="redo-pl">Refazer o teste de nível</button></div>';
     html += '<p class="foot">Seu progresso fica salvo neste iPhone.</p>';
     app.innerHTML = html;
+    bindProfile();
+    document.getElementById("redo-pl").onclick = function () { go({ name: "placement" }); };
     app.querySelectorAll("[data-goal]").forEach(function (b) { b.onclick = function () { state.goal = +b.getAttribute("data-goal"); save(); render(); }; });
     document.getElementById("bk-copy").onclick = function () { state.lastBackup = today(); save(); copy(makeBackup(), "Backup copiado. Cole no Notas ou no Claude"); setTimeout(render, 2300); };
     document.getElementById("bk-open").onclick = function () { var box = document.getElementById("bk-restore"); box.hidden = !box.hidden; if (!box.hidden) document.getElementById("bk-text").focus(); };
@@ -801,9 +853,9 @@
 
   // ---------- Boas-vindas ----------
   var WELCOME = [
-    { t: "Seu percurso de inglês", p: "12 módulos, um passo de cada vez. Uns 20 minutos por dia, no caminho para o trabalho.", ic: '<path d="M5 19c3-6 11-4 14-12"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="7" r="2"/>' },
+    { t: "Seu percurso de inglês", p: "Do básico ao avançado, um passo de cada vez. Uns 20 minutos por dia, no seu ritmo.", ic: '<path d="M5 19c3-6 11-4 14-12"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="7" r="2"/>' },
     { t: "Funciona sem internet", p: "No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. A nuvem verde no topo mostra que está tudo salvo.", ic: '<path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0 0 9z"/><path d="M9.5 14l2 2 3.5-3.5"/>' },
-    { t: "Erre à vontade", p: "Cada erro volta na revisão até você acertar três vezes. Faça backup do progresso uma vez por semana, na aba Progresso.", ic: '<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>' }
+    { t: "Erre à vontade", p: "Cada erro volta na revisão até você acertar três vezes. Faça backup do progresso uma vez por semana, na aba Perfil.", ic: '<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>' }
   ];
   function renderWelcome() {
     var k = view.step || 0, s = WELCOME[k];
@@ -811,9 +863,123 @@
       '<div class="w-dots">' + WELCOME.map(function (_, i) { return '<i class="' + (i === k ? "on" : "") + '"></i>'; }).join("") + '</div></div>' +
       '<div class="dock"><button class="btn btn-primary" id="w-next">' + (k < WELCOME.length - 1 ? "Próximo" : "Começar") + '</button>' +
       (k < WELCOME.length - 1 ? '<button class="text-btn" id="w-skip" style="width:100%">Pular</button>' : "") + '</div>';
-    var fin = function () { state.onboarded = true; save(); go({ name: "home" }); };
+    var fin = function () { go({ name: "setup" }); };
     document.getElementById("w-next").onclick = function () { if (k < WELCOME.length - 1) go({ name: "welcome", step: k + 1 }); else fin(); };
     var sk = document.getElementById("w-skip"); if (sk) sk.onclick = fin;
+  }
+
+  // ---------- Nivelamento ----------
+  var PLACEMENT = [
+    { l: "A2", q: "She ___ to work by bus every day.", o: ["go", "goes", "going", "is go"], a: 1 },
+    { l: "A2", q: "We ___ the client yesterday.", o: ["call", "calls", "called", "calling"], a: 2 },
+    { l: "A2", q: "This phone is ___ than my old one.", o: ["more cheap", "cheaper", "cheapest", "the cheaper"], a: 1 },
+    { l: "B1", q: "I've worked here ___ 2023.", o: ["for", "since", "from", "in"], a: 1 },
+    { l: "B1", q: "If I ___ more time, I would study more.", o: ["have", "had", "will have", "would have"], a: 1 },
+    { l: "B1", q: "The report ___ by the manager yesterday.", o: ["approved", "was approved", "has approved", "is approving"], a: 1 },
+    { l: "B2", q: "If you had told me, I ___ you.", o: ["would help", "will help", "would have helped", "helped"], a: 2 },
+    { l: "B2", q: "She told me she ___ the email.", o: ["sends", "has sent", "had sent", "will send"], a: 2 },
+    { l: "B2", q: "___ the rain, the event was a success.", o: ["Although", "Despite", "However", "Because"], a: 1 },
+    { l: "C1", q: "Never ___ such a good result.", o: ["I have seen", "have I seen", "I saw", "did I saw"], a: 1 },
+    { l: "C1", q: "I wish I ___ that to the client.", o: ["didn't say", "hadn't said", "haven't said", "wouldn't say"], a: 1 },
+    { l: "C1", q: "The project was put on ___ until next year.", o: ["hold", "wait", "stop", "pause"], a: 0 }
+  ];
+  function renderPlacement() {
+    var P = view.p || (view.p = { i: 0, ok: [], pick: null });
+    if (P.i >= PLACEMENT.length) return renderPlaced(P);
+    var q = PLACEMENT[P.i], bar = '<div class="bar">';
+    for (var i = 0; i < PLACEMENT.length; i++) bar += '<i class="' + (i < P.i ? "ok" : i === P.i ? "now" : "") + '"></i>';
+    bar += '</div>';
+    app.innerHTML = '<div class="qtop"><button class="icon-btn" id="close" aria-label="Sair">' + I.x + '</button>' + bar + '<span class="count">' + (P.i + 1) + '/' + PLACEMENT.length + '</span></div>' +
+      '<div class="qctx">Teste de nível. Se não souber, escolha "Não sei": vale mais do que chutar.</div>' +
+      '<div class="q">' + qHtml(q.q, P.pick !== null && P.pick >= 0 ? [q.o[P.pick]] : null) + '</div>' +
+      '<div class="opts">' + q.o.map(function (o, k) { return '<button class="opt' + (P.pick === k ? " sel" : "") + '" data-p="' + k + '">' + esc(o) + '</button>'; }).join("") + '</div>' +
+      '<div class="center"><button class="text-btn" id="dunno">Não sei</button></div>' +
+      '<div class="dock"><button class="btn btn-primary" id="pnext"' + (P.pick === null ? " disabled" : "") + '>' + (P.i + 1 < PLACEMENT.length ? "Próxima" : "Ver resultado") + '</button></div>';
+    document.getElementById("close").onclick = function () { go({ name: state.onboarded ? "errors" : "welcome", step: WELCOME.length }); };
+    app.querySelectorAll("[data-p]").forEach(function (b) { b.onclick = function () { P.pick = +b.getAttribute("data-p"); render(); }; });
+    var nextQ = function (k) { P.ok.push(k === q.a); P.i++; P.pick = null; render(); };
+    document.getElementById("dunno").onclick = function () { nextQ(-1); };
+    document.getElementById("pnext").onclick = function () { if (P.pick !== null) nextQ(P.pick); };
+  }
+  function placementResult(ok) {
+    // Sobe de nível enquanto acertar pelo menos 2 das 3 questões de cada um.
+    var est = "A1", order = ["A2", "B1", "B2", "C1"];
+    for (var k = 0; k < order.length; k++) {
+      if (ok.slice(k * 3, k * 3 + 3).filter(Boolean).length >= 2) est = order[k]; else break;
+    }
+    var start = est === "A1" ? "A2" : (lvl(est) > lvl("B2") ? "B2" : est);
+    return { est: est, start: start };
+  }
+  function renderPlaced(P) {
+    var r = placementResult(P.ok), L = levelInfo(r.est), S = levelInfo(r.start);
+    var note = r.est === "A1" ? "O A1 chega em breve. Por enquanto, você começa pelo A2, que retoma o básico com calma." :
+      r.est === "C1" ? "Os módulos de C1 chegam em breve. Por enquanto, você começa pelo B2 para manter o ritmo." :
+      "Os níveis abaixo ficam liberados para você praticar quando quiser.";
+    app.innerHTML = '<div class="welcome"><div class="lv-hero">' + r.est + '</div><h1>Seu nível: ' + r.est + '</h1><p class="muted">' + esc(L.name || "Iniciante") + '. Você acertou ' + P.ok.filter(Boolean).length + ' de ' + PLACEMENT.length + '.</p>' +
+      '<p class="muted small" style="margin-top:14px">' + note + '</p></div>' +
+      '<div class="dock"><button class="btn btn-primary" id="go-start">Começar no ' + r.start + '</button>' +
+      (r.start !== "A2" ? '<button class="text-btn" id="go-a2" style="width:100%">Prefiro começar do A2</button>' : "") + '</div>';
+    if (lvl(r.est) >= lvl("B1")) celebrate();
+    var fin = function (code) { state.placement = code; state.estLevel = r.est; state.onboarded = true; save(); scrolledOnce = false; go({ name: "home" }); };
+    document.getElementById("go-start").onclick = function () { fin(r.start); };
+    var a2 = document.getElementById("go-a2"); if (a2) a2.onclick = function () { fin("A2"); };
+  }
+
+  // ---------- Perfil ----------
+  function initials() { var n = ((state.profile || {}).name || "").trim(); return n ? n.split(/\s+/).slice(0, 2).map(function (x) { return x[0]; }).join("").toUpperCase() : "?"; }
+  function avatarHtml(cls) {
+    var ph = (state.profile || {}).photo;
+    return '<span class="avatar ' + (cls || "") + '">' + (ph ? '<img src="' + ph + '" alt="">' : '<span>' + esc(initials()) + '</span>') + '</span>';
+  }
+  function profileCard() {
+    var pr = state.profile || {}, sl = studyLevel();
+    return '<div class="profile"><button class="av-btn" id="av" aria-label="Trocar foto">' + avatarHtml("big") + '<span class="av-cam">' + svg('<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', 2) + '</span></button>' +
+      '<input type="file" id="photo-in" accept="image/*" hidden>' +
+      '<div class="grow"><button class="name-btn" id="name-edit">' + (pr.name ? esc(pr.name) : '<span class="muted">Adicionar seu nome</span>') + svg('<path d="M4 20h4L19 9l-4-4L4 16z"/>', 2.2) + '</button>' +
+      '<div class="lv-line"><span class="lv-badge sm">' + sl.code + '</span>' + esc(sl.info.name) + '</div>' +
+      '<div class="lv-bar"><i style="width:' + sl.pct + '%"></i></div><div class="tiny muted">' + sl.done + ' de ' + sl.total + ' módulos do ' + sl.code + '</div></div></div>';
+  }
+  function bindProfile() {
+    var inp = document.getElementById("photo-in");
+    document.getElementById("av").onclick = function () { inp.click(); };
+    inp.onchange = function () {
+      var f = inp.files && inp.files[0]; if (!f) return;
+      var rd = new FileReader();
+      rd.onload = function () {
+        var im = new Image();
+        im.onload = function () {
+          var S = 200, c = document.createElement("canvas"); c.width = S; c.height = S;
+          var k = Math.min(im.width, im.height), g = c.getContext("2d");
+          g.drawImage(im, (im.width - k) / 2, (im.height - k) / 2, k, k, 0, 0, S, S);
+          state.profile = state.profile || {}; state.profile.photo = c.toDataURL("image/jpeg", 0.82); save(); toast("Foto atualizada"); render(); updateTabAvatar();
+        };
+        im.src = rd.result;
+      };
+      rd.readAsDataURL(f);
+    };
+    document.getElementById("name-edit").onclick = function () {
+      var b = this, cur = (state.profile || {}).name || "";
+      b.outerHTML = '<input class="field name-in" id="name-in" maxlength="40" placeholder="Seu nome" value="' + esc(cur) + '">';
+      var i = document.getElementById("name-in"); i.focus();
+      var done = function () { state.profile = state.profile || {}; state.profile.name = i.value.trim(); save(); render(); };
+      i.onblur = done; i.onkeydown = function (e) { if (e.key === "Enter") i.blur(); };
+    };
+  }
+  function updateTabAvatar() {
+    var t = document.querySelector('.tab[data-tab="errors"]'); if (!t) return;
+    var ph = (state.profile || {}).photo, ic = t.querySelector(".tab-av");
+    if (ph) { if (!ic) { t.querySelector("svg").style.display = "none"; ic = document.createElement("img"); ic.className = "tab-av"; t.insertBefore(ic, t.firstChild); } ic.src = ph; }
+  }
+
+  // ---------- Configuração inicial (nome e nível) ----------
+  function renderSetup() {
+    app.innerHTML = '<div class="welcome"><div class="w-art" style="--m:' + MOD_COLORS[3] + '">' + svg('<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>', 2) + '</div>' +
+      '<h1>Como podemos te chamar?</h1><input class="field" id="su-name" maxlength="40" placeholder="Seu nome" style="margin-top:18px;text-align:center" value="' + esc((state.profile || {}).name || "") + '">' +
+      '<p class="muted small" style="margin-top:22px">Agora, um teste rápido (12 questões, uns 2 minutos) para você começar no nível certo.</p></div>' +
+      '<div class="dock"><button class="btn btn-primary" id="su-test">Fazer o teste de nível</button><button class="text-btn" id="su-a2" style="width:100%">Pular e começar do básico (A2)</button></div>';
+    var keep = function () { state.profile = state.profile || {}; state.profile.name = document.getElementById("su-name").value.trim(); save(); };
+    document.getElementById("su-test").onclick = function () { keep(); go({ name: "placement" }); };
+    document.getElementById("su-a2").onclick = function () { keep(); state.placement = "A2"; state.onboarded = true; save(); go({ name: "home" }); };
   }
 
   // ---------- Backup ----------
@@ -835,7 +1001,7 @@
   }
 
   // ---------- Indicador offline ----------
-  var OFFLINE_FILES = ["./", "index.html", "app.js", "content.js", "content-m1.js", "content-m2.js", "content-m3.js", "fonts/bricolage.woff2"];
+  var OFFLINE_FILES = ["./", "index.html", "app.js", "content.js", "content-a2.js", "content-b1.js", "content-m1.js", "content-m2.js", "content-m3.js", "course.js", "fonts/bricolage.woff2"];
   var offline = { state: "checking" };
   function offlineIcon() {
     var cloud = '<path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7 9.5a4.5 4.5 0 0 0 0 9z"/>';
@@ -868,10 +1034,13 @@
       else checkOffline();
     });
   }
+  // Quem já usava o app antes dos níveis continua no B1, onde estava.
+  if (!state.placement && Object.keys(state.results).length) { state.placement = "B1"; save(); }
   if (!state.onboarded && Object.keys(state.results).length) { state.onboarded = true; save(); }
   if (!state.onboarded) view = { name: "welcome", step: 0 };
   window.__fluencyDebug = { ITEMS: ITEMS, optionsFor: optionsFor };
   updateDot();
   render();
+  updateTabAvatar();
   checkOffline();
 })();
