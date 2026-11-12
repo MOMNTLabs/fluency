@@ -579,16 +579,66 @@
     else go({ name: "section", id: id });
   }
 
+  // ---------- Cartão de regra do resumo ----------
+  // "situação → tempo verbal" vira duas partes; formas e pistas viram etiquetas;
+  // no exemplo, a forma fica azul e a pista, amarela.
+  function ruleParts(c) {
+    var forms = [], clues = [], rows = [];
+    (c.lines || []).forEach(function (l) {
+      var raw = String(l).trim(), plain = raw.replace(/<[^>]+>/g, "").trim();
+      var m = /^Pistas?:\s*(.+)$/i.exec(plain);
+      if (m) { var cl = m[1].split(/,\s*/); clues = clues.concat(cl); rows.push({ lab: "Pistas", cls: "chip-clue", items: cl }); return; }
+      if (/^<i>[^<]+<\/i>$/.test(raw)) { var fo = plain.split(/,\s*/); forms = forms.concat(fo); rows.push({ lab: "Forma", cls: "chip-form", items: fo }); return; }
+      // Lista curta separada por vírgula vira etiquetas, mesmo sem rótulo no conteúdo.
+      var parts = plain.split(/,\s*/);
+      var okParts = parts.every(function (x) {
+        return x.length > 0 && x.length <= 24 && (x.split("(").length === x.split(")").length);
+      });
+      // Linhas com "→" são mapeamentos (I → am); ficam como texto para não quebrar no meio.
+      if (parts.length >= 2 && parts.length <= 8 && okParts && plain.indexOf("→") < 0 && !/[.:!?]$/.test(plain)) {
+        forms = forms.concat(parts); rows.push({ lab: "", cls: "chip-plain", items: parts }); return;
+      }
+      rows.push({ text: l });
+    });
+    return { forms: forms, clues: clues, rows: rows };
+  }
+  function highlight(ex, forms, clues) {
+    var out = esc(ex), marks = [];
+    function mark(list, cls) {
+      list.slice().sort(function (a, b) { return b.length - a.length; }).forEach(function (term) {
+        var t = term.trim();
+        if (!t || /[…]|\.\.\./.test(t)) return;
+        var e = esc(t).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        var re = new RegExp((/^\w/.test(t) ? "\\b" : "") + e + (/\w$/.test(t) ? "\\b" : ""), "i");
+        if (!re.test(out)) return;
+        var token = "\u0001" + marks.length + "\u0001";
+        out = out.replace(re, function (hit) { marks.push('<b class="' + cls + '">' + hit + "</b>"); return token; });
+      });
+    }
+    mark(forms, "hl-form"); mark(clues, "hl-clue");
+    return out.replace(/\u0001(\d+)\u0001/g, function (_, n) { return marks[+n]; });
+  }
+  function ruleCard(c, i) {
+    var p = ruleParts(c), t = String(c.title).split("→");
+    var head = t.length > 1
+      ? '<span class="r-when">' + esc(t[0].trim()) + '</span><span class="r-arrow">' + I.next + '</span><span class="r-use">' + esc(t.slice(1).join("→").trim()) + '</span>'
+      : '<span class="r-use">' + esc(c.title) + '</span>';
+    var h = '<div class="rule"><div class="r-num">' + (i + 1) + '</div><h3>' + head + '</h3>';
+    p.rows.forEach(function (r) {
+      if (r.text !== undefined) { h += '<div class="ln">' + r.text + '</div>'; return; }
+      h += '<div class="r-row">' + (r.lab ? '<span class="r-lab">' + r.lab + '</span>' : '<span class="r-lab"></span>') +
+        '<span class="chips">' + r.items.map(function (f) { return '<span class="' + r.cls + '">' + esc(f) + '</span>'; }).join("") + '</span></div>';
+    });
+    return h + '<div class="example"><span>' + highlight(c.example, p.forms, p.clues) + '</span>' + listen(c.example) + '</div></div>';
+  }
+
   // ---------- Seções de leitura ----------
   function renderSection() {
     var ref = SECTIONS[view.id], s = ref.section;
     var html = top(ref.week.title, s.title) + '<h1>' + esc(s.title) + '</h1><p class="muted">' + esc(s.subtitle || "") + '</p>';
     if (s.type === "summary") {
       if (s.intro) html += '<p class="small" style="margin:16px 0">' + s.intro + '</p>';
-      s.cards.forEach(function (c) {
-        html += '<div class="rule"><h3>' + esc(c.title) + '</h3>' + c.lines.map(function (l) { return '<div class="ln">' + l + '</div>'; }).join("") +
-          '<div class="example"><span>' + esc(c.example) + '</span>' + listen(c.example) + '</div></div>';
-      });
+      s.cards.forEach(function (c, i) { html += ruleCard(c, i); });
     } else if (s.type === "reading") {
       html += '<div style="height:12px"></div>';
       s.items.forEach(function (it, i) {

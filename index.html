@@ -156,11 +156,26 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .note { font-size: 14px; color: var(--muted); margin: 12px 4px 0; }
 
 /* Conteúdo de leitura */
-.rule { background: var(--surface); border-radius: var(--r); padding: 16px; margin-bottom: 12px; border: 1px solid var(--line); }
-.rule h3 { font-family: var(--display); font-size: 19px; font-weight: 700; letter-spacing: -.015em; margin-bottom: 6px; }
-.rule .ln { font-size: 15px; color: var(--ink-2); }
+.rule { position: relative; background: var(--surface); border-radius: var(--r); padding: 16px; margin-bottom: 12px; border: 1px solid var(--line); }
+.rule h3 { font-family: var(--display); font-size: 18px; font-weight: 700; letter-spacing: -.015em; margin: 0 0 10px; padding-right: 30px; line-height: 1.25; }
+.r-num { position: absolute; top: 14px; right: 14px; width: 22px; height: 22px; border-radius: 50%; background: var(--sunk); color: var(--muted);
+  font: 700 12px var(--text); display: grid; place-items: center; }
+.r-when { color: var(--ink-2); font-weight: 600; }
+.r-arrow { display: inline-block; vertical-align: -2px; color: var(--muted); margin: 0 2px; }
+.r-arrow svg { width: 15px; height: 15px; }
+.r-use { color: var(--ink); }
+.r-row { display: flex; align-items: baseline; gap: 8px; margin-top: 7px; }
+.r-lab { flex: none; width: 48px; font-size: 12px; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip-form, .chip-clue, .chip-plain { font-size: 13.5px; font-weight: 600; border-radius: 7px; padding: 2px 7px; }
+.chip-form { background: var(--cobalt-soft); color: var(--cobalt); }
+.chip-clue { background: var(--sign-soft); color: var(--rev-ink); }
+.chip-plain { background: var(--sunk); color: var(--ink-2); }
+.rule .ln { font-size: 15px; color: var(--ink-2); margin-top: 7px; }
 .example { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
 .example span { flex: 1; font-weight: 600; }
+.hl-form { color: var(--cobalt); font-weight: 800; }
+.hl-clue { background: linear-gradient(transparent 52%, var(--sign-soft) 52%); font-weight: 800; }
 .read { background: var(--surface); border-radius: var(--r); padding: 16px; margin-bottom: 10px; border: 1px solid var(--line); }
 .read .en { font-size: 19px; font-weight: 600; line-height: 1.35; }
 .read .pt { color: var(--muted); font-size: 15px; margin-top: 8px; }
