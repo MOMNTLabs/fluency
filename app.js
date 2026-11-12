@@ -42,31 +42,34 @@
   var THEMES = [
     { id: "trabalho", name: "Trabalho", short: "Trabalho", sub: "Reuniões, prazos, clientes", base: true, packs: [] },
     { id: "viagem", name: "Viagem", short: "Viagem", sub: "Aeroporto, hotel, cidade", base: false, packs: ["viagem"] },
-    { id: "ambos", name: "Os dois", short: "Ambos", sub: "O dobro de palavras, das duas áreas", base: true, packs: ["viagem"] }
+    { id: "ambos", name: "Os dois", short: "Ambos", sub: "Uma etapa de cada por módulo", base: true, packs: ["viagem"] }
   ];
   function theme() { return state.theme || "trabalho"; }
   function themeDef() {
     for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === theme()) return THEMES[i];
     return THEMES[0];
   }
-  // Monta o vocabulário de cada módulo a partir do tema escolhido. Só as seções de
-  // vocabulário mudam, e nunca muda a quantidade de etapas, para não mexer no progresso.
+  // Cada tema tem a sua própria etapa de vocabulário, com id próprio. Assim o que você
+  // já estudou continua marcado quando troca de tema, e o que é novo aparece como novo.
   function applyPack() {
     var def = themeDef();
     WEEKS.forEach(function (w) {
-      w.sections.forEach(function (s) {
-        if (s.type !== "vocab") return;
-        if (!s.base) s.base = { items: s.items, title: s.title };
-        var list = def.base ? s.base.items.slice() : [], title = s.base.title;
-        def.packs.forEach(function (pid) {
-          var pk = (window.PACKS || {})[pid], alt = pk && pk.vocab[s.id];
-          if (!alt) return;
-          list = list.concat(alt);
-          if (!def.base) title = pk.title || title;
-        });
-        s.items = list.length ? list : s.base.items;
-        s.title = title;
+      if (!w.vocabBase) {
+        var base = w.sections.filter(function (x) { return x.type === "vocab"; })[0];
+        if (!base) return;
+        w.vocabBase = base; w.packSec = {};
+      }
+      w.sections = w.sections.filter(function (x) { return x.type !== "vocab"; });
+      var list = def.base ? [w.vocabBase] : [];
+      def.packs.forEach(function (pid) {
+        var pk = (window.PACKS || {})[pid], alt = pk && pk.vocab[w.vocabBase.id];
+        if (!alt) return;
+        if (!w.packSec[pid]) w.packSec[pid] = { id: w.vocabBase.id + "-" + pid, type: "vocab",
+          title: pk.title, subtitle: w.vocabBase.subtitle, items: alt, icon: pk.icon };
+        list.push(w.packSec[pid]);
       });
+      // Sem pacote para este módulo, fica o vocabulário original.
+      w.sections = w.sections.concat(list.length ? list : [w.vocabBase]);
     });
   }
   applyPack();
@@ -438,7 +441,7 @@
         html += '<div class="step' + (cls === "locked" ? " is-locked" : cls === "done" ? " is-done" : "") + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
           (isNext ? '<div class="go-tag">' + (w.sections.indexOf(s) === 0 && !Object.keys(state.results).length ? "Começar" : "Continuar") + '</div>' : "") +
           '<button class="node ' + cls + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
-          (isNext ? '<span class="ring"></span>' : "") + svg(TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + (weak ? '<span class="weak-badge" aria-label="' + weak + ' para reforçar">' + weak + '</span>' : "") + '</button><span class="node-lbl">' + esc(s.title) + '</span>';
+          (isNext ? '<span class="ring"></span>' : "") + svg(s.icon || TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + (weak ? '<span class="weak-badge" aria-label="' + weak + ' para reforçar">' + weak + '</span>' : "") + '</button><span class="node-lbl">' + esc(s.title) + '</span>';
         if (bubble === s.id) html += bubbleHtml(w, s, avail, d);
         html += '</div>';
       });
