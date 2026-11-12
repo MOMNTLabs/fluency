@@ -42,45 +42,55 @@
   var THEMES = [
     { id: "trabalho", name: "Trabalho", short: "Trabalho", sub: "Reuniões, prazos, clientes", base: true, packs: [] },
     { id: "viagem", name: "Viagem", short: "Viagem", sub: "Aeroporto, hotel, cidade", base: false, packs: ["viagem"] },
-    { id: "ambos", name: "Os dois", short: "Ambos", sub: "Uma etapa de cada por módulo", base: true, packs: ["viagem"] }
+    { id: "ambos", name: "Os dois", short: "Ambos", sub: "Leitura e vocabulário dos dois", base: true, packs: ["viagem"] }
   ];
   function theme() { return state.theme || "trabalho"; }
   function themeDef() {
     for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === theme()) return THEMES[i];
     return THEMES[0];
   }
-  // Cada tema tem a sua própria etapa de vocabulário, com id próprio. Assim o que você
-  // já estudou continua marcado quando troca de tema, e o que é novo aparece como novo.
+  // Leitura, escuta e vocabulário seguem o tema escolhido. Cada tema tem as suas
+  // etapas, com id próprio, para que o progresso de um não se misture com o do outro.
   function applyPack() {
-    var def = themeDef();
+    var def = themeDef(), TYPES = ["reading", "listen", "vocab"];
     WEEKS.forEach(function (w) {
-      if (!w.vocabBase) {
-        var base = w.sections.filter(function (x) { return x.type === "vocab"; })[0];
-        if (!base) return;
-        w.vocabBase = base; w.packSec = {};
+      if (!w.baseSec) {
+        w.baseSec = {};
+        TYPES.forEach(function (t) { w.baseSec[t] = w.sections.filter(function (x) { return x.type === t; })[0] || null; });
+        w.packSec = {};
       }
-      w.sections = w.sections.filter(function (x) { return x.type !== "vocab"; });
-      var list = def.base ? [w.vocabBase] : [];
-      def.packs.forEach(function (pid) {
-        var pk = (window.PACKS || {})[pid], alt = pk && pk.vocab[w.vocabBase.id];
-        if (!alt) return;
-        if (!w.packSec[pid]) w.packSec[pid] = { id: w.vocabBase.id + "-" + pid, type: "vocab",
-          title: pk.title, subtitle: w.vocabBase.subtitle, items: alt, icon: pk.icon };
-        list.push(w.packSec[pid]);
+      w.sections = w.sections.filter(function (x) { return TYPES.indexOf(x.type) < 0; });
+      // Quais versões de uma etapa entram, conforme o tema.
+      function variants(kind) {
+        var base = w.baseSec[kind], out = [];
+        if (!base) return out;
+        if (def.base) out.push({ pid: "", sec: base });
+        def.packs.forEach(function (pid) {
+          var pk = (window.PACKS || {})[pid], alt = pk && pk[kind] && pk[kind][base.id];
+          if (!alt) return;
+          var id = base.id + "-" + pid;
+          if (!w.packSec[id]) w.packSec[id] = { id: id, type: base.type, subtitle: base.subtitle,
+            title: (pk.titles && pk.titles[kind]) || base.title, items: alt,
+            icon: kind === "vocab" ? pk.icon : null };
+          out.push({ pid: pid, sec: w.packSec[id] });
+        });
+        return out.length ? out : [{ pid: "", sec: base }];
+      }
+      var add = [];
+      variants("reading").forEach(function (v) {
+        add.push(v.sec);
+        // A escuta é feita com as frases da leitura do mesmo tema.
+        var lid = w.id + "-escuta" + (v.pid ? "-" + v.pid : ""), pk = (window.PACKS || {})[v.pid];
+        if (!w.packSec[lid]) w.packSec[lid] = { id: lid, type: "listen", subtitle: "Ouça e monte a frase",
+          title: (pk && pk.titles && pk.titles.listen) || "Escuta",
+          items: v.sec.items.map(function (x) { return { en: x.en, pt: x.pt, full: x.en }; }) };
+        add.push(w.packSec[lid]);
       });
-      // Sem pacote para este módulo, fica o vocabulário original.
-      w.sections = w.sections.concat(list.length ? list : [w.vocabBase]);
+      variants("vocab").forEach(function (v) { add.push(v.sec); });
+      w.sections = w.sections.concat(add);
     });
   }
   applyPack();
-  // Cada módulo ganha uma etapa de escuta, feita com as frases de leitura.
-  WEEKS.forEach(function (w) {
-    var r = w.sections.filter(function (s) { return s.type === "reading"; })[0];
-    if (r && !w.sections.some(function (s) { return s.type === "listen"; })) {
-      w.sections.splice(w.sections.indexOf(r) + 1, 0, { id: w.id + "-escuta", type: "listen", title: "Escuta", subtitle: "Ouça e monte a frase",
-        items: r.items.map(function (x) { return { en: x.en, pt: x.pt, full: x.en }; }) });
-    }
-  });
   function indexContent() {
     WEEKS.forEach(function (w) {
       w.sections.forEach(function (s) {

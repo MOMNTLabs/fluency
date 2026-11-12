@@ -146,7 +146,7 @@ window.WEEKS = [
           { en: "If I had more time, I would study English every day.", pt: "Se eu tivesse mais tempo, estudaria inglês todo dia." },
           { en: "I'd love to lead a big project for the agency.", pt: "Eu adoraria liderar um projeto grande para a agência." },
           { en: "My boss told me he had liked the last video.", pt: "Meu chefe me disse que tinha gostado do último vídeo." },
-          { en: "If this carousel got more engagement, we would turn it into a series.", pt: "Se esse carrossel tivesse mais engajamento, transformaríamos em uma série." },
+          { en: "If this video did well, we would turn it into a series.", pt: "Se esse vídeo fosse bem, transformaríamos em uma série." },
           { en: "I've already checked what's trending this week.", pt: "Já conferi o que está em alta esta semana." }
         ]
       },
