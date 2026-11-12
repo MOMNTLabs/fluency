@@ -1068,13 +1068,40 @@
   // ---------- Palavras: o que já apareceu nas etapas concluídas ----------
   // Duas visões: as palavras do vocabulário e as frases traduzidas das leituras e traduções.
   var wordQuery = "", wordOpen = {};
+  // Palavras do glossário: as mais frequentes nas frases dos exercícios.
+  function glosBase(x) {
+    var G = window.GLOSSARY || {};
+    if (G[x]) return x;
+    var t = [[/ies$/, "y"], [/ies$/, "ie"], [/es$/, ""], [/s$/, ""], [/ed$/, ""], [/ed$/, "e"], [/ing$/, ""], [/ing$/, "e"]];
+    for (var i = 0; i < t.length; i++) { var c = x.replace(t[i][0], t[i][1]); if (c !== x && c.length > 2 && G[c]) return c; }
+    return null;
+  }
+  var LINE_TYPES = ["fill", "translate", "reading", "listen"];
   function learnedWords() {
-    var out = [];
+    var out = [], G = window.GLOSSARY || {}, seen = {};
     WEEKS.forEach(function (w) {
+      // Primeiro o vocabulário escolhido do módulo, depois as palavras que apareceram nas frases dele.
       w.sections.forEach(function (s) {
         if (s.type !== "vocab" || !isDoneSec(s)) return;
-        (s.items || []).forEach(function (it) { out.push({ it: it, week: w, sec: s }); });
+        (s.items || []).forEach(function (it) { out.push({ it: it, week: w, sec: s }); seen[String(it.en).toLowerCase().replace(/^to /, "")] = 1; });
       });
+      var novas = [];
+      w.sections.forEach(function (s) {
+        if (!isDoneSec(s) || LINE_TYPES.indexOf(s.type) < 0) return;
+        (s.items || []).forEach(function (it) {
+          var frase = String(it.full || it.en || "").replace(/[{}]/g, "");
+          if (!frase) return;
+          frase.toLowerCase().split(/[^a-z']+/).forEach(function (tok) {
+            if (!tok || tok.length < 2) return;
+            var b = glosBase(tok);
+            if (!b || seen[b]) return;
+            seen[b] = 1;
+            novas.push({ it: { id: "g-" + b, en: b, pt: G[b], ex: frase }, week: w, sec: { title: "das frases", fromLines: true } });
+          });
+        });
+      });
+      novas.sort(function (a, b) { return a.it.en < b.it.en ? -1 : 1; });
+      out = out.concat(novas);
     });
     return out;
   }
@@ -1141,7 +1168,8 @@
       var groups = [], index = {};
       list.forEach(function (r) {
         var key = byAZ ? (sortKey(r.it.en)[0] || "#").toUpperCase()
-          : r.week.title + (/^Vocabulário de |^Leitura de |^Escuta de /.test(r.sec.title) ? " · " + r.sec.title.replace(/^.* de /, "") : "");
+          : r.week.title + (r.sec.fromLines ? " · das frases"
+            : /^Vocabulário de |^Leitura de |^Escuta de /.test(r.sec.title) ? " · " + r.sec.title.replace(/^.* de /, "") : "");
         if (!index[key]) { index[key] = { key: key, rows: [] }; groups.push(index[key]); }
         index[key].rows.push(r);
       });
