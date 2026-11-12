@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>nowish.</title>
 <meta name="theme-color" content="#EEF1F7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0D1120" media="(prefers-color-scheme: dark)">
@@ -451,6 +451,39 @@ body.focus main { padding-bottom: 300px; }
 .name-in { font-size: 18px; padding: 8px 12px; }
 .lv-line { display: flex; align-items: center; font-size: 15px; font-weight: 600; margin-top: 6px; }
 .tab-av { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+/* ===== Início: resumo dos níveis ===== */
+html, body { touch-action: manipulation; }
+.lv-current { --m-dark: color-mix(in srgb, var(--m) 72%, #000); display: flex; flex-direction: column; gap: 10px; width: 100%; text-align: left; cursor: pointer;
+  background: var(--surface); color: var(--ink); border: 1.5px solid var(--line); border-radius: 22px; padding: 16px; box-shadow: 0 4px 0 var(--line); }
+.lv-current:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.lvc-top, .lvc-mod { display: flex; align-items: center; gap: 12px; }
+.lvc-top .grow, .lvc-mod .grow { flex: 1; min-width: 0; }
+.lvc-kicker { display: block; font-size: 13px; color: var(--muted); font-weight: 600; }
+.lv-current .s-go { background: var(--sunk); color: var(--ink); }
+.lvc-mod { background: var(--bg); border-radius: 14px; padding: 10px 12px; }
+.lvc-sub { display: block; font-weight: 700; font-size: 15px; line-height: 1.25; }
+.m-icon.sm { width: 36px; height: 36px; border-radius: 11px; box-shadow: inset 0 -3px 0 var(--m-dark); }
+.m-icon.sm svg { width: 20px; height: 20px; }
+.lv-current .lv-bar { margin-top: 2px; }
+.lv-current .lv-bar i { background: var(--m); }
+.lv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.lv-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left; cursor: pointer; background: var(--surface); color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: 18px; padding: 14px; box-shadow: 0 3px 0 var(--line); min-height: 132px; }
+.lv-tile:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+.lv-tile .lv-badge { width: 42px; height: 42px; border-radius: 13px; font-size: 17px; }
+.lt-name { font-family: var(--display); font-weight: 700; font-size: 16px; line-height: 1.15; letter-spacing: -.01em; }
+.lt-state { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: var(--muted); margin-top: auto; }
+.lt-state svg { width: 13px; height: 13px; }
+.lv-tile .lv-bar { width: 100%; margin-top: 0; }
+.lv-tile.cur { border-color: var(--cobalt); box-shadow: 0 3px 0 var(--cobalt); }
+.lv-tile.cur .lt-state { color: var(--cobalt); }
+.lv-tile.done .lt-state { color: var(--ok); }
+.lv-tile.done .lv-bar i { background: var(--ok); }
+.lv-tile.soon { cursor: default; box-shadow: none; background: transparent; border-style: dashed; }
+.lv-tile.soon .lv-badge { background: var(--sunk); color: var(--muted); }
+.lv-tile.soon .lt-name { color: var(--muted); }
+.lv-head { display: flex; align-items: center; gap: 12px; margin: 4px 0 6px; }
+.lv-head .grow { flex: 1; min-width: 0; }
 .foot { text-align: center; color: var(--muted); font-size: 13px; margin-top: 24px; }
 </style>
 </head>

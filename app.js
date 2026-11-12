@@ -209,19 +209,22 @@
 
   // ---------- Navegação ----------
   var view = { name: "home" };
-  function go(v) { if (v.name === "home" && view.name !== "home") scrolledOnce = false; view = v; render(); if (v.name !== "home") window.scrollTo(0, 0); }
+  function go(v) {
+    if (v.name === "level" && !(view.name === "level" && view.code === v.code)) scrolledOnce = false;
+    view = v; render(); if (v.name !== "level" || scrolledOnce) window.scrollTo(0, 0);
+  }
   document.getElementById("tabbar").addEventListener("click", function (e) {
     var t = e.target.closest(".tab"); if (t) go({ name: t.getAttribute("data-tab") });
   });
   function setTabs() {
     var inReview = view.session && view.session.kind === "review";
-    var map = { placement: "errors", setup: "home", welcome: "home", home: "home", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
+    var map = { level: "home", placement: "errors", setup: "home", welcome: "home", home: "home", section: "home", quiz: inReview ? "review" : "home", done: inReview ? "review" : "home", review: "review", errors: "errors" };
     document.querySelectorAll(".tab").forEach(function (t) { t.classList.toggle("on", t.getAttribute("data-tab") === map[view.name]); });
   }
   function render() {
     setTabs();
     document.body.classList.toggle("focus", ["quiz", "welcome", "placement", "setup"].indexOf(view.name) >= 0);
-    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors, welcome: renderWelcome, placement: renderPlacement, setup: renderSetup })[view.name]();
+    ({ home: renderHome, section: renderSection, quiz: renderQuiz, done: renderDone, review: renderReview, errors: renderErrors, welcome: renderWelcome, placement: renderPlacement, setup: renderSetup, level: renderLevel })[view.name]();
   }
   function top(label, title, right) {
     return '<div class="top"><button class="icon-btn" id="back" aria-label="Voltar">' + I.back + '</button>' +
@@ -277,14 +280,64 @@
   var openMods = (function () { try { return JSON.parse(localStorage.getItem(MOD_OPEN_KEY)) || {}; } catch (e) { return {}; } })();
   function isExpanded(w, cur) { return w.id in openMods ? openMods[w.id] : w === cur; }
 
-  function renderHome() {
-    var due = dueIds().length, cur = currentModule();
-    var html = '<header class="bar-top"><div class="wordmark">nowish<i></i></div><div class="brand-right">' +
+  function topBarHtml() {
+    var due = dueIds().length;
+    return '<header class="bar-top"><div class="wordmark">nowish<i></i></div><div class="brand-right">' +
       (due ? '<button class="due-pill" id="due" aria-label="Revisão de hoje">' + svg('<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>', 2.4) + due + '</button>' : "") +
       '<button class="offline ' + offline.state + '" id="offline" aria-label="Status offline">' + offlineIcon() + '</button>' +
       goalChip() + '</div></header>';
+  }
+  function bindTopBar() {
+    var r = document.getElementById("due"); if (r) r.onclick = function () { go({ name: "review" }); };
+    var bt = document.getElementById("bk-tip"); if (bt) bt.onclick = function () { go({ name: "errors" }); };
+    var of = document.getElementById("offline"); if (of) of.onclick = function () { toast(offlineMessage()); };
+    var g = document.getElementById("goal"); if (g) g.onclick = function () {
+      var n = state.days[today()] || 0;
+      toast(n >= goal() ? "Meta de hoje batida: " + n + " questões" : "Meta de hoje: " + n + " de " + goal() + " questões");
+    };
+    var sb = document.getElementById("study"); if (sb) sb.onclick = studyAction;
+  }
+  function levelState(L) {
+    var mods = modulesOf(L.id), dn = mods.filter(complete).length, pl = lvl(placement());
+    if (!L.ready || !mods.length) return { soon: true, mods: mods, dn: 0, pct: 0, label: "Em breve" };
+    var pct = Math.round(dn / mods.length * 100), anyOpen = mods.some(unlocked);
+    var label = dn === mods.length ? "Concluído" : lvl(L.id) < pl ? "Para praticar" : anyOpen ? pct + "%" : "Bloqueado";
+    return { soon: false, mods: mods, dn: dn, pct: pct, label: label, locked: !anyOpen };
+  }
+
+  // ---------- Início: resumo dos níveis ----------
+  function renderHome() {
+    var cur = currentModule(), html = topBarHtml();
     if (needsBackup()) html += '<button class="nudge" id="bk-tip">Faça o backup da semana na aba Perfil</button>';
     html += studyCard(cur);
+    if (cur) {
+      var L = levelInfo(cur.level), st = levelState(L);
+      html += '<button class="lv-current" data-open-level="' + L.id + '" style="--m:' + modColor(cur) + '">' +
+        '<span class="lvc-top"><span class="lv-badge">' + L.id + '</span><span class="grow"><span class="lvc-kicker">Seu nível</span><span class="lv-name">' + esc(L.name) + '</span></span><span class="s-go">' + I.next + '</span></span>' +
+        '<span class="lvc-mod"><span class="m-icon sm">' + svg(MOD_ICON[cur.id] || TROPHY, 2) + '</span><span class="grow"><span class="tiny muted">' + esc(cur.title) + '</span><span class="lvc-sub">' + esc(cur.subtitle) + '</span></span></span>' +
+        '<span class="lv-bar"><i style="width:' + st.pct + '%"></i></span><span class="tiny muted">' + st.dn + ' de ' + st.mods.length + ' módulos concluídos</span></button>';
+    }
+    html += '<h2 class="sub-h" style="margin-top:22px">Todos os níveis</h2><div class="lv-grid">';
+    LEVELS.forEach(function (L) {
+      var st = levelState(L), isCur = cur && cur.level === L.id;
+      html += '<button class="lv-tile' + (st.soon ? " soon" : "") + (isCur ? " cur" : "") + (st.label === "Concluído" ? " done" : "") + '"' + (st.soon ? " disabled" : ' data-open-level="' + L.id + '"') + '>' +
+        '<span class="lv-badge">' + L.id + '</span><span class="lt-name">' + esc(L.name) + '</span>' +
+        '<span class="lt-state">' + (st.locked && !st.soon ? I.lock : "") + esc(st.label) + '</span>' +
+        (st.soon ? "" : '<span class="lv-bar"><i style="width:' + st.pct + '%"></i></span>') + '</button>';
+    });
+    html += '</div><p class="foot">Novos níveis chegam com as atualizações.</p>';
+    app.innerHTML = html;
+    bindTopBar();
+    app.querySelectorAll("[data-open-level]").forEach(function (b) { b.onclick = function () { go({ name: "level", code: b.getAttribute("data-open-level") }); }; });
+  }
+
+  // ---------- Página de um nível: o percurso dos módulos ----------
+  function renderLevel() {
+    var code = view.code, L = levelInfo(code), st = levelState(L), cur = currentModule();
+    var html = '<div class="lv-head"><button class="icon-btn" id="back" aria-label="Voltar">' + I.back + '</button>' +
+      '<span class="lv-badge">' + L.id + '</span><span class="grow"><span class="lv-name">' + esc(L.name) + '</span><span class="lv-sub">' + st.dn + ' de ' + st.mods.length + ' módulos concluídos</span></span></div>' +
+      '<p class="muted small" style="margin:4px 0 10px">' + esc(L.about) + '</p>';
+    if (lvl(code) < lvl(placement())) html += '<div class="tip" style="margin-bottom:12px">Este nível está abaixo do seu. Use para revisar a base quando quiser.</div>';
     function moduleHtml(w) {
       var open = unlocked(w), done = complete(w), col = modColor(w);
       var p = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) p++; });
@@ -304,7 +357,7 @@
         var x = ZIG[(i + w.idx * 3) % ZIG.length] * 46;
         var cls = isDone ? "done" : isNext ? "next" : "locked", weak = isDone ? pendingOf(s).length : 0;
         html += '<div class="step' + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
-          (isNext ? '<div class="go-tag">' + (w.sections.indexOf(s) === 0 && w.idx === 0 && !Object.keys(state.results).length ? "Começar" : "Continuar") + '</div>' : "") +
+          (isNext ? '<div class="go-tag">' + (w.sections.indexOf(s) === 0 && !Object.keys(state.results).length ? "Começar" : "Continuar") + '</div>' : "") +
           '<button class="node ' + cls + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
           (isNext ? '<span class="ring"></span>' : "") + svg(TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + (weak ? '<span class="weak-badge" aria-label="' + weak + ' para reforçar">' + weak + '</span>' : "") + '</button>';
         if (bubble === s.id) html += bubbleHtml(w, s, avail, d);
@@ -314,33 +367,14 @@
       html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? (weakN ? "silver" : "won") : "") + '" aria-label="' + (done ? (weakN ? "Concluído. Supere os erros para o troféu dourado" : "Módulo dominado") : "Fim do " + esc(w.title)) + '">' + svg(TROPHY, 2.1) + '</div></div>';
       html += '</div></section>';
     }
-    var pl = lvl(placement());
-    LEVELS.forEach(function (L) {
-      var mods = modulesOf(L.id), below = lvl(L.id) < pl, lk = "L-" + L.id;
-      var lopen = lk in openMods ? openMods[lk] : !below;
-      if (!L.ready || !mods.length) {
-        html += '<div class="level soon"><span class="lv-badge">' + L.id + '</span><span class="grow"><span class="lv-name">' + esc(L.name) + '</span><span class="lv-sub">' + esc(L.about) + '</span></span><span class="lv-pill">Em breve</span></div>';
-        return;
-      }
-      var dn = mods.filter(complete).length;
-      html += '<button class="level" data-level="' + L.id + '" aria-expanded="' + lopen + '"><span class="lv-badge">' + L.id + '</span><span class="grow"><span class="lv-name">' + esc(L.name) + '</span>' +
-        '<span class="lv-sub">' + (below ? "Abaixo do seu nível: pratique quando quiser" : dn + " de " + mods.length + " módulos concluídos") + '</span>' +
-        '<span class="lv-bar"><i style="width:' + Math.round(dn / mods.length * 100) + '%"></i></span></span><span class="b-chev' + (lopen ? " open" : "") + '">' + I.next + '</span></button>';
-      if (lopen) { mods.forEach(moduleHtml); if (L.partial) html += '<div class="more-soon">Mais módulos de ' + L.id + ' em breve</div>'; }
-    });
-    html += '<p class="foot">Novos módulos chegam com as atualizações.</p>';
+    st.mods.forEach(moduleHtml);
+    if (L.partial) html += '<div class="more-soon">Mais módulos de ' + L.id + ' em breve</div>';
     app.innerHTML = html;
+    document.getElementById("back").onclick = function () { bubble = null; go({ name: "home" }); };
     app.querySelectorAll("[data-node]").forEach(function (b) { b.onclick = function (e) {
       e.stopPropagation(); var id = b.getAttribute("data-node"); bubble = bubble === id ? null : id; renderKeepScroll();
       var bb = app.querySelector(".bubble");
       if (bb) { var r = bb.getBoundingClientRect(), lim = window.innerHeight - 100; if (r.bottom > lim) window.scrollBy({ top: r.bottom - lim, behavior: "smooth" }); }
-    }; });
-    app.querySelectorAll("[data-level]").forEach(function (b) { b.onclick = function (e) {
-      e.stopPropagation(); var k = "L-" + b.getAttribute("data-level"), below = lvl(b.getAttribute("data-level")) < lvl(placement());
-      openMods[k] = !(k in openMods ? openMods[k] : !below); bubble = null;
-      try { localStorage.setItem(MOD_OPEN_KEY, JSON.stringify(openMods)); } catch (err) {}
-      var before = b.getBoundingClientRect().top; render();
-      var nb = app.querySelector('[data-level="' + b.getAttribute("data-level") + '"]'); if (nb) window.scrollBy(0, nb.getBoundingClientRect().top - before);
     }; });
     app.querySelectorAll("[data-mod]").forEach(function (b) { b.onclick = function (e) {
       e.stopPropagation(); var w = WEEKS.filter(function (x) { return x.id === b.getAttribute("data-mod"); })[0];
@@ -351,22 +385,19 @@
     }; });
     app.querySelectorAll("[data-reinforce]").forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); bubble = null; reinforce(b.getAttribute("data-reinforce")); }; });
     app.querySelectorAll("[data-start]").forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); var id = b.getAttribute("data-start"); bubble = null; openSection(id); }; });
-    var r = document.getElementById("due"); if (r) r.onclick = function () { go({ name: "review" }); };
-    var bt = document.getElementById("bk-tip"); if (bt) bt.onclick = function () { go({ name: "errors" }); };
-    document.getElementById("offline").onclick = function () { toast(offlineMessage()); };
-    document.getElementById("goal").onclick = function () {
-      var n = state.days[today()] || 0;
-      toast(n >= goal() ? "Meta de hoje batida: " + n + " questões" : "Meta de hoje: " + n + " de " + goal() + " questões");
-    };
-    var sb = document.getElementById("study"); if (sb) sb.onclick = studyAction;
     if (!scrolledOnce) {
       scrolledOnce = true;
-      var target = app.querySelector(".node.next") || app.querySelector("#mod-" + cur.id);
+      var target = app.querySelector(".node.next");
       if (target) requestAnimationFrame(function () {
         var r = target.getBoundingClientRect();
         if (r.bottom > window.innerHeight - 140) window.scrollTo(0, Math.max(0, r.top + window.scrollY - window.innerHeight * 0.42));
       });
     }
+  }
+  // Volta para a página do nível de onde a pessoa veio (ou para o início).
+  function backToPath(sectionId) {
+    var ref = sectionId && SECTIONS[sectionId];
+    go(ref ? { name: "level", code: ref.week.level } : { name: "home" });
   }
   function goalChip() {
     var n = state.days[today()] || 0, f = Math.min(1, n / goal()), C = 2 * Math.PI * 15;
@@ -386,7 +417,7 @@
   }
   function renderKeepScroll() { var y = window.scrollY; render(); window.scrollTo(0, y); }
   document.addEventListener("click", function (e) {
-    if (bubble && view.name === "home" && !e.target.closest(".bubble")) { bubble = null; renderKeepScroll(); }
+    if (bubble && view.name === "level" && !e.target.closest(".bubble")) { bubble = null; renderKeepScroll(); }
   });
   function bubbleHtml(w, s, avail, d) {
     var isDone = d && d.done, h = '<div class="bubble" role="dialog"><div class="bub-title">' + esc(s.title) + '</div>';
@@ -469,7 +500,7 @@
       html += '</div>';
     }
     html += '<div class="actions" style="margin-top:20px"><button class="btn btn-primary" id="finish">Concluir</button></div>';
-    app.innerHTML = html; bindBack();
+    app.innerHTML = html; document.getElementById("back").onclick = function () { backToPath(s.id); };
     app.querySelectorAll("[data-rev]").forEach(function (b) { b.onclick = function () {
       var el = document.getElementById("rev" + b.getAttribute("data-rev")); el.hidden = !el.hidden; b.textContent = el.hidden ? "Ver tradução" : "Esconder"; }; });
     app.querySelectorAll("[data-flip]").forEach(function (c) { c.onclick = function (e) {
@@ -478,7 +509,7 @@
     document.getElementById("finish").onclick = function () {
       var mod = sectionFinished(s.id);
       if (mod) { celebrate(); toast(moduleDoneText(mod)); } else toast("Seção concluída");
-      go({ name: "home" });
+      backToPath(s.id);
     };
   }
 
@@ -645,7 +676,7 @@
     return h;
   }
   function bindQuiz(S, id, it, sec, m) {
-    document.getElementById("close").onclick = function () { speechStop(); toast("Progresso salvo. Continue quando quiser"); go({ name: "home" }); };
+    document.getElementById("close").onclick = function () { speechStop(); toast("Progresso salvo. Continue quando quiser"); backToPath(S.section ? S.section.id : null); };
     var commit = function (ok, answer) {
       S.answer = answer; S.ok = ok; var before = state.days[today()] || 0;
       S.snap = record(id, ok, answer, m);
@@ -731,7 +762,7 @@
       '<button class="btn btn-soft" id="home">Voltar ao percurso</button></div>';
     app.innerHTML = html;
     if (ratio === 1 || S.moduleDone) celebrate();
-    document.getElementById("home").onclick = function () { go({ name: "home" }); };
+    document.getElementById("home").onclick = function () { backToPath(S.section ? S.section.id : null); };
     var nb = document.getElementById("nx"); if (nb) nb.onclick = function () { openSection(nx.id); };
   }
 
@@ -1038,6 +1069,9 @@
   if (!state.placement && Object.keys(state.results).length) { state.placement = "B1"; save(); }
   if (!state.onboarded && Object.keys(state.results).length) { state.onboarded = true; save(); }
   if (!state.onboarded) view = { name: "welcome", step: 0 };
+  // Sem zoom: o app se comporta como um app nativo.
+  ["gesturestart", "gesturechange", "gestureend"].forEach(function (ev) { document.addEventListener(ev, function (e) { e.preventDefault(); }, { passive: false }); });
+  document.addEventListener("touchmove", function (e) { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
   window.__fluencyDebug = { ITEMS: ITEMS, optionsFor: optionsFor };
   updateDot();
   render();
