@@ -1077,7 +1077,7 @@
   function loadApiConfig() {
     if (!navigator.onLine) return;
     apiFetch("config").then(function (c) {
-      if (c._status !== 200) return;
+      if (c._status !== 200 || !(c.googleClientId || c.emailLogin)) return;
       api.ready = true; api.config = c;
       if (auth) { apiFetch("me").then(function (m) { if (m._status === 401) { auth = null; saveAuth(); render(); } else if (m.user) { auth.user = m.user; saveAuth(); } }); syncNow(); }
       if (["home", "errors", "setup"].indexOf(view.name) >= 0) render();
@@ -1180,7 +1180,7 @@
         '<div class="actions"><button class="btn btn-primary" id="lg-verify">Entrar</button></div>' +
         '<div class="center"><button class="text-btn" id="lg-other">Usar outro e-mail</button></div>';
     } else {
-      if (c.googleClientId) html += '<div id="g-btn" class="g-btn"></div><div class="or"><span>ou</span></div>';
+      if (c.googleClientId) html += '<div id="g-btn" class="g-btn"></div>' + (c.emailLogin ? '<div class="or"><span>ou</span></div>' : '');
       if (c.emailLogin) html += '<input class="field" id="lg-email" type="email" inputmode="email" autocomplete="email" placeholder="Seu e-mail" value="' + esc(V.email || "") + '">' +
         '<div class="actions"><button class="btn btn-primary" id="lg-send">Receber código por e-mail</button></div>';
       if (!c.googleClientId && !c.emailLogin) html += '<p class="tip" style="margin-top:20px">O login ainda está sendo configurado. Volte em breve.</p>';

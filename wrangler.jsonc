@@ -1,0 +1,19 @@
+{
+  "name": "fluency-app",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "nowish", "database_id": "7b94246e-8492-4adb-826d-becd5c9a37cc" }
+  ],
+  "vars": {
+    "GOOGLE_CLIENT_ID": "",
+    "MAIL_FROM": "nowish <entrar@momnt.com.br>",
+    "APP_NAME": "nowish"
+  }
+  // Segredo no painel do Cloudflare (Settings → Variables and Secrets): RESEND_API_KEY
+}
