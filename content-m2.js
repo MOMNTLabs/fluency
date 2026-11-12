@@ -10,16 +10,16 @@ window.WEEKS.push(
           C("at = ponto exato", ["Horas, lugares específicos.", "at 7 a.m., at night, at the bus stop, at work"], "I'm at the bus stop."),
           C("on = dias, datas e superfícies", ["Inclui plataformas e o ônibus.", "on Monday, on December 25th, on Instagram, on the bus"], "I study English on the bus."),
           C("in = períodos e dentro de lugares", ["Meses, anos, partes do dia, cidades.", "in December, in 2027, in the morning, in São Paulo, in a car"], "We post more in the evening."),
-          C("Pegadinhas", ["at night, mas in the morning", "on the bus, mas in a car / in an Uber", "on the weekend (EUA)"], "I usually edit videos at night.")
+          C("Pegadinhas", ["at night, mas in the morning", "on the bus, mas in a car / in an Uber", "on the weekend (EUA)"], "I usually study at night.")
         ] },
       { id: "s5-r1", type: "fill", title: "Rodada 1", subtitle: "Tempo: quando?",
         items: [
           F("The meeting is ___ 9 a.m.", "at", "The meeting is {at} 9 a.m.", "Hora exata → at."),
-          F("The campaign starts ___ 2027.", "in", "The campaign starts {in} 2027.", "Ano → in."),
-          F("We post every day ___ the morning.", "in", "We post every day {in} the morning.", "Parte do dia → in the morning."),
+          F("The course starts ___ 2027.", "in", "The course starts {in} 2027.", "Ano → in."),
+          F("I study every day ___ the morning.", "in", "I study every day {in} the morning.", "Parte do dia → in the morning."),
           F("I don't work ___ Saturdays.", "on", "I don't work {on} Saturdays.", "Dia da semana → on."),
           F("The deadline is ___ Friday.", "on", "The deadline is {on} Friday.", "Dia → on."),
-          F("I usually edit videos ___ night.", "at", "I usually edit videos {at} night.", "Exceção: at night."),
+          F("I usually study ___ night.", "at", "I usually study {at} night.", "Exceção: at night."),
           F("Christmas is ___ December.", "in", "Christmas is {in} December.", "Mês → in."),
           F("The new week starts ___ December 7th.", "on", "The new week starts {on} December 7th.", "Data → on.")
         ] },
@@ -27,7 +27,7 @@ window.WEEKS.push(
         items: [
           F("I study English ___ the bus.", "on", "I study English {on} the bus.", "Ônibus, trem e avião → on."),
           F("I'm waiting ___ the bus stop.", "at", "I'm waiting {at} the bus stop.", "Ponto específico → at."),
-          F("We have 10k followers ___ Instagram.", "on", "We have 10k followers {on} Instagram.", "Plataformas e redes → on."),
+          F("I saw the recipe ___ Instagram.", "on", "I saw the recipe {on} Instagram.", "Plataformas e redes → on."),
           F("Our client is based ___ Brazil.", "in", "Our client is based {in} Brazil.", "Cidade, estado, país → in."),
           F("There's a typo ___ the video.", "in", "There's a typo {in} the video.", "Dentro do vídeo → in."),
           F("She's ___ work right now.", "at", "She's {at} work right now.", "at work = no trabalho."),
@@ -38,9 +38,9 @@ window.WEEKS.push(
         items: [
           T("Eu estudo inglês no ônibus.", "I study English on the bus.", "on the bus."),
           T("A reunião é na segunda às 10h.", "The meeting is on Monday at 10 a.m.", "Dia → on; hora → at."),
-          T("Postamos no Instagram toda noite.", "We post on Instagram every night.", "Plataforma → on."),
+          T("Eu vejo vídeos no YouTube toda noite.", "I watch videos on YouTube every night.", "Plataforma → on."),
           T("Estou no ponto de ônibus.", "I'm at the bus stop.", "Ponto específico → at."),
-          T("Tem um erro na legenda.", "There's a mistake in the caption.", "Dentro do texto → in."),
+          T("Tem um erro no endereço.", "There's a mistake in the address.", "Dentro do texto → in."),
           T("Começo a trabalhar às 8h da manhã.", "I start work at 8 a.m.", "Hora → at.")
         ] },
       { id: "s5-mix", type: "mix", title: "Revisão misturada", subtitle: "Questões dos módulos anteriores", count: 8 },
@@ -58,7 +58,7 @@ window.WEEKS.push(
           V("slide", "slide (de carrossel)", "The second slide needs a stronger headline."),
           V("headline", "título", "Keep the headline short."),
           V("to go live", "ir ao ar", "The video goes live at noon."),
-          V("campaign", "campanha", "The Christmas campaign starts next week."),
+          V("schedule", "cronograma, agenda", "The Christmas schedule starts next week."),
           V("until", "até (tempo)", "I work until 6 p.m."),
           V("by Friday", "até sexta (no máximo)", "Please send it by Friday.")
         ] }
@@ -83,7 +83,7 @@ window.WEEKS.push(
           F("I enjoy ___ (edit) videos.", "editing", "I enjoy {editing} videos.", "enjoy + -ing."),
           F("I want ___ (learn) Excel.", "to learn", "I want {to learn} Excel.", "want + to."),
           F("We need ___ (post) more often.", "to post", "We need {to post} more often.", "need + to."),
-          F("Have you finished ___ (write) the caption?", "writing", "Have you finished {writing} the caption?", "finish + -ing."),
+          F("Have you finished ___ (write) the message?", "writing", "Have you finished {writing} the message?", "finish + -ing."),
           F("She decided ___ (change) the font.", "to change", "She decided {to change} the font.", "decide + to."),
           F("Avoid ___ (use) too many hashtags.", "using", "Avoid {using} too many hashtags.", "avoid + -ing."),
           F("I'd like ___ (work) abroad one day.", "to work", "I'd like {to work} abroad one day.", "would like + to."),
@@ -93,18 +93,18 @@ window.WEEKS.push(
         items: [
           F("I'm good at ___ (find) trends.", "finding", "I'm good at {finding} trends.", "Depois de preposição (at) → -ing."),
           F("Thanks for ___ (help) me.", "helping", "Thanks for {helping} me.", "for + -ing."),
-          F("Before ___ (post), check the caption.", "posting", "Before {posting}, check the caption.", "before + -ing."),
+          F("Before ___ (post), check the address.", "posting", "Before {posting}, check the address.", "before + -ing."),
           F("I'm thinking about ___ (take) an English course.", "taking", "I'm thinking about {taking} an English course.", "about + -ing."),
-          F("We plan ___ (launch) the campaign in January.", "to launch", "We plan {to launch} the campaign in January.", "plan + to."),
+          F("We plan ___ (launch) the site in January.", "to launch", "We plan {to launch} the site in January.", "plan + to."),
           F("I stopped ___ (use) that app. It was too slow.", "using", "I stopped {using} that app.", "Parei de usar → stop + -ing."),
-          F("I hope ___ (reach) 20k followers this year.", "to reach", "I hope {to reach} 20k followers this year.", "hope + to."),
+          F("I hope ___ (reach) my goal this year.", "to reach", "I hope {to reach} my goal this year.", "hope + to."),
           F("Do you mind ___ (send) me the file again?", "sending", "Do you mind {sending} me the file again?", "mind + -ing (\"você se importa de…\").")
         ] },
       { id: "s6-r3", type: "translate", title: "Rodada 3", subtitle: "Traduza para o inglês",
         items: [
           T("Eu adoro editar vídeos.", "I love editing videos.", "love aceita os dois: <i>I love to edit videos</i> também vale."),
           T("Preciso terminar o relatório hoje.", "I need to finish the report today.", "need + to."),
-          T("Ela é boa em escrever legendas.", "She's good at writing captions.", "good at + -ing."),
+          T("Ela é boa em escrever e-mails.", "She's good at writing emails.", "good at + -ing."),
           T("Paramos de postar aos domingos.", "We stopped posting on Sundays.", "stop + -ing = parar de."),
           T("Quero aprender a usar o After Effects.", "I want to learn how to use After Effects.", "want to + learn how to. <i>I want to learn to use…</i> também vale."),
           T("Obrigado por me ajudar com o roteiro.", "Thanks for helping me with the script.", "for + -ing.")
@@ -124,7 +124,7 @@ window.WEEKS.push(
           V("to launch", "lançar", "We'll launch the new series in January."),
           V("spelling", "ortografia", "Check the spelling before posting."),
           V("approval", "aprovação", "We're waiting for the client's approval."),
-          V("to avoid", "evitar", "Avoid long captions on reels."),
+          V("to avoid", "evitar", "Avoid long messages on the group."),
           V("to keep doing", "continuar fazendo", "Keep practicing every day."),
           V("to look forward to", "estar ansioso por, aguardar", "I look forward to working with you.")
         ] }
@@ -151,7 +151,7 @@ window.WEEKS.push(
           F("Let's check what's ___ on TikTok. (em alta)", "trending", "Let's check what's {trending} on TikTok.", "Em alta = trending. <i>Tendency</i> é tendência de comportamento."),
           F("I ___ a lot of series in English. (assisto)", "watch", "I {watch} a lot of series in English.", "Assistir = watch. <i>Assist</i> é ajudar."),
           F("___, the client liked the first version. (Na verdade)", "actually", "{Actually}, the client liked the first version.", "Na verdade = actually."),
-          F("We ___ to launch the campaign in March. (pretendemos)", ["intend", "plan"], "We {intend} to launch the campaign in March.", "Pretender = intend / plan. <i>Pretend</i> é fingir."),
+          F("We ___ to launch the site in March. (pretendemos)", ["intend", "plan"], "We {intend} to launch the site in March.", "Pretender = intend / plan. <i>Pretend</i> é fingir."),
           F("My ___ are coming for Christmas. (parentes)", "relatives", "My {relatives} are coming for Christmas.", "Parentes = relatives. <i>Parents</i> são os pais."),
           F("I ___ post on weekends, only on special dates. (eventualmente)", ["occasionally", "sometimes"], "I {occasionally} post on weekends.", "Eventualmente = occasionally. <i>Eventually</i> é \"no fim\".")
         ] },
@@ -161,7 +161,7 @@ window.WEEKS.push(
           F("She studies design in ___. (faculdade)", ["college", "university"], "She studies design in {college}.", "Faculdade = college. Colégio = school."),
           F("I bought a book at the ___. (livraria)", ["bookstore", "bookshop"], "I bought a book at the {bookstore}.", "Livraria = bookstore. <i>Library</i> é biblioteca."),
           F("The team ___ me a lot during the project. (apoiou)", ["supported", "helped"], "The team {supported} me a lot during the project.", "Apoiar = support."),
-          F("We finally ___ our goal of 10k followers. (alcançamos)", ["reached", "achieved", "hit"], "We finally {reached} our goal of 10k followers.", "Alcançar, realizar uma meta = reach / achieve. Não use <i>realize</i>."),
+          F("We finally ___ our goal for the year. (alcançamos)", ["reached", "achieved", "hit"], "We finally {reached} our goal for the year.", "Alcançar, realizar uma meta = reach / achieve. Não use <i>realize</i>."),
           F("Don't ___ you didn't see the message! (fingir)", "pretend", "Don't {pretend} you didn't see the message!", "Fingir = pretend."),
           F("It was a long project, but ___ we finished it. (no fim)", ["eventually", "finally"], "It was a long project, but {eventually} we finished it.", "No fim, depois de um tempo = eventually."),
           F("I'll ___ the meeting online. (participar de)", ["attend", "join"], "I'll {attend} the meeting online.", "Participar de = attend / join. Atender o telefone = answer.")
@@ -170,7 +170,7 @@ window.WEEKS.push(
         items: [
           T("Atualmente eu trabalho com redes sociais.", "Currently, I work with social media.", "Atualmente = currently. <i>Nowadays</i> também vale."),
           T("Na verdade, o cliente gostou do vídeo.", "Actually, the client liked the video.", "Na verdade = actually."),
-          T("Eu não percebi o erro na legenda.", "I didn't notice the mistake in the caption.", "Notar algo = notice. <i>Realize</i> é perceber uma situação: <i>I didn't realize there was a mistake</i>."),
+          T("Eu não percebi o erro no endereço.", "I didn't notice the mistake in the address.", "Notar algo = notice. <i>Realize</i> é perceber uma situação: <i>I didn't realize there was a mistake</i>."),
           T("Essa é a nova tendência do Instagram.", "This is the new Instagram trend.", "Tendência = trend."),
           T("Eu pretendo estudar inglês todos os dias.", "I intend to study English every day.", "Pretender = intend. <i>I plan to</i> também vale."),
           T("Eu assisto vídeos de marketing em inglês.", "I watch marketing videos in English.", "Assistir = watch.")
@@ -210,7 +210,7 @@ window.WEEKS.push(
         ] },
       { id: "s8-r1", type: "fill", title: "Rodada 1", subtitle: "Escreva o phrasal verb",
         items: [
-          F("I need to ___ a new idea for the reel. (bolar)", "come up with", "I need to {come up with} a new idea for the reel.", "Bolar uma ideia = come up with."),
+          F("I need to ___ a new idea for the trip. (bolar)", "come up with", "I need to {come up with} a new idea for the trip.", "Bolar uma ideia = come up with."),
           F("Can you help me ___ the new camera? (configurar)", "set up", "Can you help me {set up} the new camera?", "Configurar, montar = set up."),
           F("I can't ___ why the export failed. (entender)", "figure out", "I can't {figure out} why the export failed.", "Descobrir, entender = figure out."),
           F("Let's ___ the script before the meeting. (revisar)", "go over", "Let's {go over} the script before the meeting.", "Revisar = go over."),
@@ -224,7 +224,7 @@ window.WEEKS.push(
           F("Please ___ the files before formatting the computer. (fazer backup)", "back up", "Please {back up} the files before formatting the computer.", "Fazer backup = back up."),
           F("Can you ___ the music? It's too loud. (abaixar)", "turn down", "Can you {turn down} the music?", "Abaixar o volume = turn down."),
           F("I'll ___ the form and send it today. (preencher)", ["fill out", "fill in"], "I'll {fill out} the form and send it today.", "Preencher = fill out / fill in."),
-          F("We need to ___ the old post. It has a mistake. (tirar do ar)", "take down", "We need to {take down} the old post.", "Tirar do ar = take down."),
+          F("We need to ___ the old sign. It has a mistake. (tirar do ar)", "take down", "We need to {take down} the old sign.", "Tirar do ar = take down."),
           F("I ___ my boss at the supermarket yesterday. (encontrei por acaso)", "ran into", "I {ran into} my boss at the supermarket yesterday.", "Encontrar por acaso = run into."),
           F("Don't ___! You're almost B2. (desistir)", "give up", "Don't {give up}! You're almost B2.", "Desistir = give up."),
           F("I'm ___ the new series. It starts on Monday. (aguardando ansioso)", "looking forward to", "I'm {looking forward to} the new series.", "Aguardar ansioso = look forward to."),

@@ -7,7 +7,7 @@ window.WEEKS.push(
       { id: "s2-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
         intro: "Essas palavras andam junto com <b>have/has + particípio</b>. Cada uma muda um pouco o sentido.",
         cards: [
-          C("already = já", ["Em frases afirmativas, antes do particípio."], "I've already posted the carousel."),
+          C("already = já", ["Em frases afirmativas, antes do particípio."], "I've already sent the photos."),
           C("yet = ainda (negativa) ou já (pergunta)", ["Vai no fim da frase."], "I haven't finished the video yet."),
           C("just = acabei de", ["Algo que aconteceu agora há pouco."], "I've just sent the file."),
           C("ever / never = alguma vez / nunca", ["Para falar de experiências, sem data."], "Have you ever used After Effects?"),
@@ -16,11 +16,11 @@ window.WEEKS.push(
         ] },
       { id: "s2-r1", type: "fill", title: "Rodada 1", subtitle: "already, yet ou just?",
         items: [
-          F("I haven't edited the reel ___.", "yet", "I haven't edited the reel {yet}.", "Negativa, no fim da frase → yet."),
+          F("I haven't read the message ___.", "yet", "I haven't read the message {yet}.", "Negativa, no fim da frase → yet."),
           F("Have you sent the invoice ___?", "yet", "Have you sent the invoice {yet}?", "Pergunta com \"já\" no fim → yet."),
-          F("I've ___ finished the carousel. It's ready to post.", ["already", "just"], "I've {already} finished the carousel.", "\"Já terminei\" → already. <i>Just</i> também funciona se foi agora há pouco."),
+          F("I've ___ finished the report. It's ready to post.", ["already", "just"], "I've {already} finished the report.", "\"Já terminei\" → already. <i>Just</i> também funciona se foi agora há pouco."),
           F("The client has ___ called, literally one minute ago.", "just", "The client has {just} called.", "\"Acabou de ligar\" → just."),
-          F("Don't worry, I've ___ fixed the subtitles.", ["already", "just"], "Don't worry, I've {already} fixed the subtitles.", "\"Já corrigi\" → already."),
+          F("Don't worry, I've ___ fixed the mistake.", ["already", "just"], "Don't worry, I've {already} fixed the mistake.", "\"Já corrigi\" → already."),
           F("We haven't decided the colors ___.", "yet", "We haven't decided the colors {yet}.", "\"Ainda não decidimos\" → yet no fim."),
           F("She has ___ left the office. You can still catch her at the bus stop.", "just", "She has {just} left the office.", "\"Acabou de sair\" → just."),
           F("Have you ___ worked with this client before?", "ever", "Have you {ever} worked with this client before?", "Experiência, \"alguma vez\" → ever.")
@@ -31,7 +31,7 @@ window.WEEKS.push(
           F("I've studied English on the bus ___ two weeks.", "for", "I've studied English on the bus {for} two weeks.", "Duas semanas é duração → for."),
           F("We've used this template ___ a long time.", "for", "We've used this template {for} a long time.", "Duração → for."),
           F("She has been my boss ___ 2024.", "since", "She has been my boss {since} 2024.", "Ponto de partida → since."),
-          F("I've ___ seen such good engagement!", "never", "I've {never} seen such good engagement!", "\"Nunca vi\" → never (o verbo fica na afirmativa)."),
+          F("I've ___ seen such a good result!", "never", "I've {never} seen such a good result!", "\"Nunca vi\" → never (o verbo fica na afirmativa)."),
           F("Have you ___ been to São Paulo?", "ever", "Have you {ever} been to São Paulo?", "Pergunta sobre experiência → ever."),
           F("I ___ (know) him for five years.", ["have known", "'ve known"], "I {have known} him for five years.", "Começou no passado e continua → have known."),
           F("How long ___ you ___ (live) in this city?", "have lived", "How long {have} you {lived} in this city?", "\"Há quanto tempo você mora\" → How long have you lived.")
@@ -39,7 +39,7 @@ window.WEEKS.push(
       { id: "s2-r3", type: "translate", title: "Rodada 3", subtitle: "Traduza para o inglês",
         items: [
           T("Ainda não terminei o vídeo.", "I haven't finished the video yet.", "\"Ainda não\" → haven't … yet."),
-          T("Você já postou o carrossel?", "Have you posted the carousel yet?", "Em pergunta, \"já\" costuma ser yet no fim. <i>Have you already posted…?</i> também vale."),
+          T("Você já enviou o relatório?", "Have you sent the report yet?", "Em pergunta, \"já\" costuma ser yet no fim. <i>Have you already posted…?</i> também vale."),
           T("Acabei de mandar o arquivo para o cliente.", "I've just sent the file to the client.", "\"Acabei de\" → have just + particípio."),
           T("Trabalho aqui desde outubro.", "I've worked here since October.", "Continua até agora → have worked + since."),
           T("Faz duas semanas que eu estudo inglês no ônibus.", "I've studied English on the bus for two weeks.", "\"Faz … que\" → have + particípio + for. <i>I've been studying</i> também vale."),
@@ -62,7 +62,7 @@ window.WEEKS.push(
           V("feedback", "retorno, comentários", "The client gave us good feedback."),
           V("to schedule", "agendar", "I scheduled the post for 6 p.m."),
           V("insights", "métricas", "Let's check the insights before the meeting."),
-          V("to reach out", "entrar em contato", "I'll reach out to the client tomorrow.")
+          V("to get in touch", "entrar em contato", "I'll get in touch with them tomorrow.")
         ] }
     ]
   },
@@ -86,17 +86,17 @@ window.WEEKS.push(
           F("If I ___ (live) closer to work, I would walk.", "lived", "If I {lived} closer to work, I would walk.", "Imaginação → if + passado."),
           F("If you send me the file, I ___ (edit) it this afternoon.", ["will edit", "'ll edit"], "If you send me the file, I {will edit} it this afternoon.", "Pode acontecer → will."),
           F("If I ___ (be) rich, I would travel the world.", ["were", "was"], "If I {were} rich, I would travel the world.", "Imaginação com <i>be</i> → were."),
-          F("We ___ (get) more leads if we posted every day.", ["would get", "'d get"], "We {would get} more leads if we posted every day.", "\"Conseguiríamos\" → would."),
+          F("We ___ (get) more replies if we posted every day.", ["would get", "'d get"], "We {would get} more replies if we posted every day.", "\"Conseguiríamos\" → would."),
           F("If the bus ___ (be) late again, I'll miss the meeting.", "is", "If the bus {is} late again, I'll miss the meeting.", "Pode acontecer → if + presente.")
         ] },
       { id: "s3-r2", type: "fill", title: "Rodada 2", subtitle: "would have: o passado que não aconteceu",
         items: [
           F("If I had saved the project, I ___ (not/lose) it.", ["wouldn't have lost", "would not have lost"], "If I had saved the project, I {wouldn't have lost} it.", "\"Não teria perdido\" → wouldn't have lost."),
           F("If I ___ (know) about the meeting, I would have come.", ["had known", "'d known"], "If I {had known} about the meeting, I would have come.", "\"Se eu soubesse (na época)\" → had known."),
-          F("If we had posted earlier, we ___ (get) more views.", ["would have gotten", "would have got", "'d have gotten"], "If we had posted earlier, we {would have gotten} more views.", "\"Teríamos conseguido\" → would have gotten."),
+          F("If we had posted earlier, we ___ (get) more comments.", ["would have gotten", "would have got", "'d have gotten"], "If we had posted earlier, we {would have gotten} more comments.", "\"Teríamos conseguido\" → would have gotten."),
           F("If she ___ (study) more, she would have passed the test.", ["had studied", "'d studied"], "If she {had studied} more, she would have passed the test.", "\"Se ela tivesse estudado\" → had studied."),
           F("I ___ (call) you if I had had your number.", ["would have called", "'d have called"], "I {would have called} you if I had had your number.", "\"Eu teria ligado\" → would have called."),
-          F("If the client ___ (not/change) the brief, we would have finished on time.", ["hadn't changed", "had not changed"], "If the client {hadn't changed} the brief, we would have finished on time.", "\"Se não tivesse mudado\" → hadn't changed."),
+          F("If the client ___ (not/change) the plan, we would have finished on time.", ["hadn't changed", "had not changed"], "If the client {hadn't changed} the plan, we would have finished on time.", "\"Se não tivesse mudado\" → hadn't changed."),
           F("If I had left home earlier, I ___ (not/miss) the bus.", ["wouldn't have missed", "would not have missed"], "If I had left home earlier, I {wouldn't have missed} the bus.", "\"Não teria perdido\" → wouldn't have missed."),
           F("If you ___ (tell) me, I would have helped you.", ["had told", "'d told"], "If you {had told} me, I would have helped you.", "\"Se você tivesse me contado\" → had told.")
         ] },
@@ -121,8 +121,8 @@ window.WEEKS.push(
         ] },
       { id: "s3-vocab", type: "vocab", title: "Vocabulário", subtitle: "Toque no cartão para ver o significado",
         items: [
-          V("brief", "briefing", "The client's brief was very clear."),
-          V("script", "roteiro", "I wrote the script for the reel."),
+          V("instructions", "instruções", "The instructions were very clear."),
+          V("script", "roteiro", "I wrote the script for the video."),
           V("to approve", "aprovar", "My boss approved the new layout."),
           V("to miss", "perder (ônibus, prazo); sentir falta", "I missed the bus again."),
           V("to save", "salvar; economizar", "Save the file before closing the program."),
@@ -159,7 +159,7 @@ window.WEEKS.push(
           F("\"Did you see the post?\" → He asked me if I ___ (see) the post.", ["had seen", "'d seen"], "He asked me if I {had seen} the post.", "did see → had seen."),
           F("\"Don't post it yet.\" → My boss told me ___ to post it yet.", "not", "My boss told me {not} to post it yet.", "Ordem negativa → not to."),
           F("\"What time is the meeting?\" → I asked what time the meeting ___.", "was", "I asked what time the meeting {was}.", "Pergunta contada: ordem normal, is → was."),
-          F("\"I'm working on the reel.\" → She said she ___ on the reel.", "was working", "She said she {was working} on the reel.", "am working → was working."),
+          F("\"I'm working on the report.\" → She said she ___ on the report.", "was working", "She said she {was working} on the report.", "am working → was working."),
           F("\"We will change the colors.\" → They said they ___ change the colors.", "would", "They said they {would} change the colors.", "will → would."),
           F("\"Can you help me?\" → He asked me if I ___ help him.", "could", "He asked me if I {could} help him.", "can → could."),
           F("\"Call me tomorrow.\" → She told me ___ call her the next day.", "to", "She told me {to} call her the next day.", "Ordem → told + pessoa + to.")
@@ -187,7 +187,7 @@ window.WEEKS.push(
       { id: "s4-vocab", type: "vocab", title: "Vocabulário", subtitle: "Toque no cartão para ver o significado",
         items: [
           V("to deliver", "entregar", "We delivered the video on time."),
-          V("to point out", "apontar, observar", "She pointed out a typo in the caption."),
+          V("to point out", "apontar, observar", "She pointed out a typo in the title."),
           V("typo", "erro de digitação", "There's a typo in the second slide."),
           V("to agree", "concordar", "I agree with you."),
           V("to complain", "reclamar", "The client complained about the music."),

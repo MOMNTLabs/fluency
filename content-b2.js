@@ -29,7 +29,7 @@ window.WEEKS.push(
           F("She ___ (call) five clients this morning.", ["has called", "'s called"], "She {has called} five clients this morning.", "Quantos → has called."),
           F("He ___ (talk) on the phone for an hour.", ["has been talking", "'s been talking"], "He {has been talking} on the phone for an hour.", "Quanto tempo → has been talking."),
           F("We ___ (finish) the project! It's done.", ["have finished", "'ve finished"], "We {have finished} the project!", "Concluído → have finished."),
-          F("They ___ (work) on this campaign since March.", ["have been working", "'ve been working"], "They {have been working} on this campaign since March.", "Desde março e continua."),
+          F("They ___ (work) on this project since March.", ["have been working", "'ve been working"], "They {have been working} on this project since March.", "Desde março e continua."),
           F("How many emails ___ you ___ (send) today?", "have sent", "How many emails {have} you {sent} today?", "How many = quantidade → have sent."),
           F("I ___ (have) this laptop for three years.", ["have had", "'ve had"], "I {have had} this laptop for three years.", "have (posse) é estado → have had.")
         ] },

@@ -157,7 +157,7 @@ window.WEEKS.push(
           F("What I did ___ call the supplier directly.", "was", "What I did {was} call the supplier directly.", "What I did was + verbo puro."),
           F("He ___ work hard, but the results didn't come. (ênfase)", "did", "He {did} work hard, but the results didn't come.", "Ênfase no passado → did."),
           F("The thing ___, we don't have enough people.", "is", "The thing {is}, we don't have enough people.", "A questão é → The thing is."),
-          F("It was in March ___ we launched the campaign.", "that", "It was in March {that} we launched the campaign.", "Tempo → that."),
+          F("It was in March ___ we launched the site.", "that", "It was in March {that} we launched the site.", "Tempo → that."),
           F("All we can do now ___ wait.", "is", "All we can do now {is} wait.", "All + frase + is."),
           F("What happened ___ that the server went down.", "was", "What happened {was} that the server went down.", "What happened was…")
         ] },
@@ -324,14 +324,14 @@ window.WEEKS.push(
       { id: "c1m6-resumo", type: "summary", title: "Resumo de bolso", subtitle: "Leia antes dos exercícios",
         intro: "Como soar profissional em <b>e-mails e documentos</b>.",
         cards: [
-          C("Conectores formais", ["moreover, furthermore = além disso", "nevertheless, nonetheless = ainda assim", "whereas = enquanto (contraste)", "hence, thus = portanto"], "The budget was small. Nevertheless, the campaign was a success."),
+          C("Conectores formais", ["moreover, furthermore = além disso", "nevertheless, nonetheless = ainda assim", "whereas = enquanto (contraste)", "hence, thus = portanto"], "The budget was small. Nevertheless, the event was a success."),
           C("Frases prontas de e-mail", ["I am writing to…, Please find attached…", "I would appreciate it if you could…", "I look forward to hearing from you."], "Please find attached the signed contract."),
           C("Palavras do dia a dia → formais", ["ask → request, need → require", "help → assist, buy → purchase, get → receive"], "We would like to request a meeting.")
         ] },
       { id: "c1m6-r1", type: "fill", title: "Rodada 1", subtitle: "Conectores e frases de e-mail",
         items: [
           F("The product is cheap. ___, it's very reliable. (Além disso)", ["moreover", "furthermore"], "The product is cheap. {Moreover}, it's very reliable.", "Além disso → Moreover / Furthermore.", ["nevertheless", "whereas", "hence"]),
-          F("The budget was small. ___, the campaign was a success. (Ainda assim)", ["nevertheless", "nonetheless"], "The budget was small. {Nevertheless}, the campaign was a success.", "Ainda assim → Nevertheless.", ["moreover", "whereas", "hence"]),
+          F("The budget was small. ___, the event was a success. (Ainda assim)", ["nevertheless", "nonetheless"], "The budget was small. {Nevertheless}, the event was a success.", "Ainda assim → Nevertheless.", ["moreover", "whereas", "hence"]),
           F("Sales grew in the south, ___ they fell in the north. (enquanto)", "whereas", "Sales grew in the south, {whereas} they fell in the north.", "Contraste → whereas.", ["moreover", "hence", "nevertheless"]),
           F("Costs went up; ___, prices had to change. (portanto)", ["hence", "thus", "therefore"], "Costs went up; {hence}, prices had to change.", "Portanto → hence / thus.", ["whereas", "moreover", "nevertheless"]),
           F("I am writing ___ request more information.", "to", "I am writing {to} request more information.", "I am writing to + verbo.", ["for", "about", "that"]),
@@ -355,7 +355,7 @@ window.WEEKS.push(
           T("Escrevo para solicitar mais informações.", "I am writing to request more information.", "I am writing to + request."),
           T("Segue em anexo o contrato.", "Please find attached the contract.", "Please find attached."),
           T("Agradeceria se pudesse responder até sexta.", "I would appreciate it if you could reply by Friday.", "I would appreciate it if…"),
-          T("O orçamento era pequeno. Ainda assim, a campanha foi um sucesso.", "The budget was small. Nevertheless, the campaign was a success.", "Nevertheless."),
+          T("O orçamento era pequeno. Ainda assim, o evento foi um sucesso.", "The budget was small. Nevertheless, the event was a success.", "Nevertheless."),
           T("Aguardo seu retorno.", "I look forward to hearing from you.", "look forward to + -ing."),
           T("Além disso, oferecemos entrega grátis.", "Furthermore, we offer free delivery.", "Furthermore / Moreover.")
         ] },

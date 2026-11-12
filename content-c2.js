@@ -79,7 +79,7 @@ window.WEEKS.push(
           F("It ___ that the client is not happy. (parece)", "seems", "It {seems} that the client is not happy.", "Parece → It seems.", ["looks", "appears like", "feels"]),
           F("Sales are ___ to grow next year. (provavelmente vão)", "likely", "Sales are {likely} to grow next year.", "be likely to = provavelmente.", ["probably", "possible", "able"]),
           F("That ___ well be the best option. (é bem possível)", "may", "That {may} well be the best option.", "may well = é bem possível.", ["can", "will", "must"]),
-          F("This is, ___, our best campaign so far. (pode-se dizer)", "arguably", "This is, {arguably}, our best campaign so far.", "arguably = pode-se dizer que.", ["argumentally", "apparently not", "surely not"]),
+          F("This is, ___, our best result so far. (pode-se dizer)", "arguably", "This is, {arguably}, our best result so far.", "arguably = pode-se dizer que.", ["argumentally", "apparently not", "surely not"]),
           F("I agree with you to some ___.", "extent", "I agree with you to some {extent}.", "to some extent = até certo ponto.", ["point", "level", "part"]),
           F("People ___ to buy more in December. (costumam)", "tend", "People {tend} to buy more in December.", "tend to = costumar.", ["use", "used", "trend"]),
           F("The meeting got cancelled, so we might ___ well go home.", "as", "We might {as} well go home.", "might as well = já que é assim.", ["so", "very", "too"]),
@@ -205,7 +205,7 @@ window.WEEKS.push(
         items: [
           F("The ___ (announce) was made this morning.", "announcement", "The {announcement} was made this morning.", "Substantivo → announce + ment.", ["announcing", "announced", "announcer"]),
           F("We need to make a ___ (decide) today.", "decision", "We need to make a {decision} today.", "decide → decision.", ["decide", "decisive", "deciding"]),
-          F("The campaign raised brand ___ (aware).", "awareness", "The campaign raised brand {awareness}.", "aware + ness.", ["aware", "awarement", "awarity"]),
+          F("The talk raised public ___ (aware).", "awareness", "The talk raised public {awareness}.", "aware + ness.", ["aware", "awarement", "awarity"]),
           F("This tool is really ___ (use).", "useful", "This tool is really {useful}.", "use + ful = útil.", ["usage", "user", "usely"]),
           F("We need a more ___ (rely) supplier.", "reliable", "We need a more {reliable} supplier.", "rely → reliable (y → i).", ["reliance", "reliably", "relied"]),
           F("The instructions were ___ (clear), so nobody understood.", "unclear", "The instructions were {unclear}.", "Oposto → un + clear.", ["inclear", "disclear", "clearly"]),
@@ -226,7 +226,7 @@ window.WEEKS.push(
       { id: "c2m4-r3", type: "translate", title: "Rodada 3", subtitle: "Traduza para o inglês",
         items: [
           T("O anúncio foi feito hoje.", "The announcement was made today.", "announcement."),
-          T("A campanha aumentou o reconhecimento da marca.", "The campaign increased brand awareness.", "awareness."),
+          T("A palestra aumentou a conscientização do público.", "The talk increased public awareness.", "awareness."),
           T("Essa ferramenta é muito útil.", "This tool is very useful.", "useful."),
           T("Acho que você me entendeu errado.", "I think you misunderstood me.", "misunderstand."),
           T("Nunca subestime a concorrência.", "Never underestimate the competition.", "underestimate."),
