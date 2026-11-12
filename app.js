@@ -116,6 +116,30 @@
     });
   }
   buildSections();
+  // Tradução das frases: vem do próprio item, do banco content-frases.js,
+  // dos exemplos do vocabulário ou das leituras.
+  var PT = {};
+  function ptKey(t) { return String(t).replace(/[{}]/g, "").replace(/\s+/g, " ").trim().toLowerCase().replace(/[.?!]+$/, ""); }
+  function ptPut(en, pt) { if (en && pt) { var k = ptKey(en); if (!PT[k]) PT[k] = pt; } }
+  function ptOf(it) {
+    if (it.pt) return it.pt;
+    return PT[ptKey(it.full || it.en || "")] || "";
+  }
+  function indexPt() {
+    PT = {};
+    var F = window.FRASES || {}, k;
+    for (k in F) ptPut(k, F[k]);
+    var E = window.EXPT || {};
+    for (k in E) ptPut(k, E[k]);
+    WEEKS.forEach(function (w) {
+      w.sections.forEach(function (sec) {
+        (sec.items || []).forEach(function (i) {
+          if (sec.type === "reading" || sec.type === "listen") ptPut(i.en, i.pt);
+          else if (sec.type === "translate") ptPut(i.full, i.q);
+        });
+      });
+    });
+  }
   function indexContent() {
     WEEKS.forEach(function (w) {
       w.sections.forEach(function (s) {
@@ -137,6 +161,7 @@
     });
   }
   indexContent();
+  indexPt();
   function isQuiz(s) { return s.type === "fill" || s.type === "translate" || s.type === "listen"; }
   // A meta pode subir na hora, mas uma redução só vale a partir do dia seguinte:
   // assim o dia que já está correndo não fica batido de repente.
@@ -975,7 +1000,10 @@
     var h = '<div class="sheet ' + (S.ok ? "ok" : "bad") + '"><div class="verdict"><span class="mark">' + (S.ok ? I.check : I.x) + '</span>' +
       (S.ok ? PRAISE[pickN++ % PRAISE.length] : "Não foi dessa vez") + '</div>';
     if (!S.ok && S.answer && S.answer !== "(não soube)") h += '<div class="yours">Você respondeu <s>' + esc(S.answer) + '</s></div>';
-    h += (S.ok ? "" : '<div class="tiny muted" style="margin-bottom:2px">Resposta certa</div>') + '<p class="sentence">' + fullHtml(it.full) + '</p>' + (it.pt && sec.type === "listen" ? '<div class="why">' + esc(it.pt) + '</div>' : '<div class="why">' + (it.why || "") + '</div>') +
+    var tr = ptOf(it);
+    h += (S.ok ? "" : '<div class="tiny muted" style="margin-bottom:2px">Resposta certa</div>') + '<p class="sentence">' + fullHtml(it.full) + '</p>' +
+      (tr ? '<div class="fb-pt">' + esc(tr) + '</div>' : "") +
+      (sec.type === "listen" ? "" : (it.why ? '<div class="why">' + it.why + '</div>' : "")) +
       '<div class="row">' + listen(it.full) + (canOverride ? '<button class="text-btn" id="override">Eu tinha acertado</button>' : "") + '</div>' +
       '<button class="btn ' + (S.ok ? "btn-ok" : "btn-bad") + '" id="next">Continuar</button></div>';
     return h;
