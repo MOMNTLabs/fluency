@@ -482,7 +482,8 @@
   }
   function sessionName(z) { return z.kind === "review" ? "Revisão" : (z.kind === "reinforce" ? "Reforço: " : "") + SECTIONS[z.sectionId].section.title; }
   // Questões de uma seção que ainda estão em revisão (erros não superados).
-  function pendingOf(s) { return (s.items || []).map(function (it) { return it.id; }).filter(function (id) { return state.review[id]; }); }
+  // "Reforçar" mostra só os erros ainda não corrigidos: acertou depois de errar, sai daqui (a revisão espaçada continua por conta própria).
+  function pendingOf(s) { return (s.items || []).map(function (it) { return it.id; }).filter(function (id) { var r = state.results[id]; return state.review[id] && !(r && r.streak > 0); }); }
   function pendingInModule(w) { return w.sections.reduce(function (n, s) { return n + pendingOf(s).length; }, 0); }
   function reinforce(id) { var s = SECTIONS[id].section, ids = pendingOf(s); if (ids.length) startSession("reinforce", shuffle(ids.slice()), s); }
   function openSection(id, then) {
