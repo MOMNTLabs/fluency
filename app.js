@@ -855,9 +855,17 @@
     var head = t.length > 1
       ? '<span class="r-when">' + esc(t[0].trim()) + '</span><span class="r-arrow">' + I.next + '</span><span class="r-use">' + esc(t.slice(1).join("→").trim()) + '</span>'
       : '<span class="r-use">' + esc(c.title) + '</span>';
-    var h = '<div class="rule"><div class="r-num">' + (i + 1) + '</div><h3>' + head + '</h3>' +
-      '<p class="r-def">' + g.def + '</p>' +
-      (g.form ? '<div class="r-form"><span class="r-lab">Forma</span><b>' + g.form + '</b></div>' : "") +
+    var formaChips = "";
+    if (g.form) {
+      var partes = String(g.form).split("·");
+      formaChips = '<div class="r-form"><span class="r-lab">Forma</span><div class="chips">' +
+        '<span class="chip-plain">' + partes[0].trim() + '</span>' +
+        (partes[1] || "").split(",").map(function (x) {
+          x = x.trim(); return x ? '<span class="chip-form">' + x + '</span>' : "";
+        }).join("") + '</div></div>';
+    }
+    var h = '<div class="rule nova"><div class="r-head"><div class="r-num">' + (i + 1) + '</div><h3>' + head + '</h3></div>' +
+      '<div class="r-body"><p class="r-def">' + g.def + '</p>' + formaChips +
       '<div class="example"><span>' + highlight(c.example, g.marcar || [], []) + '</span>' + listen(c.example) + '</div>';
     var temMais = (g.more && g.more.length) || (g.ex && g.ex.length);
     if (temMais) {
@@ -868,7 +876,7 @@
         }).join("") : "") +
         '</div></details>';
     }
-    return h + '</div>';
+    return h + '</div></div>';
   }
   function ruleCard(c, i) {
     var p = ruleParts(c), t = String(c.title).split("→");
