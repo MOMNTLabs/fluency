@@ -811,8 +811,8 @@
     var forms = [], clues = [], rows = [];
     (c.lines || []).forEach(function (l) {
       var raw = String(l).trim(), plain = raw.replace(/<[^>]+>/g, "").trim();
-      var m = /^Pistas?:\s*(.+)$/i.exec(plain);
-      if (m) { var cl = m[1].split(/,\s*/); clues = clues.concat(cl); rows.push({ lab: "Pistas", cls: "chip-clue", items: cl }); return; }
+      // As pistas saíram: palavra solta não garante o tempo verbal e confundia mais que ajudava.
+      if (/^Pistas?:/i.test(plain)) return;
       if (/^<i>[^<]+<\/i>$/.test(raw)) { var fo = plain.split(/,\s*/); forms = forms.concat(fo); rows.push({ lab: "Forma", cls: "chip-form", items: fo }); return; }
       // Lista curta separada por vírgula vira etiquetas, mesmo sem rótulo no conteúdo.
       var parts = plain.split(/,\s*/);
@@ -843,6 +843,33 @@
     mark(forms, "hl-form"); mark(clues, "hl-clue");
     return out.replace(/\u0001(\d+)\u0001/g, function (_, n) { return marks[+n]; });
   }
+  // Cartão da apostila: título, definição precisa, a forma, um exemplo — e o resto
+  // guardado atrás do "Ver mais", para o cartão não virar um muro de texto.
+  function regraDe(w, i) { var r = (window.REGRAS || {})[w.id]; return (r && r[i]) || null; }
+  function linhaMais(l) {
+    if (typeof l === "string") return /^## /.test(l) ? '<h4 class="r-h">' + l.slice(3) + '</h4>' : '<p class="r-p">' + l + '</p>';
+    return "";
+  }
+  function ruleCardNovo(c, g, i) {
+    var t = String(c.title).split("→");
+    var head = t.length > 1
+      ? '<span class="r-when">' + esc(t[0].trim()) + '</span><span class="r-arrow">' + I.next + '</span><span class="r-use">' + esc(t.slice(1).join("→").trim()) + '</span>'
+      : '<span class="r-use">' + esc(c.title) + '</span>';
+    var h = '<div class="rule"><div class="r-num">' + (i + 1) + '</div><h3>' + head + '</h3>' +
+      '<p class="r-def">' + g.def + '</p>' +
+      (g.form ? '<div class="r-form"><span class="r-lab">Forma</span><b>' + g.form + '</b></div>' : "") +
+      '<div class="example"><span>' + highlight(c.example, g.marcar || [], []) + '</span>' + listen(c.example) + '</div>';
+    var temMais = (g.more && g.more.length) || (g.ex && g.ex.length);
+    if (temMais) {
+      h += '<details class="r-more"><summary>Ver mais</summary><div class="r-more-in">' +
+        (g.more || []).map(linhaMais).join("") +
+        ((g.ex && g.ex.length) ? '<h4 class="r-h">Mais exemplos</h4>' + g.ex.map(function (e) {
+          return '<div class="r-ex"><div class="r-ex-en">' + highlight(e[0], g.marcar || [], []) + listen(e[0]) + '</div><div class="r-ex-pt">' + esc(e[1]) + '</div></div>';
+        }).join("") : "") +
+        '</div></details>';
+    }
+    return h + '</div>';
+  }
   function ruleCard(c, i) {
     var p = ruleParts(c), t = String(c.title).split("→");
     var head = t.length > 1
@@ -863,7 +890,10 @@
     var html = top(ref.week.title, s.title) + '<h1>' + esc(s.title) + '</h1><p class="muted">' + esc(s.subtitle || "") + '</p>';
     if (s.type === "summary") {
       if (s.intro) html += '<p class="small" style="margin:16px 0">' + s.intro + '</p>';
-      s.cards.forEach(function (c, i) { html += ruleCard(c, i); });
+      s.cards.forEach(function (c, i) {
+        var g = regraDe(ref.week, i);
+        html += g ? ruleCardNovo(c, g, i) : ruleCard(c, i);
+      });
     } else if (s.type === "reading") {
       html += '<div style="height:12px"></div>';
       s.items.forEach(function (it, i) {
