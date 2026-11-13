@@ -1237,24 +1237,42 @@
   // tela e o dvh não sabe disso, então a barra de baixo ficava escondida atrás dele.
   (function () {
     var vv = window.visualViewport, raiz = document.documentElement;
+    // A altura cheia é a maior que já vimos nesta orientação: o teclado é o que falta
+    // para chegar nela. Assim não dependemos de o iPhone mexer no innerHeight.
+    var cheia = Math.max(window.innerHeight, vv ? vv.height : 0);
     function medir() {
-      var alt = vv ? vv.height : window.innerHeight;
-      var teclado = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
+      var alt = Math.round(vv ? vv.height : window.innerHeight);
+      cheia = Math.max(cheia, window.innerHeight, alt);
+      var teclado = Math.max(0, cheia - alt);
       if (teclado < 90) teclado = 0;
-      raiz.style.setProperty("--vvh", Math.round(alt) + "px");
+      raiz.style.setProperty("--vvh", alt + "px");
       // Quanto a área de conteúdo já perde no topo (entalhe + respiro do corpo).
       var topo = parseFloat(getComputedStyle(document.body).paddingTop) || 0;
       raiz.style.setProperty("--topo", Math.round(topo) + "px");
-      raiz.style.setProperty("--kb", Math.round(teclado) + "px");
+      raiz.style.setProperty("--kb", teclado + "px");
       var abriu = teclado > 0 && !raiz.classList.contains("kb");
       raiz.classList.toggle("kb", teclado > 0);
-      // Ao abrir o teclado o iOS desloca a página; voltamos ao topo para a barra
-      // de baixo não ficar à deriva.
       if (abriu) destravaTopo();
     }
-    if (vv) { vv.addEventListener("resize", medir); vv.addEventListener("scroll", medir); }
-    window.addEventListener("resize", medir);
-    window.addEventListener("orientationchange", function () { setTimeout(medir, 250); });
+    // O iPhone avisa que a tela mudou antes de o teclado terminar de subir, e às vezes
+    // não avisa de novo no fim. Por isso remedimos várias vezes por cerca de um segundo.
+    var repetir = null;
+    function medirDeNovo() {
+      clearInterval(repetir);
+      var n = 0;
+      medir();
+      repetir = setInterval(function () { medir(); if (++n > 14) clearInterval(repetir); }, 70);
+    }
+    if (vv) { vv.addEventListener("resize", medirDeNovo); vv.addEventListener("scroll", medir); }
+    window.addEventListener("resize", medirDeNovo);
+    // Focar um campo é o gatilho mais confiável: o teclado vem logo depois.
+    document.addEventListener("focusin", function (e) {
+      if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) medirDeNovo();
+    });
+    document.addEventListener("focusout", function () { setTimeout(medirDeNovo, 60); });
+    window.addEventListener("orientationchange", function () {
+      cheia = 0; setTimeout(medirDeNovo, 250);
+    });
     medir();
   })();
   function speechStop() { try { speechSynthesis.cancel(); } catch (e) {} }
