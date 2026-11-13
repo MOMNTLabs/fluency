@@ -654,10 +654,21 @@
     if (L.partial) html += '<div class="more-soon">Mais módulos de ' + L.id + ' em breve</div>';
     app.innerHTML = html;
     document.getElementById("back").onclick = function () { bubble = null; go({ name: "home" }); };
+    // Tocar na etapa entra direto. A janelinha só aparece quando há escolha de
+    // verdade (reforçar os erros ou refazer tudo); bloqueada, basta dizer por quê.
     app.querySelectorAll("[data-node]").forEach(function (b) { b.onclick = function (e) {
-      e.stopPropagation(); var id = b.getAttribute("data-node"); bubble = bubble === id ? null : id; renderKeepScroll();
-      var bb = app.querySelector(".bubble");
-      if (bb) { var r = bb.getBoundingClientRect(), lim = window.innerHeight - 100; if (r.bottom > lim) window.scrollBy({ top: r.bottom - lim, behavior: "smooth" }); }
+      e.stopPropagation();
+      var id = b.getAttribute("data-node"), ref = SECTIONS[id], sec = ref.section, wk = ref.week;
+      if (!unlocked(wk)) { bubble = null; renderKeepScroll(); toast("Conclua o " + WEEKS[wk.idx - 1].title + " para liberar."); return; }
+      if (!nodeAvailable(wk, sec)) { bubble = null; renderKeepScroll(); toast("Conclua as etapas anteriores deste módulo."); return; }
+      var feita = state.sections[id] && state.sections[id].done;
+      if (feita && pendingOf(sec).length) {
+        bubble = bubble === id ? null : id; renderKeepScroll();
+        var bb = app.querySelector(".bubble");
+        if (bb) { var r = bb.getBoundingClientRect(), lim = window.innerHeight - 100; if (r.bottom > lim) window.scrollBy({ top: r.bottom - lim, behavior: "smooth" }); }
+        return;
+      }
+      bubble = null; openSection(id);
     }; });
     app.querySelectorAll("[data-mod]").forEach(function (b) { b.onclick = function (e) {
       e.stopPropagation(); var w = WEEKS.filter(function (x) { return x.id === b.getAttribute("data-mod"); })[0];
