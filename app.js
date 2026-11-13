@@ -1226,7 +1226,17 @@
       if (teclado < 90) teclado = 0;
       raiz.style.setProperty("--vvh", Math.round(alt) + "px");
       raiz.style.setProperty("--kb", Math.round(teclado) + "px");
+      var abriu = teclado > 0 && !raiz.classList.contains("kb");
       raiz.classList.toggle("kb", teclado > 0);
+      // Ao abrir o teclado o iOS desloca a página; voltamos ao topo para a barra
+      // de baixo não ficar à deriva.
+      if (abriu) {
+        window.scrollTo(0, 0);
+        var foco = document.activeElement;
+        if (foco && foco.scrollIntoView) setTimeout(function () {
+          try { foco.scrollIntoView({ block: "center" }); } catch (e) {}
+        }, 60);
+      }
     }
     if (vv) { vv.addEventListener("resize", medir); vv.addEventListener("scroll", medir); }
     window.addEventListener("resize", medir);

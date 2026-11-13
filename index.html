@@ -368,7 +368,11 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 /* ===== Exercício em foco ===== */
 body.focus .tabbar { display: none; }
 body.focus { padding-bottom: 0; }
-body.focus main { padding-bottom: calc(118px + var(--kb, 0px)); }
+body.focus main { padding-bottom: 118px; }
+/* Com o teclado aberto, a página inteira para de rolar: quem rola, se precisar, é só
+   a área da pergunta. Assim o iOS não desloca a tela e a barra de baixo fica no lugar. */
+html.kb, html.kb body { height: var(--vvh, 100dvh); overflow: hidden; }
+html.kb body.focus main { height: calc(var(--vvh, 100dvh) - 104px); overflow-y: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
 .qtop { display: flex; align-items: center; gap: 12px; margin: 0 0 6px; }
 .qtop .bar { flex: 1; margin: 0; }
 .qctx { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
