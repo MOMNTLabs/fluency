@@ -1225,6 +1225,9 @@
       var teclado = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
       if (teclado < 90) teclado = 0;
       raiz.style.setProperty("--vvh", Math.round(alt) + "px");
+      // Quanto a área de conteúdo já perde no topo (entalhe + respiro do corpo).
+      var topo = parseFloat(getComputedStyle(document.body).paddingTop) || 0;
+      raiz.style.setProperty("--topo", Math.round(topo) + "px");
       raiz.style.setProperty("--kb", Math.round(teclado) + "px");
       var abriu = teclado > 0 && !raiz.classList.contains("kb");
       raiz.classList.toggle("kb", teclado > 0);
