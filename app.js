@@ -1216,6 +1216,23 @@
       if (ov) ov.onclick = function () { undo(id, S.snap); S.snap = record(id, true, S.answer, S.mode.m); S.ok = true; S.log[S.log.length - 1].ok = true; persist(S); render(); };
     }
   }
+  // Ao abrir o teclado o iPhone rola a página sozinho para mostrar o campo, e fica
+  // uma sobra que só some quando a pessoa arrasta a tela. Voltamos ao topo por alguns
+  // quadros, porque esse deslocamento chega depois do aviso de mudança de tamanho.
+  function destravaTopo() {
+    var n = 0;
+    function volta() {
+      window.scrollTo(0, 0);
+      if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
+      if (++n < 14) requestAnimationFrame(volta);
+    }
+    volta();
+    setTimeout(volta, 220);
+    setTimeout(function () {
+      var foco = document.activeElement;
+      if (foco && foco.scrollIntoView) { try { foco.scrollIntoView({ block: "nearest" }); } catch (e) {} }
+    }, 420);
+  }
   // Altura realmente visível e altura do teclado: no iPhone o teclado cobre parte da
   // tela e o dvh não sabe disso, então a barra de baixo ficava escondida atrás dele.
   (function () {
@@ -1233,13 +1250,7 @@
       raiz.classList.toggle("kb", teclado > 0);
       // Ao abrir o teclado o iOS desloca a página; voltamos ao topo para a barra
       // de baixo não ficar à deriva.
-      if (abriu) {
-        window.scrollTo(0, 0);
-        var foco = document.activeElement;
-        if (foco && foco.scrollIntoView) setTimeout(function () {
-          try { foco.scrollIntoView({ block: "center" }); } catch (e) {}
-        }, 60);
-      }
+      if (abriu) destravaTopo();
     }
     if (vv) { vv.addEventListener("resize", medir); vv.addEventListener("scroll", medir); }
     window.addEventListener("resize", medir);

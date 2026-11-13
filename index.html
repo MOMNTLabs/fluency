@@ -372,7 +372,9 @@ body.focus main { padding-bottom: 118px; }
 /* Com o teclado aberto a tela vira uma coluna da altura que sobrou: topo e pergunta
    em cima, barra do botão no fim da coluna. Nada de posição fixa aqui, porque no
    iPhone a barra fixa some atrás do teclado. */
-html.kb body.focus { overflow: hidden; }
+/* Prende o corpo enquanto o teclado está aberto: assim o iPhone não tem o que
+   deslocar e a tela não sobe por baixo da barra de status. */
+html.kb body.focus { position: fixed; top: 0; left: 0; right: 0; height: var(--vvh, 100dvh); overflow: hidden; }
 html.kb body.focus main {
   display: flex; flex-direction: column;
   /* a coluna começa abaixo do entalhe: --topo é essa sobra, medida de verdade */
