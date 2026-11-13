@@ -365,16 +365,44 @@
     clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove("show"); }, 2200);
   }
   var voice = null;
-  function pickVoice() {
-    if (!("speechSynthesis" in window)) return;
-    var vs = speechSynthesis.getVoices();
-    voice = vs.filter(function (v) { return /^en[-_]US/i.test(v.lang); })[0] || vs.filter(function (v) { return /^en/i.test(v.lang); })[0] || null;
+  // As vozes boas têm nome próprio e variam por aparelho. Em vez de pegar a primeira
+  // da lista, que costuma ser a mais chapada, damos nota a cada uma.
+  var VOZES_BOAS = ["ava", "zoe", "allison", "susan", "samantha", "nicky", "aaron", "evan", "tom",
+    "google us english", "google uk english female", "jenny", "aria", "guy", "libby", "sonia", "emma", "michelle"];
+  function notaVoz(v) {
+    var nome = (v.name || "").toLowerCase(), uri = (v.voiceURI || "").toLowerCase(), n = 0;
+    if (/premium|enhanced|neural|natural/.test(nome + " " + uri)) n += 50;
+    if (/compact|^fred$|zarvox|trinoids|albert|bad news|bells|organ|cellos|whisper/.test(nome)) n -= 60;
+    var i = VOZES_BOAS.indexOf(nome);
+    if (i >= 0) n += 30 - i;
+    if (/^en[-_]us/i.test(v.lang)) n += 8; else if (/^en[-_]gb/i.test(v.lang)) n += 4;
+    if (v.localService === false) n += 3;
+    return n;
   }
-  if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+  function vozesEn() {
+    if (!("speechSynthesis" in window)) return [];
+    return speechSynthesis.getVoices().filter(function (v) { return /^en([-_]|$)/i.test(v.lang || ""); })
+      .sort(function (a, b) { return notaVoz(b) - notaVoz(a); });
+  }
+  function pickVoice() {
+    var vs = vozesEn();
+    if (!vs.length) { voice = null; return; }
+    var escolhida = state.voice && vs.filter(function (v) { return v.voiceURI === state.voice; })[0];
+    voice = escolhida || vs[0];
+  }
+  if ("speechSynthesis" in window) {
+    pickVoice();
+    // A lista de vozes chega depois em alguns navegadores: ao chegar, o Perfil se redesenha.
+    speechSynthesis.onvoiceschanged = function () { pickVoice(); if (view && view.name === "errors") render(); };
+  }
   function speak(text, rate) {
     if (!("speechSynthesis" in window)) { toast("Áudio indisponível neste aparelho"); return; }
     speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(plain(text)); u.lang = "en-US"; u.rate = rate || 0.9; if (voice) u.voice = voice;
+    if (!voice) pickVoice();
+    var u = new SpeechSynthesisUtterance(plain(text));
+    u.lang = (voice && voice.lang) || "en-US";
+    u.rate = rate || 0.92; u.pitch = 1;
+    try { if (voice) u.voice = voice; } catch (e) {}
     speechSynthesis.speak(u);
   }
   function listen(text) { return '<button class="listen" data-speak="' + esc(plain(text)) + '">' + I.sound + 'Ouvir</button>'; }
@@ -1441,6 +1469,29 @@
         return '<div class="col' + (b.today ? " today" : "") + '"><div class="bar-v' + (b.n >= goal() ? " hit" : "") + '" style="height:' + Math.max(b.n ? 6 : 2, b.n / max * 100) + '%"></div><span>' + b.l + '</span></div>';
       }).join("") + '</div></div>';
   }
+  // Voz da pronúncia: o aparelho decide quais existem, a pessoa escolhe qual prefere.
+  function vozRow() {
+    var vs = vozesEn();
+    if (vs.length < 2) return "";
+    var atual = (voice && voice.voiceURI) || "";
+    return '<div class="goal-set" style="margin-top:14px"><span>Voz</span>' +
+      '<div class="voz-pick"><select class="field" id="voz" aria-label="Voz da pronúncia">' +
+      vs.map(function (v) {
+        // Só marcamos "melhor" quando o próprio nome não avisa que é a voz boa.
+        var boa = /premium|enhanced|neural|natural/i.test(v.name + " " + v.voiceURI);
+        var diz = /premium|enhanced|neural|natural/i.test(v.name);
+        return '<option value="' + esc(v.voiceURI) + '"' + (v.voiceURI === atual ? " selected" : "") + '>' +
+          esc(v.name + (boa && !diz ? " (melhor)" : "")) + '</option>';
+      }).join("") + '</select>' +
+      '<button class="listen" id="voz-test">' + I.sound + 'Ouvir</button></div></div>' +
+      '<p class="tiny muted" style="margin-top:6px">No iPhone dá para baixar vozes bem melhores em Ajustes → Acessibilidade → Conteúdo Falado → Vozes → Inglês.</p>';
+  }
+  function bindVoz() {
+    var sel = document.getElementById("voz"); if (!sel) return;
+    var teste = function () { speak("This is how your lessons will sound."); };
+    sel.onchange = function () { state.voice = sel.value; save(); pickVoice(); teste(); };
+    var t = document.getElementById("voz-test"); if (t) t.onclick = teste;
+  }
   function renderErrors() {
     var pend = pendingIds().sort(), answered = 0; for (var k in state.results) answered += state.results[k].seen;
     var doneMods = WEEKS.filter(complete).length;
@@ -1449,7 +1500,7 @@
       '<div><b>' + answered + '</b>respostas</div><div><b>' + state.mastered + '</b>erros<br>superados</div></div>' + weekChart() +
       '<div class="goal-set"><span>Meta diária</span><div class="seg">' + [10, 20, 30].map(function (g) { return '<button data-goal="' + g + '" class="' + (goalPick() === g ? "on" : "") + '">' + g + '</button>'; }).join("") + '</div></div>' +
       (state.goalNext ? '<p class="tiny muted" style="margin-top:6px">A partir de amanhã, ' + state.goalNext + ' por dia. Hoje ainda vale ' + goal() + '.</p>' : "") +
-      '';
+      vozRow();
     var last = state.lastBackup;
     html += '<details class="advanced"' + (auth ? "" : " open") + '><summary>Backup manual</summary><section class="backup"><p class="muted small">' +
       (last ? "Último backup em " + shortDate(last) + "." : "Você ainda não fez nenhum backup.") +
@@ -1463,6 +1514,7 @@
     app.innerHTML = html;
     bindProfile(); bindAccount();
     document.getElementById("redo-pl").onclick = function () { go({ name: "placement" }); };
+    bindVoz();
     app.querySelectorAll("[data-goal]").forEach(function (b) { b.onclick = function () {
       var n = +b.getAttribute("data-goal"), hoje = goal();
       if (n >= hoje) {
