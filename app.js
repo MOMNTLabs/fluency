@@ -301,6 +301,65 @@
     var a = norm(ans); if (!a) return false;
     return item.a.some(function (x) { var n = norm(x); return a === n || a === n.replace(/^'/, ""); });
   }
+  // ---------- Correção automática das frases escritas ----------
+  // Aceita contrações, grafia britânica e outras palavras, desde que o tempo verbal
+  // e as palavras que a lição treina estejam lá.
+  var VARIANTES = [[/\btravelled\b/g, "traveled"], [/\bcancelled\b/g, "canceled"], [/\bcolour/g, "color"],
+    [/\bfavourite\b/g, "favorite"], [/\brealise/g, "realize"], [/\borganise/g, "organize"],
+    [/\bapologise/g, "apologize"], [/\bcentre\b/g, "center"], [/\bmetre/g, "meter"],
+    [/\btheatre\b/g, "theater"], [/\bprogramme\b/g, "program"], [/\bpractise\b/g, "practice"],
+    [/\blearnt\b/g, "learned"], [/\bdreamt\b/g, "dreamed"], [/\bspelt\b/g, "spelled"],
+    [/\bwhilst\b/g, "while"], [/\beveryday\b/g, "every day"], [/\banymore\b/g, "any more"],
+    [/\bokay\b/g, "ok"], [/\bgotten\b/g, "got"], [/\bcannot\b/g, "can not"], [/\bgonna\b/g, "going to"]];
+  function baseF(t) {
+    var x = String(t).toLowerCase().replace(/[’‘`´]/g, "'");
+    x = x.replace(/\bi'm\b/g, "i am").replace(/\bit's\b/g, "it is").replace(/\bhe's\b/g, "he is")
+         .replace(/\bshe's\b/g, "she is").replace(/\bthat's\b/g, "that is").replace(/\bthere's\b/g, "there is")
+         .replace(/\bwhat's\b/g, "what is").replace(/\bwho's\b/g, "who is").replace(/\blet's\b/g, "let us")
+         .replace(/n't\b/g, " not").replace(/'ll\b/g, " will").replace(/'ve\b/g, " have").replace(/'re\b/g, " are");
+    VARIANTES.forEach(function (r) { x = x.replace(r[0], r[1]); });
+    return x;
+  }
+  function limpaF(x) { return x.replace(/[^a-z ]+/g, " ").replace(/\s+/g, " ").trim(); }
+  // O 'd pode ser would ou had, então as duas leituras valem.
+  function formasF(t) {
+    var x = baseF(t);
+    if (/'d\b/.test(x)) return [limpaF(x.replace(/'d\b/g, " would")), limpaF(x.replace(/'d\b/g, " had"))];
+    return [limpaF(x)];
+  }
+  var AUXF = { am: 1, is: 1, are: 1, was: 1, were: 1, be: 1, been: 1, being: 1, have: 1, has: 1, had: 1,
+    do: 1, does: 1, did: 1, will: 1, would: 1, shall: 1, should: 1, can: 1, could: 1, may: 1, might: 1,
+    must: 1, not: 1, to: 1, if: 1, since: 1, for: 1, already: 1, yet: 1, ever: 1, never: 1, than: 1,
+    going: 1, used: 1, there: 1, unless: 1, there: 1 };
+  function contaAux(ws) { var m = {}; ws.forEach(function (w) { if (AUXF[w]) m[w] = (m[w] || 0) + 1; }); return m; }
+  function temTodos(ref, got) { for (var k in ref) if ((got[k] || 0) < ref[k]) return false; return true; }
+  function distPal(a, b) {
+    var i, j, linha = [], ant;
+    for (j = 0; j <= b.length; j++) linha[j] = j;
+    for (i = 1; i <= a.length; i++) {
+      ant = linha[0]; linha[0] = i;
+      for (j = 1; j <= b.length; j++) {
+        var tmp = linha[j];
+        linha[j] = Math.min(linha[j] + 1, linha[j - 1] + 1, ant + (a[i - 1] === b[j - 1] ? 0 : 1));
+        ant = tmp;
+      }
+    }
+    return linha[b.length];
+  }
+  function corrigeFrase(it, resp, estrito) {
+    var refs = formasF(plain(it.full)), gots = formasF(resp);
+    for (var i = 0; i < gots.length; i++) if (refs.indexOf(gots[i]) >= 0) return { ok: true };
+    // Na escuta não vale parafrasear: ali só a contração e a grafia variam.
+    if (estrito) return { ok: false };
+    var r = refs[0].split(" "), aux = contaAux(r), melhor = { sim: 0, tempo: false };
+    gots.forEach(function (g) {
+      var w = g.split(" ");
+      var sim = 1 - distPal(r, w) / Math.max(r.length, w.length);
+      if (sim > melhor.sim) melhor = { sim: sim, tempo: temTodos(aux, contaAux(w)) };
+    });
+    if (melhor.tempo && melhor.sim >= 0.6) return { ok: true, outras: true };
+    return { ok: false };
+  }
   function toast(msg) {
     var t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show");
     clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove("show"); }, 2200);
@@ -981,12 +1040,14 @@
           dock = '<button class="btn btn-primary" id="check"' + (S.tiles.length ? "" : " disabled") + '>Conferir</button>';
         } else {
           html += '<textarea class="field" id="ans" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="' + (isListen ? "Escreva o que ouviu" : "Escreva aqui, ou só pense na resposta") + '" aria-label="Sua resposta">' + esc(S.draft || "") + '</textarea>';
-          dock = '<button class="btn btn-primary" id="check">' + (isListen ? "Conferir" : "Ver resposta") + '</button>';
+          dock = '<button class="btn btn-primary" id="check">' + (isListen || (S.draft || "").trim() ? "Conferir" : "Ver resposta") + '</button>';
         }
       } else if (S.phase === "grade") {
-        dock = '<div class="sheet neutral">' + (S.answer ? '<div class="yours">Você escreveu: ' + esc(S.answer) + '</div>' : "") +
-          '<p class="sentence">' + fullHtml(it.full) + '</p><div class="why">' + it.why + '</div>' +
-          '<p class="why" style="margin-top:8px">Se o tempo verbal está certo, conta como acerto mesmo com outras palavras.</p>' +
+        var trg = ptOf(it);
+        dock = '<div class="sheet neutral"><div class="tiny muted" style="margin-bottom:2px">Resposta certa</div>' +
+          '<p class="sentence">' + fullHtml(it.full) + '</p>' + (trg ? '<div class="fb-pt">' + esc(trg) + '</div>' : "") +
+          '<div class="why">' + it.why + '</div>' +
+          '<p class="why" style="margin-top:8px">Você só pensou na resposta, então a conferência é com você.</p>' +
           '<div class="actions"><button class="btn btn-soft" id="g-bad">Errei</button><button class="btn btn-primary" id="g-ok">Acertei</button></div></div>';
       }
     }
@@ -1004,6 +1065,7 @@
     h += (S.ok ? "" : '<div class="tiny muted" style="margin-bottom:2px">Resposta certa</div>') + '<p class="sentence">' + fullHtml(it.full) + '</p>' +
       (tr ? '<div class="fb-pt">' + esc(tr) + '</div>' : "") +
       (sec.type === "listen" ? "" : (it.why ? '<div class="why">' + it.why + '</div>' : "")) +
+      (S.ok && S.outras ? '<div class="why">Escrita com outras palavras, mas o tempo verbal está certo. Acima está a frase do curso.</div>' : "") +
       '<div class="row">' + listen(it.full) + (canOverride ? '<button class="text-btn" id="override">Eu tinha acertado</button>' : "") + '</div>' +
       '<button class="btn ' + (S.ok ? "btn-ok" : "btn-bad") + '" id="next">Continuar</button></div>';
     return h;
@@ -1024,7 +1086,15 @@
     }
     if (S.phase === "ask") {
       var ans = document.getElementById("ans");
-      if (ans) { ans.oninput = function () { S.draft = ans.value; }; if (sec.type === "fill") ans.focus(); }
+      if (ans) {
+        ans.oninput = function () {
+          S.draft = ans.value;
+          // Em tradução o botão troca de nome: confere o que foi escrito, ou mostra a resposta.
+          var bt = document.getElementById("check");
+          if (bt && sec.type === "translate" && S.mode.m !== "tap") bt.textContent = ans.value.trim() ? "Conferir" : "Ver resposta";
+        };
+        if (sec.type === "fill") ans.focus();
+      }
       var caixas = app.querySelectorAll("[data-gap]");
       caixas.forEach(function (c, k) {
         c.oninput = function () { S.drafts[k] = c.value; };
@@ -1067,8 +1137,14 @@
           var tl = tilesFor(it, sec), built = S.tiles.map(function (k) { return tl[k]; }).join(" ");
           commit(norm(built) === norm(plain(it.full)), built);
         } else if (sec.type === "listen") {
-          var lv = ans.value.trim(); if (!lv) return; commit(norm(lv) === norm(plain(it.full)), lv);
-        } else { S.answer = ans.value.trim(); S.phase = "grade"; render(); }
+          var lv = ans.value.trim(); if (!lv) return; commit(corrigeFrase(it, lv, true).ok, lv);
+        } else {
+          var tv = ans.value.trim();
+          if (!tv) { S.answer = ""; S.phase = "grade"; render(); return; }
+          var res = corrigeFrase(it, tv);
+          S.outras = !!res.outras;
+          commit(res.ok, tv);
+        }
       };
       document.getElementById("check").onclick = function () { check(false); };
       var sk = document.getElementById("skip"); if (sk) sk.onclick = function () { check(true); };
@@ -1082,6 +1158,23 @@
       if (ov) ov.onclick = function () { undo(id, S.snap); S.snap = record(id, true, S.answer, S.mode.m); S.ok = true; S.log[S.log.length - 1].ok = true; persist(S); render(); };
     }
   }
+  // Altura realmente visível e altura do teclado: no iPhone o teclado cobre parte da
+  // tela e o dvh não sabe disso, então a barra de baixo ficava escondida atrás dele.
+  (function () {
+    var vv = window.visualViewport, raiz = document.documentElement;
+    function medir() {
+      var alt = vv ? vv.height : window.innerHeight;
+      var teclado = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
+      if (teclado < 90) teclado = 0;
+      raiz.style.setProperty("--vvh", Math.round(alt) + "px");
+      raiz.style.setProperty("--kb", Math.round(teclado) + "px");
+      raiz.classList.toggle("kb", teclado > 0);
+    }
+    if (vv) { vv.addEventListener("resize", medir); vv.addEventListener("scroll", medir); }
+    window.addEventListener("resize", medir);
+    window.addEventListener("orientationchange", function () { setTimeout(medir, 250); });
+    medir();
+  })();
   function speechStop() { try { speechSynthesis.cancel(); } catch (e) {} }
   function advance() {
     var S = view.session;
@@ -1857,5 +1950,5 @@
   updateTabAvatar();
   checkOffline();
   loadApiConfig();
-  window.__audit = { redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
+  window.__audit = { corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
 })();

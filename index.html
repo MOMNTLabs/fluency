@@ -368,11 +368,15 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 /* ===== Exercício em foco ===== */
 body.focus .tabbar { display: none; }
 body.focus { padding-bottom: 0; }
-body.focus main { padding-bottom: 300px; }
+body.focus main { padding-bottom: calc(118px + var(--kb, 0px)); }
 .qtop { display: flex; align-items: center; gap: 12px; margin: 0 0 6px; }
 .qtop .bar { flex: 1; margin: 0; }
 .qctx { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
-.qbody { display: flex; flex-direction: column; justify-content: center; min-height: calc(100dvh - 260px); padding: 18px 0; }
+.qbody { display: flex; flex-direction: column; justify-content: center; min-height: calc(var(--vvh, 100dvh) - 260px); padding: 18px 0; }
+/* Com o teclado aberto a pergunta sobe e encosta no campo: sem espaço morto nem rolagem. */
+html.kb .qbody { min-height: 0; justify-content: flex-start; padding: 2px 0 0; }
+html.kb .q { font-size: 23px; margin-bottom: 16px; }
+html.kb .sentence { font-size: 18px; }
 .qbody .q:last-child { margin-bottom: 0; }
 .gaps { display: flex; gap: 10px; }
 .gap { flex: 1; min-width: 0; position: relative; }
@@ -410,7 +414,7 @@ body.focus main { padding-bottom: 300px; }
 .play:active { transform: translateY(4px); box-shadow: 0 1px 0 color-mix(in srgb, var(--cobalt) 70%, #000); }
 .mode-tag { display: flex; align-items: center; gap: 6px; width: fit-content; margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--cobalt); background: var(--cobalt-soft); padding: 4px 10px; border-radius: 99px; }
 .mode-tag svg { width: 14px; height: 14px; }
-.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; padding: 12px 20px calc(14px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); }
+.dock { position: fixed; left: 0; right: 0; bottom: var(--kb, 0px); z-index: 8; padding: 12px 20px calc(14px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); }
 .dock > * { max-width: 500px; margin-left: auto; margin-right: auto; }
 .dock .btn { width: 100%; display: block; }
 .dock.fb { padding: 0; border-top: 0; background: none; }
