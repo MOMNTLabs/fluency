@@ -461,15 +461,41 @@
     if (v.localService === false) n += 3;
     return n;
   }
+  // Vozes que não servem para estudar: as de efeito do macOS e do iOS, as "compact"
+  // de baixa qualidade e a família Eloquence, que soa robótica.
+  var VOZES_RUINS = /\b(albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|junior|kathy|organ|pipe organ|superstar|trinoids|whisper|wobble|zarvox|fred|ralph|princess|bruce|agnes|victoria|vicki|grandma|grandpa|rocko|shelley|sandy|flo|eddy|reed|wobble|zuzana)\b/;
+  function vozServe(v) {
+    var nome = (v.name || "").toLowerCase(), uri = (v.voiceURI || "").toLowerCase();
+    if (VOZES_RUINS.test(nome)) return false;
+    return !/eloquence|novelty/.test(nome + " " + uri);
+  }
+  var REGIAO = { "en-gb": "Reino Unido", "en-au": "Austrália", "en-ie": "Irlanda", "en-in": "Índia",
+    "en-za": "África do Sul", "en-nz": "Nova Zelândia", "en-ca": "Canadá", "en-sg": "Singapura" };
+  function vozLabel(v) {
+    var nome = String(v.name || "").replace(/\s*\((compact|enhanced|premium|neural)\)/i, "").trim();
+    var r = REGIAO[String(v.lang || "").toLowerCase().replace("_", "-")];
+    var boa = /premium|enhanced|neural|natural/i.test(v.name + " " + v.voiceURI) && !/premium|enhanced|neural|natural/i.test(nome);
+    return nome + (r ? " · " + r : "") + (boa ? " · melhor" : "");
+  }
   function vozesEn() {
     if (!("speechSynthesis" in window)) return [];
-    return speechSynthesis.getVoices().filter(function (v) { return /^en([-_]|$)/i.test(v.lang || ""); })
+    var todas = (speechSynthesis.getVoices() || []).filter(function (v) { return /^en([-_]|$)/i.test(v.lang || ""); })
       .sort(function (a, b) { return notaVoz(b) - notaVoz(a); });
+    // A mesma voz costuma aparecer em duas qualidades: fica a melhor, uma vez só.
+    var vistas = {}, lista = [];
+    todas.filter(vozServe).forEach(function (v) {
+      var k = String(v.name || "").toLowerCase().replace(/\s*\((compact|enhanced|premium|neural)\)/, "").trim() +
+        "|" + String(v.lang || "").toLowerCase().replace("_", "-");
+      if (!vistas[k]) { vistas[k] = 1; lista.push(v); }
+    });
+    return (lista.length ? lista : todas).slice(0, 10);
   }
   function pickVoice() {
     var vs = vozesEn();
     if (!vs.length) { voice = null; return; }
     var escolhida = state.voice && vs.filter(function (v) { return v.voiceURI === state.voice; })[0];
+    // Voz salva que saiu da lista (ou foi apagada do aparelho): volta para a melhor.
+    if (state.voice && !escolhida) { state.voice = null; save(); }
     voice = escolhida || vs[0];
   }
   if ("speechSynthesis" in window) {
@@ -1727,11 +1753,8 @@
     return '<div class="goal-set" style="margin-top:14px"><span>Voz</span>' +
       '<div class="voz-pick"><select class="field" id="voz" aria-label="Voz da pronúncia">' +
       vs.map(function (v) {
-        // Só marcamos "melhor" quando o próprio nome não avisa que é a voz boa.
-        var boa = /premium|enhanced|neural|natural/i.test(v.name + " " + v.voiceURI);
-        var diz = /premium|enhanced|neural|natural/i.test(v.name);
         return '<option value="' + esc(v.voiceURI) + '"' + (v.voiceURI === atual ? " selected" : "") + '>' +
-          esc(v.name + (boa && !diz ? " (melhor)" : "")) + '</option>';
+          esc(vozLabel(v)) + '</option>';
       }).join("") + '</select>' +
       '<button class="listen" id="voz-test">' + I.sound + 'Ouvir</button></div></div>' +
       '<p class="tiny muted" style="margin-top:6px">No iPhone dá para baixar vozes bem melhores em Ajustes → Acessibilidade → Conteúdo Falado → Vozes → Inglês.</p>';
@@ -2266,5 +2289,5 @@
   updateTabAvatar();
   checkOffline();
   loadApiConfig();
-  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, ITEMS: ITEMS, mergeStates: mergeStates, reparaPassadas: reparaPassadas, abrir: openSection, tela: function () { return view; }, secGrau: secGrau, modGrau: modGrau, estado: state, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
+  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, ITEMS: ITEMS, vozesEn: vozesEn, vozLabel: vozLabel, mergeStates: mergeStates, reparaPassadas: reparaPassadas, abrir: openSection, tela: function () { return view; }, secGrau: secGrau, modGrau: modGrau, estado: state, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
 })();
