@@ -858,6 +858,33 @@
     return Math.max(1, g);
   }
   function tomDe(g) { return g >= 3 ? " iris" : g === 2 ? " gold" : ""; }
+  // Reparo único (14/11/2026): uma falha na junção com a nuvem fazia o contador de
+  // passadas voltar atrás, e com ele sumia o dourado já conquistado. Onde ficou o
+  // registro de que a etapa foi refeita inteira — frases alternativas respondidas ou
+  // itens vistos duas vezes — e cada questão já foi acertada alguma vez, devolvemos
+  // o dourado em vez de pedir a lição de novo.
+  function reparaPassadas() {
+    if (state.fixRuns) return;
+    state.fixRuns = "2026-11-14";
+    var mudou = 0;
+    WEEKS.forEach(function (w) {
+      w.sections.forEach(function (s) {
+        var d = state.sections[s.id];
+        if (!d || !d.done || !isQuizSec(s)) return;
+        if ((d.runs || 1) >= 2 && (d.grau || 0) >= 2) return;
+        var refez = (s.alt || []).some(function (it) { return !!state.results[it.id]; }) ||
+          (s.items || []).some(function (it) { var r = state.results[it.id]; return r && (r.seen || 0) >= 2; });
+        if (!refez) return;
+        var acertou = secItems(s).every(function (it) {
+          var r = state.results[it.id]; return r && (r.streak > 0 || (r.right || 0) > 0);
+        });
+        if (!acertou) return;
+        d.runs = Math.max(d.runs || 1, 2); d.grau = Math.max(d.grau || 0, 2); mudou++;
+      });
+    });
+    save();
+    return mudou;
+  }
   function nextSectionOf(w) { return w.sections.filter(function (s) { return nodeAvailable(w, s) && !isDoneSec(s); })[0] || null; }
   function nextSection() { var cur = currentModule(); return cur ? nextSectionOf(cur) : null; }
 
@@ -2226,6 +2253,7 @@
   }
   // Quem já usava o app antes dos níveis continua no B1, onde estava.
   settleGoal();
+  reparaPassadas();
   if (!state.placement && Object.keys(state.results).length) { state.placement = "B1"; save(); }
   if (!state.onboarded && Object.keys(state.results).length) { state.onboarded = true; save(); }
   if (!state.onboarded) view = { name: "welcome", step: 0 };
@@ -2238,5 +2266,5 @@
   updateTabAvatar();
   checkOffline();
   loadApiConfig();
-  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, ITEMS: ITEMS, mergeStates: mergeStates, abrir: openSection, tela: function () { return view; }, secGrau: secGrau, modGrau: modGrau, estado: state, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
+  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, ITEMS: ITEMS, mergeStates: mergeStates, reparaPassadas: reparaPassadas, abrir: openSection, tela: function () { return view; }, secGrau: secGrau, modGrau: modGrau, estado: state, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
 })();
