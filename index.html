@@ -364,6 +364,9 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .node.lesson.iris-dark { background-image: var(--iris); background-size: 260% 100%; color: #FFFFFF;
   box-shadow: 0 6px 0 var(--iris-deep), inset 0 0 0 2.5px rgba(255, 255, 255, .55); animation: iris-move 11s linear infinite; }
 .node.iris + .node-lbl, .node.lesson.iris-dark + .node-lbl { color: var(--iris-ink); font-weight: 700; }
+/* O aviso de reforçar precisa continuar legível sobre o card preenchido. */
+.module.complete .b-weak, .module.mastered .b-weak, .module.iris .b-weak { background: #F08C2E; color: #2A1600; }
+.weak-badge { box-shadow: 0 0 0 2.5px var(--bg); }
 .trophy.iris { background-image: var(--iris); background-size: 260% 100%; color: #FFFFFF;
   box-shadow: 0 6px 0 var(--iris-deep), 0 0 18px color-mix(in srgb, #9A3BE8 30%, transparent);
   animation: iris-move 11s linear infinite; }

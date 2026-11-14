@@ -826,11 +826,16 @@
   // Leitura e vocabulário não têm acerto nem erro, então acompanham a etapa
   // avaliada que alimentam — a escuta e o treino — e o resumo acompanha o módulo.
   function isQuizSec(s) { return isQuiz(s) && (s.items || []).length > 0; }
+  // O reforço conquistado fica: uma etapa que chegou ao dourado ou ao iridescente
+  // não volta atrás se você errar depois. O erro continua aparecendo no contador de
+  // "Reforçar" do próprio nó, que é o que diz o que ainda precisa de atenção.
   function grauQuiz(s) {
-    if (!isDoneSec(s)) return 0;
-    if (!secAllRight(s)) return 1;
-    var r = secRuns(s);
-    return r >= 3 ? 3 : r >= 2 ? 2 : 1;
+    var d = state.sections[s.id];
+    if (!d || !d.done) return 0;
+    var vivo = 1;
+    if (secAllRight(s)) { var r = secRuns(s); vivo = r >= 3 ? 3 : r >= 2 ? 2 : 1; }
+    if (vivo > (d.grau || 0)) { d.grau = vivo; save(); }
+    return Math.max(vivo, d.grau || 0);
   }
   function parQuiz(w, s) {
     var i = w.sections.indexOf(s);
@@ -1419,10 +1424,11 @@
   function finishSession(S) {
     if (S.kind === "section" && S.section) {
       var right = S.log.filter(function (l) { return l.ok; }).length;
-      var wk = SECTIONS[S.section.id].week, mAntes = modGrau(wk);
+      var wk = SECTIONS[S.section.id].week, gAntes = secGrau(S.section), mAntes = modGrau(wk);
       S.moduleDone = sectionFinished(S.section.id, { score: right, total: S.ids.length, at: today() });
-      // Avisa quando a etapa (ou o módulo inteiro) sobe de reforço.
-      S.grau = secGrau(S.section);
+      // O selo só aparece quando a etapa (ou o módulo) sobe de reforço agora.
+      var gDepois = secGrau(S.section);
+      S.grau = gDepois > gAntes ? gDepois : 0;
       S.modGrau = modGrau(wk) > mAntes ? modGrau(wk) : 0;
     }
     state.session = null; save();
@@ -1993,6 +1999,7 @@
       var x = m.sections[k], y = b.sections[k];
       if (!x) { m.sections[k] = y; continue; }
       var z = { done: !!(x.done || y.done), runs: Math.max(x.runs || 0, y.runs || 0) };
+      if (x.grau || y.grau) z.grau = Math.max(x.grau || 0, y.grau || 0);
       var melhor = (y.score || 0) > (x.score || 0) ? y : x;
       if (melhor.score !== undefined) { z.score = melhor.score; z.total = melhor.total; }
       var qdo = [x.at, y.at].filter(Boolean).sort();
