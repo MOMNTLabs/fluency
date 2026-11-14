@@ -364,6 +364,14 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .node.lesson.iris-dark { background-image: var(--iris); background-size: 260% 100%; color: #FFFFFF;
   box-shadow: 0 6px 0 var(--iris-deep), inset 0 0 0 2.5px rgba(255, 255, 255, .55); animation: iris-move 11s linear infinite; }
 .node.iris + .node-lbl, .node.lesson.iris-dark + .node-lbl { color: var(--iris-ink); font-weight: 700; }
+/* Barra do card: com o módulo concluído ela mostra o caminho até o próximo reforço,
+   e as etapas que já chegaram lá acendem na cor do prêmio. */
+.module.complete .segs.ouro i.on, .module.mastered .segs.ouro i.on { background: var(--sign); }
+.module.complete .segs.iris i.on, .module.mastered .segs.iris i.on {
+  background-image: var(--iris); background-size: 260% 100%; animation: iris-move 11s linear infinite; }
+.module.complete .segs.ouro i, .module.complete .segs.iris i { background: color-mix(in srgb, var(--cobalt-ink) 26%, transparent); }
+.module.mastered .segs.ouro i, .module.mastered .segs.iris i { background: rgba(42, 33, 0, .22); }
+@media (prefers-reduced-motion: reduce) { .segs i.on { animation: none; } }
 /* O aviso de reforçar precisa continuar legível sobre o card preenchido. */
 .module.complete .b-weak, .module.mastered .b-weak, .module.iris .b-weak { background: #F08C2E; color: #2A1600; }
 .weak-badge { box-shadow: 0 0 0 2.5px var(--bg); }

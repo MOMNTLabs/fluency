@@ -583,7 +583,10 @@
   // ---------- Início: o percurso ----------
   // Uma cor por módulo, em ciclo. Discretas no conjunto, vivas o bastante para dar ritmo ao caminho.
   var MOD_COLORS = ["#4361EE", "#12A594", "#8B5CF6", "#F08C2E", "#E5508F", "#2B9AD8"];
-  function modColor(w) { return MOD_COLORS[w.idx % MOD_COLORS.length]; }
+  // Uma cor só no percurso: a cor passa a dizer em que ponto você está (azul
+  // concluído, dourado, iridescente), e não qual módulo é. O módulo se identifica
+  // pelo ícone próprio e pelo número.
+  function modColor(w) { return "var(--cobalt)"; }
   var TYPE_ICON = {
     summary: '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/>',
     fill: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
@@ -733,14 +736,21 @@
       var open = unlocked(w), done = complete(w), col = modColor(w), mg = modGrau(w);
       var p = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) p++; });
       var exp = isExpanded(w, cur), isCur = w === cur;
-      var segs = ""; w.sections.forEach(function (s) { segs += '<i class="' + (state.sections[s.id] && state.sections[s.id].done ? "on" : "") + '"></i>'; });
+      // Com o módulo concluído, a barra passa a mostrar o caminho até o próximo
+      // reforço: cada etapa que já chegou lá acende na cor do prêmio.
+      var alvo = mg >= 1 && mg < 3 ? mg + 1 : 0, segs = "";
+      w.sections.forEach(function (s) {
+        var on = alvo ? secGrau(s) >= alvo : !!(state.sections[s.id] && state.sections[s.id].done);
+        segs += '<i class="' + (on ? "on" : "") + '"></i>';
+      });
+      var segCls = "segs" + (alvo === 2 ? " ouro" : alvo === 3 ? " iris" : "");
       var status = done ? (mg >= 3 ? "Iridescente" : mg >= 2 ? "Dourado" : "Concluído") : isCur ? "Em andamento" : open ? p + " de " + w.sections.length : "Bloqueado";
       var weakN = open ? pendingInModule(w) : 0;
       html += '<section class="module' + (open ? "" : " is-locked") + (exp ? " expanded" : "") + (isCur ? " current" : "") + (done ? " complete" : "") + (mg >= 2 ? " mastered" : "") + (mg >= 3 ? " iris" : "") + '" style="--m:' + col + '" id="mod-' + w.id + '">' +
         '<button class="banner" data-mod="' + w.id + '" aria-expanded="' + exp + '">' +
         '<span class="m-icon">' + svg(MOD_ICON[w.id] || TROPHY, 2) + (done ? '<span class="m-done">' + I.done + '</span>' : "") + '</span>' +
         '<span class="grow"><span class="b-label">' + esc(w.title) + '<span class="b-status">' + status + '</span>' + (weakN ? '<span class="b-weak">Reforçar ' + weakN + '</span>' : "") + '</span>' +
-        '<span class="b-title">' + esc(w.subtitle) + '</span>' + (exp ? "" : '<span class="segs">' + segs + '</span>') + '</span>' +
+        '<span class="b-title">' + esc(w.subtitle) + '</span>' + (exp ? "" : '<span class="' + segCls + '">' + segs + '</span>') + '</span>' +
         '<span class="b-chev">' + (open ? I.next : I.lock) + '</span></button>';
       if (!exp) { html += '</section>'; return; }
       html += '<div class="path">';
