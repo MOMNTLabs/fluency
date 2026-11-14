@@ -5,17 +5,17 @@ window.ALT = Object.assign(window.ALT || {}, {
 
   // B1.1 — if + passado → would
   "s1-r1": [
-    F("If I ___ (speak) better English, I would apply for that job.", "spoke", "If I {spoke} better English, I would apply for that job.", "A parte do \"se\" vai no passado: <i>speak → spoke</i>."),
-    F("If we ___ (start) earlier, we would finish before lunch.", "started", "If we {started} earlier, we would finish before lunch.", "\"Se começássemos\" = passado."),
+    F("If I ___ (speak) better English, I would apply for that job.", "spoke", "If I {spoke} better English, I would apply for that job.", "A parte do \"se\" vai no passado para marcar a imaginação: <i>speak → spoke</i>."),
+    F("If we ___ (start) earlier, we would finish before lunch.", "started", "If we {started} earlier, we would finish before lunch.", "Imaginação, não passado: o <i>would</i> do outro lado pede o verbo no passado."),
     F("She ___ (travel) more if she had more free time.", ["would travel", "'d travel"], "She {would travel} more if she had more free time.", "\"Viajaria\" → would travel."),
     F("If the office ___ (be) closer, I would walk every day.", ["were", "was"], "If the office {were} closer, I would walk every day.", "Com <i>be</i>, o padrão é <i>were</i>. <i>Was</i> também aparece na fala."),
     F("I ___ (take) the job if the pay were better.", ["would take", "'d take"], "I {would take} the job if the pay were better.", "\"Aceitaria\" → would take."),
-    F("If he ___ (know) the answer, he would tell us.", "knew", "If he {knew} the answer, he would tell us.", "\"Se ele soubesse\" = passado. <i>Know → knew</i>."),
+    F("If he ___ (know) the answer, he would tell us.", "knew", "If he {knew} the answer, he would tell us.", "Imaginação: com <i>would</i> do outro lado, o <i>if</i> vai para o passado. <i>Know → knew</i>."),
     F("We ___ (need) a bigger room if the team grew.", ["would need", "'d need"], "We {would need} a bigger room if the team grew.", "\"Precisaríamos\" → would need."),
-    F("If they ___ (offer) me the position, I would accept it.", "offered", "If they {offered} me the position, I would accept it.", "\"Se me oferecessem\" = passado."),
-    F("If the app ___ (work) offline, more people would use it.", "worked", "If the app {worked} offline, more people would use it.", "\"Se funcionasse\" = passado."),
+    F("If they ___ (offer) me the position, I would accept it.", "offered", "If they {offered} me the position, I would accept it.", "Não é passado de verdade: o passado aqui marca que a situação é imaginada. A pista é o <i>would</i>."),
+    F("If the app ___ (work) offline, more people would use it.", "worked", "If the app {worked} offline, more people would use it.", "Hipótese sobre agora: o <i>if</i> fica no passado porque o outro lado tem <i>would</i>."),
     F("What ___ you ___ (say) if the client asked for a refund?", "would say", "What {would} you {say} if the client asked for a refund?", "<i>What would you say…?</i> = \"o que você diria?\"."),
-    F("If my phone ___ (have) more storage, I would film in 4K.", "had", "If my phone {had} more storage, I would film in 4K.", "A parte do \"se\" vai no passado."),
+    F("If my phone ___ (have) more storage, I would film in 4K.", "had", "If my phone {had} more storage, I would film in 4K.", "O passado depois do <i>if</i> marca a hipótese, não o tempo."),
     F("I ___ (not/wait) in that line if I were you.", ["wouldn't wait", "would not wait"], "I {wouldn't wait} in that line if I were you.", "Negativa de would → wouldn't + verbo puro."),
     F("They ___ (understand) better if we used examples.", ["would understand", "'d understand"], "They {would understand} better if we used examples.", "\"Entenderiam\" → would understand."),
     F("If the weather ___ (be) nicer, we would eat outside.", ["were", "was"], "If the weather {were} nicer, we would eat outside.", "Imaginação com <i>be</i> → were.")
@@ -44,7 +44,7 @@ window.ALT = Object.assign(window.ALT || {}, {
     F("I ___ (buy) this laptop two years ago.", "bought", "I {bought} this laptop two years ago.", "<i>Two years ago</i> = momento definido → passado simples."),
     F("We ___ (just/finish) the first version.", ["have just finished", "'ve just finished"], "We {have just finished} the first version.", "\"Acabamos de terminar\" → have just."),
     F("When I called, she ___ (already/leave).", ["had already left", "'d already left"], "When I called, she {had already left}.", "Ela saiu antes da ligação → had."),
-    F("If I ___ (have) a car, I would drive to work.", "had", "If I {had} a car, I would drive to work.", "\"Se eu tivesse\" = passado."),
+    F("If I ___ (have) a car, I would drive to work.", "had", "If I {had} a car, I would drive to work.", "Imaginação: <i>would</i> do outro lado, verbo no passado depois do <i>if</i>."),
     F("I ___ (like) to see that museum one day.", ["would like", "'d like"], "I {would like} to see that museum one day.", "\"Gostaria\" → would like."),
     F("He said he ___ (lose) the password.", ["had lost", "'d lost"], "He said he {had lost} the password.", "Contando o que ele disse, o verbo recua: had."),
     F("They ___ (work) together since January.", ["have worked", "'ve worked"], "They {have worked} together since January.", "<i>Since</i> + continua até agora → have."),
