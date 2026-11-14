@@ -118,24 +118,31 @@
   buildSections();
   // Tradução das frases: vem do próprio item, do banco content-frases.js,
   // dos exemplos do vocabulário ou das leituras.
-  var PT = {};
+  var PT = {}, PALAVRAS = {};
   function ptKey(t) { return String(t).replace(/[{}]/g, "").replace(/\s+/g, " ").trim().toLowerCase().replace(/[.?!]+$/, ""); }
   function ptPut(en, pt) { if (en && pt) { var k = ptKey(en); if (!PT[k]) PT[k] = pt; } }
+  // Vocabulário do curso: serve para separar um deslize de digitação (palavra que não
+  // existe) de uma palavra trocada de verdade (palavra que o curso usa em outro lugar).
+  function addPalavras(t) {
+    String(t).toLowerCase().replace(/[’‘`´']/g, "").replace(/[^a-z ]+/g, " ")
+      .split(" ").forEach(function (w) { if (w.length > 1) PALAVRAS[w] = 1; });
+  }
   function ptOf(it) {
     if (it.pt) return it.pt;
     return PT[ptKey(it.full || it.en || "")] || "";
   }
   function indexPt() {
-    PT = {};
+    PT = {}; PALAVRAS = {};
     var F = window.FRASES || {}, k;
-    for (k in F) ptPut(k, F[k]);
+    for (k in F) { ptPut(k, F[k]); addPalavras(k); }
     var E = window.EXPT || {};
-    for (k in E) ptPut(k, E[k]);
+    for (k in E) { ptPut(k, E[k]); addPalavras(k); }
     WEEKS.forEach(function (w) {
       w.sections.forEach(function (sec) {
-        (sec.items || []).forEach(function (i) {
+        (sec.items || []).concat(sec.alt || []).forEach(function (i) {
           if (sec.type === "reading" || sec.type === "listen") ptPut(i.en, i.pt);
           else if (sec.type === "translate") ptPut(i.full, i.q);
+          addPalavras(i.full || i.en || "");
         });
       });
     });
@@ -297,9 +304,14 @@
   function norm(t) {
     return String(t).toLowerCase().replace(/[’‘`´]/g, "'").replace(/[^a-z' ]+/g, " ").replace(/\s+/g, " ").trim();
   }
+  // Sem apóstrofo vale: "dont" é a mesma resposta que "don't".
+  function semApos(t) { return t.replace(/'/g, ""); }
   function isRight(item, ans) {
     var a = norm(ans); if (!a) return false;
-    return item.a.some(function (x) { var n = norm(x); return a === n || a === n.replace(/^'/, ""); });
+    return item.a.some(function (x) {
+      var n = norm(x);
+      return a === n || a === n.replace(/^'/, "") || semApos(a) === semApos(n);
+    });
   }
   // ---------- Correção automática das frases escritas ----------
   // Aceita contrações, grafia britânica e outras palavras, desde que o tempo verbal
@@ -320,12 +332,20 @@
     VARIANTES.forEach(function (r) { x = x.replace(r[0], r[1]); });
     return x;
   }
-  function limpaF(x) { return x.replace(/[^a-z ]+/g, " ").replace(/\s+/g, " ").trim(); }
-  // O 'd pode ser would ou had, então as duas leituras valem.
+  // "9 a.m.", "9 am" e "9 a m" são a mesma hora escrita de três jeitos.
+  function limpaF(x) {
+    return x.replace(/\ba\s*\.?\s*m\b\.?/g, "am").replace(/\bp\s*\.?\s*m\b\.?/g, "pm")
+            .replace(/[^a-z ]+/g, " ").replace(/\s+/g, " ").trim();
+  }
+  // Várias leituras da mesma frase: com a contração aberta ('d = would ou had) e com
+  // ela colada, para quem escreve "Id" e "dont" sem apóstrofo.
   function formasF(t) {
-    var x = baseF(t);
-    if (/'d\b/.test(x)) return [limpaF(x.replace(/'d\b/g, " would")), limpaF(x.replace(/'d\b/g, " had"))];
-    return [limpaF(x)];
+    var x = baseF(t), fs = [];
+    if (/'d\b/.test(x)) { fs.push(limpaF(x.replace(/'d\b/g, " would"))); fs.push(limpaF(x.replace(/'d\b/g, " had"))); }
+    else fs.push(limpaF(x));
+    var colado = limpaF(String(t).toLowerCase().replace(/[’‘`´']/g, ""));
+    if (fs.indexOf(colado) < 0) fs.push(colado);
+    return fs;
   }
   var AUXF = { am: 1, is: 1, are: 1, was: 1, were: 1, be: 1, been: 1, being: 1, have: 1, has: 1, had: 1,
     do: 1, does: 1, did: 1, will: 1, would: 1, shall: 1, should: 1, can: 1, could: 1, may: 1, might: 1,
@@ -346,14 +366,76 @@
     }
     return linha[b.length];
   }
+  // Uma palavra trocada por quase a mesma palavra é dedo escorregando, não erro de
+  // inglês. Palavra curta e palavra que carrega o tempo verbal não entram nessa conta.
+  // Tira a flexão da palavra para ver se a diferença é só gramática (work/works,
+  // station/stations, wait/waiting), que é justamente o que o exercício cobra.
+  function raizF(w) {
+    var x = w;
+    if (/ies$/.test(x)) x = x.slice(0, -3) + "y";
+    else if (/(ses|xes|zes|ches|shes)$/.test(x)) x = x.slice(0, -2);
+    else if (/s$/.test(x) && !/ss$/.test(x)) x = x.slice(0, -1);
+    else if (/ing$/.test(x)) x = x.slice(0, -3);
+    else if (/ed$/.test(x)) x = x.slice(0, -2);
+    if (/([bdfgklmnprtvz])\1$/.test(x)) x = x.slice(0, -1);
+    return x.replace(/e$/, "");
+  }
+  // Que flexão a palavra carrega. Duas palavras com a mesma flexão podem diferir por
+  // digitação; com flexões diferentes, a diferença é gramatical.
+  function flexF(w) {
+    if (/(ies|ses|xes|zes|ches|shes)$/.test(w)) return "s";
+    if (/s$/.test(w) && !/ss$/.test(w)) return "s";
+    if (/ing$/.test(w)) return "ing";
+    if (/ed$/.test(w)) return "ed";
+    return "";
+  }
+  // Verbo irregular: sing/sang/sung, send/sent, go/went.
+  function irregF(a, b) {
+    try {
+      var fa = verbForms(a) || [], fb = verbForms(b) || [];
+      if (fa.indexOf(b) >= 0 || fb.indexOf(a) >= 0) return true;
+      if (pastOf(a) === b || ppOf(a) === b || pastOf(b) === a || ppOf(b) === a) return true;
+    } catch (e) {}
+    return false;
+  }
+  function soDedo(r, g) {
+    if (r.length !== g.length) return false;
+    var difs = [], i;
+    for (i = 0; i < r.length; i++) if (r[i] !== g[i]) difs.push(i);
+    if (difs.length !== 1) return false;
+    var a = r[difs[0]], b = g[difs[0]];
+    if (a.length < 4 || b.length < 4) return false;
+    if (Math.abs(a.length - b.length) > 2) return false;
+    // Palavra que o curso usa em outro lugar não é deslize: é outra palavra.
+    if (PALAVRAS[b]) return false;
+    if (raizF(a) !== raizF(b) && PALAVRAS[raizF(b)]) return false;
+    if (flexF(a) !== flexF(b)) return false;
+    if (irregF(a, b)) return false;
+    return distPal(a.split(""), b.split("")) <= 2;
+  }
+  // Mesma frase com a terminação errada (work/works, station/stations) não é
+  // "escrito com outras palavras": é o erro que o exercício cobra.
+  function soFlexao(r, w) {
+    if (r.length !== w.length) return false;
+    var achou = false, i;
+    for (i = 0; i < r.length; i++) {
+      if (r[i] === w[i]) continue;
+      achou = true;
+      if (raizF(r[i]) !== raizF(w[i]) && !irregF(r[i], w[i])) return false;
+    }
+    return achou;
+  }
   function corrigeFrase(it, resp, estrito) {
-    var refs = formasF(plain(it.full)), gots = formasF(resp);
-    for (var i = 0; i < gots.length; i++) if (refs.indexOf(gots[i]) >= 0) return { ok: true };
-    // Na escuta não vale parafrasear: ali só a contração e a grafia variam.
+    var refs = formasF(plain(it.full)), gots = formasF(resp), i, j;
+    for (i = 0; i < gots.length; i++) if (refs.indexOf(gots[i]) >= 0) return { ok: true };
+    for (i = 0; i < refs.length; i++) for (j = 0; j < gots.length; j++)
+      if (soDedo(refs[i].split(" "), gots[j].split(" "))) return { ok: true, dedo: true };
+    // Na escuta não vale parafrasear: ali só a contração, a grafia e o dedo escorregam.
     if (estrito) return { ok: false };
     var r = refs[0].split(" "), aux = contaAux(r), melhor = { sim: 0, tempo: false };
     gots.forEach(function (g) {
       var w = g.split(" ");
+      if (soFlexao(r, w)) return;
       var sim = 1 - distPal(r, w) / Math.max(r.length, w.length);
       if (sim > melhor.sim) melhor = { sim: sim, tempo: temTodos(aux, contaAux(w)) };
     });
@@ -1143,6 +1225,7 @@
       (tr ? '<div class="fb-pt">' + esc(tr) + '</div>' : "") +
       (sec.type === "listen" ? "" : (it.why ? '<div class="why">' + it.why + '</div>' : "")) +
       (S.ok && S.outras ? '<div class="why">Escrita com outras palavras, mas o tempo verbal está certo. Acima está a frase do curso.</div>' : "") +
+      (S.ok && S.dedo ? '<div class="why">Contei como acerto: foi só um deslize de digitação.</div>' : "") +
       '<div class="row">' + listen(it.full) + (canOverride ? '<button class="text-btn" id="override">Eu tinha acertado</button>' : "") + '</div>' +
       '<button class="btn ' + (S.ok ? "btn-ok" : "btn-bad") + '" id="next">Continuar</button></div>';
     return h;
@@ -1214,12 +1297,13 @@
           var tl = tilesFor(it, sec), built = S.tiles.map(function (k) { return tl[k]; }).join(" ");
           commit(norm(built) === norm(plain(it.full)), built);
         } else if (sec.type === "listen") {
-          var lv = ans.value.trim(); if (!lv) return; commit(corrigeFrase(it, lv, true).ok, lv);
+          var lv = ans.value.trim(); if (!lv) return;
+          var rl = corrigeFrase(it, lv, true); S.dedo = !!rl.dedo; commit(rl.ok, lv);
         } else {
           var tv = ans.value.trim();
           if (!tv) { S.answer = ""; S.phase = "grade"; render(); return; }
           var res = corrigeFrase(it, tv);
-          S.outras = !!res.outras;
+          S.outras = !!res.outras; S.dedo = !!res.dedo;
           commit(res.ok, tv);
         }
       };
@@ -1297,7 +1381,7 @@
   function speechStop() { try { speechSynthesis.cancel(); } catch (e) {} }
   function advance() {
     var S = view.session;
-    if (S.i + 1 < S.ids.length) { S.i++; S.phase = "ask"; S.answer = ""; S.pick = null; S.tiles = []; S.draft = ""; S.drafts = []; S.autoplayed = false; render(); window.scrollTo(0, 0); }
+    if (S.i + 1 < S.ids.length) { S.i++; S.phase = "ask"; S.answer = ""; S.pick = null; S.tiles = []; S.draft = ""; S.drafts = []; S.autoplayed = false; S.outras = false; S.dedo = false; render(); window.scrollTo(0, 0); }
     else finishSession(S);
   }
   function finishSession(S) {
@@ -2093,5 +2177,5 @@
   updateTabAvatar();
   checkOffline();
   loadApiConfig();
-  window.__audit = { corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
+  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
 })();
