@@ -1986,7 +1986,19 @@
       var src = sb > sa ? b : a; if (src.review && src.review[k]) m.review[k] = src.review[k];
     }
     for (k in (b.days || {})) m.days[k] = Math.max(m.days[k] || 0, b.days[k]);
-    for (k in (b.sections || {})) { var x = m.sections[k], y = b.sections[k]; if (!x) m.sections[k] = y; else if (y.done && !x.done) m.sections[k] = y; else if (y.done && x.done && (y.score || 0) > (x.score || 0)) m.sections[k] = y; }
+    // Etapa por etapa, campo por campo: trocar o registro inteiro fazia o número de
+    // passadas (runs) voltar atrás quando a nuvem tinha uma pontuação melhor — e com
+    // ele sumia o dourado ou o iridescente já conquistado.
+    for (k in (b.sections || {})) {
+      var x = m.sections[k], y = b.sections[k];
+      if (!x) { m.sections[k] = y; continue; }
+      var z = { done: !!(x.done || y.done), runs: Math.max(x.runs || 0, y.runs || 0) };
+      var melhor = (y.score || 0) > (x.score || 0) ? y : x;
+      if (melhor.score !== undefined) { z.score = melhor.score; z.total = melhor.total; }
+      var qdo = [x.at, y.at].filter(Boolean).sort();
+      if (qdo.length) z.at = qdo[qdo.length - 1];
+      m.sections[k] = z;
+    }
     m.mastered = Math.max(a.mastered || 0, b.mastered || 0);
     ["modStart"].forEach(function (f) { m[f] = m[f] || {}; for (k in (b[f] || {})) if (!m[f][k] || b[f][k] < m[f][k]) m[f][k] = b[f][k]; });
     ["modDone"].forEach(function (f) { m[f] = m[f] || {}; for (k in (b[f] || {})) if (!m[f][k]) m[f][k] = b[f][k]; });
@@ -2219,5 +2231,5 @@
   updateTabAvatar();
   checkOffline();
   loadApiConfig();
-  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, ITEMS: ITEMS, abrir: openSection, tela: function () { return view; }, secGrau: secGrau, modGrau: modGrau, estado: state, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
+  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, ITEMS: ITEMS, mergeStates: mergeStates, abrir: openSection, tela: function () { return view; }, secGrau: secGrau, modGrau: modGrau, estado: state, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
 })();
