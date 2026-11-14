@@ -704,12 +704,13 @@
     if (!st.mods.some(started)) html += '<p class="muted small" style="margin:2px 0 10px">' + esc(L.about) + '</p>';
     if (lvl(code) < lvl(placement())) html += '<div class="tip" style="margin-bottom:12px">Este nível está abaixo do seu. Use para revisar a base quando quiser.</div>';
     function moduleHtml(w) {
-      var open = unlocked(w), done = complete(w), col = modColor(w);
+      var open = unlocked(w), done = complete(w), col = modColor(w), mg = modGrau(w);
       var p = 0; w.sections.forEach(function (s) { if (state.sections[s.id] && state.sections[s.id].done) p++; });
       var exp = isExpanded(w, cur), isCur = w === cur;
       var segs = ""; w.sections.forEach(function (s) { segs += '<i class="' + (state.sections[s.id] && state.sections[s.id].done ? "on" : "") + '"></i>'; });
-      var status = done ? "Concluído" : isCur ? "Em andamento" : open ? p + " de " + w.sections.length : "Bloqueado", weakN = open ? pendingInModule(w) : 0;
-      html += '<section class="module' + (open ? "" : " is-locked") + (exp ? " expanded" : "") + (isCur ? " current" : "") + (done ? " complete" : "") + (done && modMastered(w) ? " mastered" : "") + '" style="--m:' + col + '" id="mod-' + w.id + '">' +
+      var status = done ? (mg >= 3 ? "Iridescente" : mg >= 2 ? "Dourado" : "Concluído") : isCur ? "Em andamento" : open ? p + " de " + w.sections.length : "Bloqueado";
+      var weakN = open ? pendingInModule(w) : 0;
+      html += '<section class="module' + (open ? "" : " is-locked") + (exp ? " expanded" : "") + (isCur ? " current" : "") + (done ? " complete" : "") + (mg >= 2 ? " mastered" : "") + (mg >= 3 ? " iris" : "") + '" style="--m:' + col + '" id="mod-' + w.id + '">' +
         '<button class="banner" data-mod="' + w.id + '" aria-expanded="' + exp + '">' +
         '<span class="m-icon">' + svg(MOD_ICON[w.id] || TROPHY, 2) + (done ? '<span class="m-done">' + I.done + '</span>' : "") + '</span>' +
         '<span class="grow"><span class="b-label">' + esc(w.title) + '<span class="b-status">' + status + '</span>' + (weakN ? '<span class="b-weak">Reforçar ' + weakN + '</span>' : "") + '</span>' +
@@ -720,16 +721,21 @@
       w.sections.forEach(function (s, i) {
         var d = state.sections[s.id], isDone = d && d.done, avail = nodeAvailable(w, s), isNext = avail && !isDone;
         var x = ZIG[(i + w.idx * 3) % ZIG.length] * 40;
-        var cls = isDone ? (secMastered(s) ? "done gold" : "done") : isNext ? "next" : "locked", weak = isDone ? pendingOf(s).length : 0;
+        var grau = isDone ? secGrau(s) : 0, resumo = s.type === "summary";
+        var cls = isDone ? "done" + (resumo ? "" : tomDe(grau)) : isNext ? "next" : "locked", weak = isDone ? pendingOf(s).length : 0;
         html += '<div class="step' + (cls === "locked" ? " is-locked" : cls.indexOf("done") === 0 ? " is-done" : "") + (isNext ? " is-next" : "") + (bubble === s.id ? " open" : "") + '" style="--x:' + x + 'px">' +
           (isNext ? '<div class="go-tag">' + (w.sections.indexOf(s) === 0 && !Object.keys(state.results).length ? "Começar" : "Continuar") + '</div>' : "") +
-          '<button class="node ' + cls + (s.type === "summary" ? " lesson" + (isDone && modMastered(w) ? " gold-dark" : "") : "") + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
+          '<button class="node ' + cls + (resumo ? " lesson" + (grau >= 3 ? " iris-dark" : grau === 2 ? " gold-dark" : "") : "") + '" data-node="' + s.id + '" aria-label="' + esc(s.title) + '">' +
           (isNext ? '<span class="ring"></span>' : "") + svg(s.icon || TYPE_ICON[s.type] || TYPE_ICON.fill, 2.3) + (weak ? '<span class="weak-badge" aria-label="' + weak + ' para reforçar">' + weak + '</span>' : "") + '</button><span class="node-lbl">' + esc(s.title) + '</span>';
         if (bubble === s.id) html += bubbleHtml(w, s, avail, d);
         html += '</div>';
       });
       var lastX = ZIG[(w.sections.length + w.idx * 3) % ZIG.length] * 40;
-      html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? (modMastered(w) ? "won" : "silver") : "") + '" aria-label="' + (done ? (modMastered(w) ? "Módulo dominado" : "Concluído. Refaça as questões erradas para o troféu dourado") : "Fim do " + esc(w.title)) + '">' + svg(TROPHY, 2.1) + '</div></div>';
+      var tLab = !done ? "Fim do " + esc(w.title)
+        : mg >= 3 ? "Módulo iridescente: refeito duas vezes, tudo certo"
+        : mg >= 2 ? "Módulo dourado. Refaça mais uma vez, com outras frases, para ficar iridescente"
+        : "Concluído. Refaça o módulo inteiro acertando tudo para o troféu dourado";
+      html += '<div class="step" style="--x:' + lastX + 'px"><div class="trophy ' + (done ? (mg >= 3 ? "iris" : mg >= 2 ? "won" : "silver") : "") + '" aria-label="' + tLab + '">' + svg(TROPHY, 2.1) + '</div></div>';
       html += '</div></section>';
     }
     st.mods.forEach(moduleHtml);
@@ -796,10 +802,12 @@
         h += '<div class="bub-sub">' + info + '. ' + pw + (pw === 1 ? " questão para reforçar." : " questões para reforçar.") + '</div>' +
           '<button class="bub-btn" data-reinforce="' + s.id + '">Reforçar ' + pw + (pw === 1 ? " questão" : " questões") + '</button>' +
           '<button class="bub-link" data-start="' + s.id + '">Refazer tudo</button>';
-      } else if (isDone && isQuiz(s) && (s.items || []).length) {
-        var gold = secMastered(s);
-        h += '<div class="bub-sub">' + info + (gold ? ". Dourada: você acertou tudo na segunda passada."
-          : secAllRight(s) ? ". Refaça a lição inteira para ela ficar dourada." : ". Acerte todas para a lição ficar dourada.") + '</div>' +
+      } else if (isDone && isQuizSec(s)) {
+        var g = grauQuiz(s);
+        var nota = g >= 3 ? ". Iridescente: você refez duas vezes e acertou tudo."
+          : g === 2 ? ". Dourada. Refaça mais uma vez, com outras frases, para ela ficar iridescente."
+          : secAllRight(s) ? ". Refaça a lição inteira para ela ficar dourada." : ". Acerte todas para a lição ficar dourada.";
+        h += '<div class="bub-sub">' + info + nota + '</div>' +
           '<button class="bub-btn" data-start="' + s.id + '">Refazer</button>';
       } else h += '<div class="bub-sub">' + info + '</div><button class="bub-btn" data-start="' + s.id + '">' + (isDone ? "Refazer" : "Começar") + '</button>';
     }
@@ -813,14 +821,38 @@
   function secAllRight(s) {
     return secItems(s).every(function (it) { var r = state.results[it.id]; return r && r.streak > 0; });
   }
-  function secMastered(s) {
-    if (!isQuiz(s) || !(s.items || []).length || !isDoneSec(s)) return false;
-    return secRuns(s) >= 2 && secAllRight(s);
+  // Três reforços no caminho: concluída (azul da marca), dourada (refez tudo e
+  // acertou tudo) e iridescente (refez uma segunda vez, já com outras frases).
+  // Leitura e vocabulário não têm acerto nem erro, então acompanham a etapa
+  // avaliada que alimentam — a escuta e o treino — e o resumo acompanha o módulo.
+  function isQuizSec(s) { return isQuiz(s) && (s.items || []).length > 0; }
+  function grauQuiz(s) {
+    if (!isDoneSec(s)) return 0;
+    if (!secAllRight(s)) return 1;
+    var r = secRuns(s);
+    return r >= 3 ? 3 : r >= 2 ? 2 : 1;
   }
-  function modMastered(w) {
-    var qs = w.sections.filter(function (s) { return isQuiz(s) && (s.items || []).length; });
-    return qs.length > 0 && qs.every(secMastered);
+  function parQuiz(w, s) {
+    var i = w.sections.indexOf(s);
+    for (var j = i + 1; j < w.sections.length; j++) if (isQuizSec(w.sections[j])) return w.sections[j];
+    return null;
   }
+  function secGrau(s) {
+    if (!isDoneSec(s)) return 0;
+    if (isQuizSec(s)) return grauQuiz(s);
+    var w = SECTIONS[s.id].week;
+    if (s.type === "summary") return Math.max(1, modGrau(w));
+    var par = parQuiz(w, s);
+    return par ? Math.max(1, grauQuiz(par)) : 1;
+  }
+  function modGrau(w) {
+    if (!complete(w)) return 0;
+    var qs = w.sections.filter(isQuizSec), g = 3;
+    if (!qs.length) return 1;
+    qs.forEach(function (s) { g = Math.min(g, grauQuiz(s)); });
+    return Math.max(1, g);
+  }
+  function tomDe(g) { return g >= 3 ? " iris" : g === 2 ? " gold" : ""; }
   function nextSectionOf(w) { return w.sections.filter(function (s) { return nodeAvailable(w, s) && !isDoneSec(s); })[0] || null; }
   function nextSection() { var cur = currentModule(); return cur ? nextSectionOf(cur) : null; }
 
@@ -1387,7 +1419,11 @@
   function finishSession(S) {
     if (S.kind === "section" && S.section) {
       var right = S.log.filter(function (l) { return l.ok; }).length;
+      var wk = SECTIONS[S.section.id].week, mAntes = modGrau(wk);
       S.moduleDone = sectionFinished(S.section.id, { score: right, total: S.ids.length, at: today() });
+      // Avisa quando a etapa (ou o módulo inteiro) sobe de reforço.
+      S.grau = secGrau(S.section);
+      S.modGrau = modGrau(wk) > mAntes ? modGrau(wk) : 0;
     }
     state.session = null; save();
     go({ name: "done", session: S });
@@ -1408,6 +1444,12 @@
         (pendingInModule(m) ? '<p class="note">Você errou ' + pendingInModule(m) + (pendingInModule(m) === 1 ? ' questão' : ' questões') + ' neste módulo. Refaça as lições inteiras, acertando tudo, para elas e o troféu ficarem dourados.</p>' : "") + '</div>';
       if (nxt && took <= 2) html += '<p class="note">Você fechou este módulo em ' + took + (took === 1 ? " dia" : " dias") + '. Antes do próximo, vale fazer a revisão de erros: com alguns dias entre um módulo e outro, o conteúdo fixa melhor.</p>';
     }
+    if (S.grau >= 2) {
+      html += '<div class="selo ' + (S.grau >= 3 ? "iris" : "ouro") + '">' +
+        (S.grau >= 3 ? "Etapa iridescente: você refez duas vezes e acertou tudo."
+          : "Etapa dourada: você refez a lição inteira e acertou tudo.") +
+        (S.modGrau >= 3 ? " O módulo inteiro ficou iridescente." : S.modGrau === 2 ? " O módulo inteiro ficou dourado." : "") + '</div>';
+    }
     html += '<div class="score">' + right + '<small>/' + total + '</small></div><h2>' + msg + '</h2>' +
       '<p class="muted">' + (S.kind === "review" ? "Revisão concluída" : S.kind === "reinforce" ? "Reforço de " + esc(S.section.title) + " concluído" : esc(S.section.title) + " concluída") + '</p>';
     if (wrong.length) {
@@ -1424,7 +1466,7 @@
       (nx ? '<button class="btn ' + (redo.length ? "btn-soft" : "btn-primary") + '" id="nx">Seguir: ' + esc(nx.title) + '</button>' : "") +
       '<button class="btn btn-soft" id="home">Voltar ao percurso</button></div>';
     app.innerHTML = html;
-    if (ratio === 1 || S.moduleDone) celebrate();
+    if (ratio === 1 || S.moduleDone || S.grau >= 2) celebrate();
     document.getElementById("home").onclick = function () { backToPath(S.section ? S.section.id : null); };
     var nb = document.getElementById("nx"); if (nb) nb.onclick = function () { openSection(nx.id); };
     var rb = document.getElementById("redo");
@@ -2177,5 +2219,5 @@
   updateTabAvatar();
   checkOffline();
   loadApiConfig();
-  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, abrir: openSection, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
+  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, ITEMS: ITEMS, abrir: openSection, tela: function () { return view; }, secGrau: secGrau, modGrau: modGrau, estado: state, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
 })();

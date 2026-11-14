@@ -24,6 +24,8 @@
   --bg: #EEF1F7; --surface: #FFFFFF; --sunk: #E3E8F2; --ink: #131729; --ink-2: #4A5170; --muted: #7A819C;
   --line: #D9DEEA; --cobalt: #2F4BFF; --cobalt-ink: #FFFFFF; --cobalt-soft: #E2E7FF;
   --sign: #FFD23F; --sign-ink: #2A2100; --sign-soft: #FFF3C4; --ex-bg: #FFF7DC;
+  --iris: linear-gradient(110deg, #6B3BF5, #9A3BE8 26%, #C8409E 48%, #4A63F0 74%, #6B3BF5);
+  --iris-deep: #3B1A8C; --iris-ink: #8B3BD8;
   --ok: #0B8A5F; --ok-soft: #DDF4EA; --bad: #D93A3F; --bad-soft: #FDE4E4;
   --display: "Bricolage", -apple-system, "SF Pro Display", system-ui, sans-serif;
   --text: -apple-system, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
@@ -34,6 +36,7 @@
     --bg: #0D1120; --surface: #171C30; --sunk: #222842; --ink: #EEF0F8; --ink-2: #BAC0D6; --muted: #858CA8;
     --line: #2A3150; --cobalt: #8093FF; --cobalt-ink: #0D1120; --cobalt-soft: #222B55;
     --sign: #FFD23F; --sign-ink: #2A2100; --sign-soft: #3A3315; --ex-bg: rgba(255, 210, 63, .085);
+    --iris-deep: #2A1266; --iris-ink: #C79BFF;
     --rev-ink: #FFD98A;
     --ok: #3DD69C; --ok-soft: #12302A; --bad: #FF7A7E; --bad-soft: #3A1C24;
   }
@@ -322,6 +325,58 @@ textarea.field { min-height: 120px; resize: vertical; font-size: 18px; }
 .node.lesson.gold-dark + .node-lbl { color: #B88A08; font-weight: 700; }
 .step.is-done .node.gold ~ .node-lbl, .node.gold + .node-lbl { color: #A77C00; font-weight: 700; }
 .module.mastered .m-done { background: var(--sign); color: #2A2100; }
+
+/* Três reforços: concluído (azul da marca), dourado (refez tudo certo) e
+   iridescente (refez uma segunda vez, com outras frases). */
+.module.complete .banner { background: var(--cobalt); color: var(--cobalt-ink); border-color: transparent;
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--cobalt) 62%, #000); }
+.module.complete .banner:active { box-shadow: 0 1px 0 color-mix(in srgb, var(--cobalt) 62%, #000); }
+.module.complete .b-title, .module.complete .b-label, .module.complete .b-chev { color: inherit; }
+.module.complete .b-status { background: color-mix(in srgb, var(--cobalt-ink) 15%, transparent); color: inherit; }
+.module.complete .m-icon { background: color-mix(in srgb, var(--cobalt-ink) 13%, transparent); color: inherit;
+  box-shadow: inset 0 -4px 0 color-mix(in srgb, var(--cobalt-ink) 10%, transparent); }
+.module.complete .m-done { background: var(--cobalt-ink); color: var(--cobalt); border-color: transparent; }
+.module.complete .segs i { background: color-mix(in srgb, var(--cobalt-ink) 22%, transparent); }
+.module.complete .segs i.on { background: var(--cobalt-ink); }
+
+.module.mastered .banner { background: var(--sign); color: var(--sign-ink); box-shadow: 0 4px 0 #C99A00; }
+.module.mastered .banner:active { box-shadow: 0 1px 0 #C99A00; }
+.module.mastered .b-status { background: rgba(42, 33, 0, .14); color: var(--sign-ink); }
+.module.mastered .m-icon { background: rgba(42, 33, 0, .12); color: var(--sign-ink); box-shadow: inset 0 -4px 0 rgba(42, 33, 0, .12); }
+.module.mastered .m-done { background: var(--sign-ink); color: var(--sign); }
+.module.mastered .segs i { background: rgba(42, 33, 0, .2); }
+.module.mastered .segs i.on { background: var(--sign-ink); }
+
+.module.iris .banner { color: #FFFFFF;
+  background-image: linear-gradient(rgba(12, 2, 36, .2), rgba(12, 2, 36, .2)), var(--iris);
+  background-size: auto, 260% 100%; background-position: 0 0, 0 0;
+  box-shadow: 0 4px 0 var(--iris-deep), 0 0 20px color-mix(in srgb, #9A3BE8 32%, transparent);
+  animation: iris-banner 11s linear infinite; }
+.module.iris .banner:active { box-shadow: 0 1px 0 var(--iris-deep); }
+.module.iris .b-status { background: rgba(255, 255, 255, .2); color: #FFFFFF; }
+.module.iris .m-icon { background: rgba(255, 255, 255, .18); color: #FFFFFF; box-shadow: inset 0 -4px 0 rgba(12, 2, 36, .18); }
+.module.iris .m-done { background: #FFFFFF; color: #6B3BF5; border-color: transparent; }
+.module.iris .segs i { background: rgba(255, 255, 255, .28); }
+.module.iris .segs i.on { background: #FFFFFF; }
+
+.node.iris { background-image: var(--iris); background-size: 260% 100%; color: #FFFFFF;
+  box-shadow: 0 6px 0 var(--iris-deep); animation: iris-move 11s linear infinite; }
+.node.lesson.iris-dark { background-image: var(--iris); background-size: 260% 100%; color: #FFFFFF;
+  box-shadow: 0 6px 0 var(--iris-deep), inset 0 0 0 2.5px rgba(255, 255, 255, .55); animation: iris-move 11s linear infinite; }
+.node.iris + .node-lbl, .node.lesson.iris-dark + .node-lbl { color: var(--iris-ink); font-weight: 700; }
+.trophy.iris { background-image: var(--iris); background-size: 260% 100%; color: #FFFFFF;
+  box-shadow: 0 6px 0 var(--iris-deep), 0 0 18px color-mix(in srgb, #9A3BE8 30%, transparent);
+  animation: iris-move 11s linear infinite; }
+.selo { border-radius: 14px; padding: 11px 14px; font-size: 15px; font-weight: 600; margin-bottom: 14px; }
+.selo.ouro { background: var(--sign); color: var(--sign-ink); }
+.selo.iris { color: #FFFFFF; background-image: linear-gradient(rgba(12, 2, 36, .2), rgba(12, 2, 36, .2)), var(--iris);
+  background-size: auto, 260% 100%; animation: iris-banner 11s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .selo.iris { animation: none; } }
+@keyframes iris-move { to { background-position: 260% 0; } }
+@keyframes iris-banner { to { background-position: 0 0, 260% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .module.iris .banner, .node.iris, .node.lesson.iris-dark, .trophy.iris { animation: none; }
+}
 .ring { position: absolute; inset: -11px; border-radius: 50%; border: 5px solid var(--m-soft); pointer-events: none; animation: ring 2.4s ease-in-out infinite; }
 @keyframes ring { 50% { transform: scale(1.06); border-color: color-mix(in srgb, var(--m) 35%, transparent); } }
 .go-tag { position: absolute; bottom: calc(100% + 10px); white-space: nowrap; background: var(--surface); color: var(--m); border: 2px solid var(--line);
