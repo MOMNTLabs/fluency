@@ -2025,6 +2025,755 @@ window.REGRAS = {
         ["That's a sensible decision.", "Essa é uma decisão sensata."]
       ]
     }
+  ],
+
+  b2m1: [
+    {
+      def: "O present perfect contínuo fala de uma atividade que <b>começou antes e segue em curso</b> — ou que acabou de parar e ainda se vê o efeito.",
+      form: "have / has been + verbo-ing · I've been working",
+      marcar: ["I've been working"],
+      more: [
+        "## As três peças",
+        "<i>have/has</i> + <i>been</i> + verbo com <i>-ing</i>. Nenhuma pode faltar: <i>I've working</i> e <i>I been working</i> estão incompletos.",
+        "## Os dois usos",
+        "Ainda em curso: <i>I<b>'ve been working</b> here for two years</i> (continuo aqui). Acabou agora e deixou marca: <i>I<b>'m tired. I've been running</b></i>.",
+        "## O par com for e since",
+        "Combina com duração (<i>for two hours</i>) e com ponto de partida (<i>since this morning</i>) — são as expressões que melhor revelam esse tempo.",
+        "## Em vez do presente",
+        "Em português se diz \"trabalho aqui há dois anos\"; o inglês precisa mostrar o atravessar do tempo: <i>I've been working here for two years</i>."
+      ],
+      ex: [
+        ["I've been working here for two years.", "Trabalho aqui há dois anos."],
+        ["She's been waiting since nine.", "Ela está esperando desde as nove."],
+        ["It's been raining all afternoon.", "Está chovendo a tarde toda."]
+      ]
+    },
+    {
+      def: "A diferença entre as duas formas do present perfect é de <b>foco</b>: a contínua olha a atividade e o tempo gasto; a simples olha o resultado e a conta.",
+      form: "been writing (atividade) · have written (resultado)",
+      marcar: ["I've written", "I've been writing"],
+      more: [
+        "## Lado a lado",
+        "<i>I<b>'ve written</b> three reports</i> — quantos ficaram prontos. <i>I<b>'ve been writing</b> all day</i> — em que gastei o dia.",
+        "## O que cada um aceita",
+        "A forma simples anda com número (<i>three times</i>, <i>twice</i>, <i>two reports</i>). A contínua anda com tempo (<i>all day</i>, <i>for hours</i>, <i>since Monday</i>).",
+        "## Terminado ou não",
+        "<i>I've painted the kitchen</i> = está pintada. <i>I've been painting the kitchen</i> = estou no meio, e provavelmente há tinta em mim.",
+        "## Quando os dois servem",
+        "Com <i>live</i>, <i>work</i> e <i>study</i> a diferença quase desaparece: <i>I've lived here for years</i> = <i>I've been living here for years</i>."
+      ],
+      ex: [
+        ["I've written three reports this week.", "Escrevi três relatórios esta semana."],
+        ["I've been writing all day.", "Passei o dia escrevendo."],
+        ["She's been travelling a lot, and she's visited six countries.", "Ela tem viajado muito e já visitou seis países."]
+      ]
+    },
+    {
+      def: "<b>How long...?</b> pergunta a duração de algo que começou antes e continua — e por isso pede o present perfect, não o presente.",
+      form: "How long + have / has + been + -ing?",
+      marcar: ["How long have you been studying"],
+      more: [
+        "## A pergunta e a resposta",
+        "<i><b>How long have you been studying</b> English?</i> → <i><b>For</b> three years</i> ou <i><b>Since</b> 2023</i>.",
+        "## Com verbo de estado, a forma simples",
+        "<i><b>How long have you known</b> her?</i>, <i><b>How long have you had</b> that car?</i> — <i>know</i> e <i>have</i> não vão para o <i>-ing</i>.",
+        "## O erro comum",
+        "<i>How long are you studying English?</i> pergunta sobre o futuro ou soa estranho; e <i>How long do you study?</i> pergunta a rotina diária.",
+        "## As vizinhas",
+        "<i>How often...?</i> (frequência), <i>How many times...?</i> (quantas vezes), <i>When did you start...?</i> (o começo)."
+      ],
+      ex: [
+        ["How long have you been studying English?", "Há quanto tempo você estuda inglês?"],
+        ["How long have you had this supplier?", "Há quanto tempo você tem esse fornecedor?"],
+        ["How long has the flight been delayed?", "Há quanto tempo o voo está atrasado?"]
+      ]
+    },
+    {
+      def: "Verbos de <b>estado</b> não entram na forma contínua, nem aqui. Com eles, a duração se expressa com o present perfect simples.",
+      form: "have / has + particípio · I've known her for ten years",
+      marcar: ["I've known"],
+      more: [
+        "## Os que ficam no simples",
+        "<i>know</i>, <i>have</i> (posse), <i>be</i>, <i>believe</i>, <i>own</i>, <i>belong</i>, <i>understand</i>, <i>like</i>: <i>I<b>'ve known</b> her for ten years</i>, <i>We<b>'ve had</b> this system since 2019</i>, <i>I<b>'ve been</b> here since eight</i>.",
+        "## O erro comum",
+        "<i>I've been knowing her</i> e <i>I've been having this car</i> não existem.",
+        "## Quando o verbo muda de lado",
+        "Se o verbo vira ação, aceita a forma contínua com outro sentido: <i>I've been <b>having</b> problems with the app</i> (enfrentando), <i>I've been <b>thinking</b> about your offer</i> (refletindo).",
+        "## Work e live são flexíveis",
+        "Não são estados puros: aceitam as duas formas sem mudança de sentido."
+      ],
+      ex: [
+        ["I've known her for ten years.", "Conheço ela há dez anos."],
+        ["We've had the same supplier since 2019.", "Temos o mesmo fornecedor desde 2019."],
+        ["I've been having problems with the app.", "Tenho tido problemas com o app."]
+      ]
+    }
+  ],
+
+  s4: [
+    {
+      def: "<b>Say</b> e <b>tell</b> se dividem por um detalhe de estrutura: <i>tell</i> precisa de <b>alguém</b> depois dele, <i>say</i> não aceita ninguém ali.",
+      form: "say + algo · tell + alguém + algo",
+      marcar: ["told me"],
+      more: [
+        "## A regra de ouro",
+        "<i>He <b>said</b> it was late</i> (sem pessoa) × <i>He <b>told me</b> it was late</i> (com pessoa). <i>He said me</i> e <i>He told that</i> estão errados.",
+        "## Quando say leva pessoa",
+        "Só com <i>to</i>: <i>He <b>said to me</b> that it was late</i> — correto, mas menos natural que <i>told me</i>.",
+        "## As expressões fixas de tell",
+        "<i>tell the truth</i>, <i>tell a lie</i>, <i>tell a story</i>, <i>tell the time</i>, <i>tell the difference</i> — aqui não entra pessoa e não se troca por <i>say</i>.",
+        "## Os parentes",
+        "<i>ask</i> para pergunta (<i>She <b>asked</b> me where I lived</i>), <i>speak</i> e <i>talk</i> para o ato de conversar (<i>I <b>spoke to</b> the client</i>), <i>explain</i> sempre com <i>to</i> (<i>He <b>explained to</b> me</i>)."
+      ],
+      ex: [
+        ["She told me she was tired.", "Ela me disse que estava cansada."],
+        ["He said the deadline had changed.", "Ele disse que o prazo tinha mudado."],
+        ["Can you tell me the truth?", "Você pode me dizer a verdade?"]
+      ]
+    },
+    {
+      def: "Ao contar o que alguém disse, o verbo <b>recua um tempo</b>: o presente vira passado, o passado vira mais-que-perfeito. É o chamado discurso indireto.",
+      form: "is → was · will → would · did → had done",
+      marcar: ["would"],
+      more: [
+        "## A tabela do recuo",
+        "<i>am / is / are</i> → <i>was / were</i>. <i>work</i> → <i>worked</i>. <i>will</i> → <i>would</i>. <i>can</i> → <i>could</i>. <i>may</i> → <i>might</i>. <i>have done</i> e <i>did</i> → <i>had done</i>.",
+        "## O exemplo completo",
+        "<i>\"I <b>will</b> call you\"</i> → <i>He said he <b>would</b> call me</i>. <i>\"I <b>am</b> busy\"</i> → <i>She said she <b>was</b> busy</i>.",
+        "## O que mais muda",
+        "Os pronomes e as referências de tempo e lugar acompanham: <i>I</i> → <i>he/she</i>, <i>my</i> → <i>his/her</i>, <i>today</i> → <i>that day</i>, <i>tomorrow</i> → <i>the next day</i>, <i>here</i> → <i>there</i>.",
+        "## Quando o recuo é opcional",
+        "Se o que foi dito continua verdadeiro, pode-se manter o tempo original: <i>She said she <b>lives</b> in Lisbon</i> (e mora até hoje). Com <i>says</i> no presente, nada recua: <i>He <b>says</b> he <b>is</b> busy</i>.",
+        "## O that que desaparece",
+        "<i>He said <b>that</b> it was late</i> e <i>He said it was late</i> são iguais; na fala o <i>that</i> quase sempre cai."
+      ],
+      ex: [
+        ["He said he would call me.", "Ele disse que ia me ligar."],
+        ["She told me she had already sent it.", "Ela me disse que já tinha mandado."],
+        ["They said the office was closed.", "Eles disseram que o escritório estava fechado."]
+      ]
+    },
+    {
+      def: "Pergunta contada deixa de ser pergunta: perde o <i>do/did</i>, volta à <b>ordem normal</b> da frase e não leva interrogação.",
+      form: "asked + onde / se + sujeito + verbo · asked me where I lived",
+      marcar: ["asked me where I lived"],
+      more: [
+        "## A desmontagem",
+        "<i>\"Where <b>do</b> you live?\"</i> → <i>She asked me <b>where I lived</b></i>. O auxiliar sai, o sujeito volta para antes do verbo, o verbo recua de tempo.",
+        "## Pergunta de sim ou não",
+        "Entra <i>if</i> (ou <i>whether</i>): <i>\"Are you coming?\"</i> → <i>He asked <b>if</b> I was coming</i>. <i>whether</i> é a opção formal e a preferida quando há duas alternativas.",
+        "## Sem interrogação",
+        "A frase contada é uma afirmação: <i>She asked me where I lived.</i> — ponto final.",
+        "## A mesma estrutura em pergunta educada",
+        "<i>Could you tell me <b>where the gate is</b>?</i>, <i>Do you know <b>what time it starts</b>?</i> — a ordem interna também é a normal, não a de pergunta."
+      ],
+      ex: [
+        ["She asked me where I lived.", "Ela me perguntou onde eu morava."],
+        ["He asked if we had received the invoice.", "Ele perguntou se tínhamos recebido a nota."],
+        ["Could you tell me where the gate is?", "Você poderia me dizer onde é o portão?"]
+      ]
+    },
+    {
+      def: "Pedido e ordem contados usam um molde próprio: <b>asked / told + pessoa + to + verbo</b>. Para o negativo, basta <i>not to</i>.",
+      form: "asked / told + pessoa + to + verbo · told me not to post",
+      marcar: ["told me not to"],
+      more: [
+        "## Os dois tons",
+        "<i>asked</i> para pedido (<i>She <b>asked me to</b> send the file</i>), <i>told</i> para ordem ou instrução (<i>My boss <b>told me to</b> wait</i>).",
+        "## O negativo",
+        "<i>not</i> vem antes do <i>to</i>: <i>My boss <b>told me not to</b> post it yet</i>, <i>She <b>asked me not to</b> call after six</i>.",
+        "## Os verbos que seguem o mesmo molde",
+        "<i>remind</i>, <i>advise</i>, <i>warn</i>, <i>invite</i>, <i>order</i>, <i>encourage</i>: <i>He <b>reminded me to</b> check in</i>, <i>They <b>invited us to</b> join the call</i>.",
+        "## A pessoa é obrigatória",
+        "<i>She asked to send the file</i> muda o sentido (ela pediu para mandar, ela mesma). Para o pedido dirigido a você, a pessoa tem de aparecer."
+      ],
+      ex: [
+        ["My boss told me not to post it yet.", "Meu chefe me disse para não postar ainda."],
+        ["She asked me to send the invoice today.", "Ela me pediu para mandar a nota hoje."],
+        ["He reminded me to check in online.", "Ele me lembrou de fazer o check-in online."]
+      ]
+    }
+  ],
+
+  b2m2: [
+    {
+      def: "<b>Wish + passado</b> fala de um desejo sobre o <b>presente</b>: queria que a situação de agora fosse outra. O passado aqui marca a hipótese, não o tempo.",
+      form: "wish + passado · I wish I had more time",
+      marcar: ["wish", "had"],
+      more: [
+        "## O que a frase diz",
+        "<i>I <b>wish</b> I <b>had</b> more time</i> = não tenho tempo, e lamento. O verbo depois de <i>wish</i> recua um tempo em relação à realidade.",
+        "## Com to be, were",
+        "<i>I wish I <b>were</b> taller</i>, <i>I wish it <b>weren't</b> so far</i> — <i>were</i> para todas as pessoas no registro cuidado; <i>was</i> aparece na fala.",
+        "## Com modal",
+        "<i>I wish I <b>could</b> go</i> = gostaria de poder ir (mas não posso).",
+        "## Wish e hope",
+        "<i>wish</i> + passado é desejo impossível ou improvável. Para o que ainda pode acontecer, usa-se <i>hope</i> + presente ou futuro: <i>I <b>hope</b> he <b>answers</b> today</i>."
+      ],
+      ex: [
+        ["I wish I had more time.", "Eu queria ter mais tempo."],
+        ["She wishes she could work from home.", "Ela queria poder trabalhar de casa."],
+        ["I wish the hotel were closer to the centre.", "Eu queria que o hotel fosse mais perto do centro."]
+      ]
+    },
+    {
+      def: "<b>Wish + had + particípio</b> é arrependimento: eu queria ter feito, e não fiz. O desejo olha para trás.",
+      form: "wish + had + particípio · I wish I had studied",
+      marcar: ["wish", "had studied"],
+      more: [
+        "## A diferença de um passo",
+        "<i>I wish I <b>had</b> more time</i> (agora) × <i>I wish I <b>had had</b> more time</i> (naquele dia). O arrependimento recua um tempo a mais.",
+        "## As contrações",
+        "<i>I wish I'd studied more</i> — o <i>'d</i> aqui é <i>had</i>, não <i>would</i>.",
+        "## Com modal no passado",
+        "<i>I wish I <b>could have</b> gone</i> = queria ter podido ir.",
+        "## O vizinho regret",
+        "<i>regret</i> diz o mesmo com outra estrutura: <i>I <b>regret</b> not study<b>ing</b> more</i> — depois de <i>regret</i> vem o <i>-ing</i>."
+      ],
+      ex: [
+        ["I wish I had studied more.", "Eu queria ter estudado mais."],
+        ["She wishes she hadn't sent that email.", "Ela queria não ter mandado aquele e-mail."],
+        ["I wish we had booked earlier.", "Eu queria que a gente tivesse reservado mais cedo."]
+      ]
+    },
+    {
+      def: "<b>Wish + would</b> serve para reclamar do <b>comportamento de outra pessoa</b>: quero que ela mude algo que depende dela.",
+      form: "wish + would + verbo puro · I wish he would answer",
+      marcar: ["wish", "would answer"],
+      more: [
+        "## O alvo é outra pessoa",
+        "<i>I wish he <b>would</b> answer my emails</i> = ele poderia responder e não responde. Há irritação na frase.",
+        "## Não vale para si mesmo",
+        "<i>I wish I would study more</i> soa estranho: quem decide é você. O certo é <i>I wish I <b>studied</b> more</i> ou <i>I should study more</i>.",
+        "## Com coisa que incomoda",
+        "<i>I wish it <b>would</b> stop raining</i> — aqui o <i>would</i> fala de algo fora do seu controle que você quer que mude.",
+        "## Wish + wouldn't",
+        "<i>I wish you <b>wouldn't</b> interrupt me</i> é um pedido com tom de reclamação."
+      ],
+      ex: [
+        ["I wish he would answer my emails.", "Eu queria que ele respondesse meus e-mails."],
+        ["I wish it would stop raining.", "Eu queria que parasse de chover."],
+        ["I wish they wouldn't change the deadline every week.", "Eu queria que eles não mudassem o prazo toda semana."]
+      ]
+    },
+    {
+      def: "<b>If only</b> diz o mesmo que <i>wish</i>, com mais <b>intensidade</b>. Segue exatamente as mesmas regras de tempo.",
+      form: "if only + passado / had + particípio",
+      marcar: ["If only", "had known"],
+      more: [
+        "## As duas versões",
+        "Sobre agora: <i><b>If only</b> I <b>had</b> more time!</i> Sobre o passado: <i><b>If only</b> I <b>had known</b>!</i>",
+        "## Sozinho, sem segunda metade",
+        "Ao contrário do <i>if</i> condicional, <i>if only</i> costuma formar frase completa sem precisar do resultado: <i>If only she had told me!</i>",
+        "## Com would, para o comportamento de outro",
+        "<i><b>If only</b> he <b>would</b> listen!</i> — mesma função do <i>wish + would</i>.",
+        "## O tom",
+        "É mais emocional e mais literário que <i>wish</i>; aparece com exclamação e em fala carregada."
+      ],
+      ex: [
+        ["If only I had known!", "Se eu soubesse!"],
+        ["If only we had left earlier.", "Se ao menos tivéssemos saído mais cedo."],
+        ["If only he would listen to the client.", "Se ao menos ele escutasse o cliente."]
+      ]
+    },
+    {
+      def: "O condicional <b>misturado</b> junta duas épocas: a condição está no passado e a consequência, no <b>presente</b>. É o tempo do \"se tivesse feito, hoje eu estaria\".",
+      form: "if + had + particípio, would + verbo puro",
+      marcar: ["had taken", "would be"],
+      more: [
+        "## O molde",
+        "<i>If I <b>had taken</b> that job, I <b>would be</b> in London now</i> — a causa ficou no passado, o efeito é hoje. Note o <i>now</i>: ele é a pista de que a consequência é presente.",
+        "## O contrário também existe",
+        "Condição permanente, efeito no passado: <i>If I <b>were</b> more organized, I <b>wouldn't have missed</b> the flight</i>.",
+        "## Como escolher",
+        "Pergunte-se de que época é cada metade. A condição no passado pede <i>had</i> + particípio; a consequência no presente pede <i>would</i> + verbo puro.",
+        "## O que ele substitui",
+        "Evita a frase pesada em duas partes (\"eu não aceitei aquele emprego, e por isso hoje não moro em Londres\") em uma só."
+      ],
+      ex: [
+        ["If I had taken that job, I would be in London now.", "Se eu tivesse aceitado aquele emprego, estaria em Londres agora."],
+        ["If we had booked in January, we wouldn't be paying so much.", "Se tivéssemos reservado em janeiro, não estaríamos pagando tanto."],
+        ["If I were more organized, I wouldn't have missed the flight.", "Se eu fosse mais organizado, não teria perdido o voo."]
+      ]
+    }
+  ],
+
+  s8: [
+    {
+      def: "Phrasal verbs de <b>criar e resolver</b>: o verbo ganha uma partícula e muda de sentido por completo. São a forma natural de dizer essas ações no inglês do trabalho.",
+      form: "come up with · set up · figure out",
+      marcar: ["figured out"],
+      more: [
+        "## O que cada um significa",
+        "<i><b>come up with</b></i> = bolar, ter a ideia de (<i>She came up with the name</i>).",
+        "<i><b>set up</b></i> = montar, configurar (<i>I set up the account</i>, <i>set up a meeting</i>).",
+        "<i><b>figure out</b></i> = descobrir, sacar como funciona (<i>I finally figured out the problem</i>).",
+        "## Onde fica o objeto",
+        "<i>set up</i> e <i>figure out</i> aceitam o objeto no meio: <i>set the account <b>up</b></i>, <i>figure it <b>out</b></i>. Com pronome, o meio é obrigatório: <i>figure it out</i>, nunca <i>figure out it</i>.",
+        "<i>come up with</i> tem duas partículas e não se separa: <i>come up with <b>it</b></i>.",
+        "## Os vizinhos de obra",
+        "<i><b>work out</b></i> = dar certo, calcular. <i><b>sort out</b></i> = resolver, organizar. <i><b>bring up</b></i> = levantar um assunto. <i><b>point out</b></i> = apontar, observar."
+      ],
+      ex: [
+        ["I finally figured out the problem.", "Finalmente descobri o problema."],
+        ["She came up with a better title.", "Ela bolou um título melhor."],
+        ["Can you set up the call for Thursday?", "Você pode marcar a ligação para quinta?"]
+      ]
+    },
+    {
+      def: "Phrasal verbs de <b>prazo e tarefa</b>: o vocabulário de quem combina, adia e revisa — e que aparece em quase todo e-mail de trabalho.",
+      form: "put off · go over · follow up",
+      marcar: ["go over"],
+      more: [
+        "## O que cada um significa",
+        "<i><b>put off</b></i> = adiar (<i>Let's put off the launch</i>). Separável: <i>put it <b>off</b></i>.",
+        "<i><b>go over</b></i> = revisar, repassar (<i>Let's go over the script</i>). Não se separa.",
+        "<i><b>follow up</b></i> = dar retorno, cobrar resposta (<i>I'll follow up with the client</i>, <i>follow up <b>on</b> that email</i>).",
+        "## Os parceiros frequentes",
+        "<i><b>catch up</b></i> = pôr em dia (conversa ou trabalho atrasado). <i><b>get back to</b></i> = retornar para alguém (<i>I'll get back to you tomorrow</i>). <i><b>hand in</b></i> = entregar. <i><b>carry out</b></i> = executar. <i><b>take on</b></i> = assumir (tarefa, cliente).",
+        "## Em e-mail",
+        "<i>Just following up on my last email</i> é a fórmula padrão para cobrar sem soar grosseiro."
+      ],
+      ex: [
+        ["Let's go over the script before we record.", "Vamos revisar o roteiro antes de gravar."],
+        ["They put off the launch until June.", "Eles adiaram o lançamento para junho."],
+        ["I'll follow up with the supplier tomorrow.", "Vou dar um retorno ao fornecedor amanhã."]
+      ]
+    },
+    {
+      def: "Phrasal verbs de <b>falta e recusa</b>: o que acaba, o que se recusa e o que se abandona.",
+      form: "run out of · turn down · give up",
+      marcar: ["ran out of"],
+      more: [
+        "## O que cada um significa",
+        "<i><b>run out of</b></i> = ficar sem (<i>We ran out of time</i>, <i>I've run out of paper</i>).",
+        "<i><b>turn down</b></i> = recusar (<i>They turned down our offer</i>) e também abaixar o volume (<i>turn it <b>down</b></i>).",
+        "<i><b>give up</b></i> = desistir (<i>Don't give up</i>) e parar de vez com um hábito (<i>She gave up coffee</i>).",
+        "## Os pares de cima e de baixo",
+        "<i>turn down</i> × <i><b>turn up</b></i> (aumentar; e também aparecer de surpresa). <i><b>turn off</b></i> / <i><b>turn on</b></i> = desligar e ligar.",
+        "## Os vizinhos",
+        "<i><b>call off</b></i> = cancelar (<i>They called off the trip</i>). <i><b>back out</b></i> = voltar atrás num compromisso. <i><b>drop out</b></i> = abandonar um curso."
+      ],
+      ex: [
+        ["We ran out of time.", "Ficamos sem tempo."],
+        ["They turned down our proposal.", "Eles recusaram nossa proposta."],
+        ["They called off the trip because of the strike.", "Eles cancelaram a viagem por causa da greve."]
+      ]
+    },
+    {
+      def: "Phrasal verbs de <b>arquivo e sistema</b>: o inglês de quem lida com computador, formulário e conteúdo publicado.",
+      form: "back up · fill out · take down",
+      marcar: ["Back up"],
+      more: [
+        "## O que cada um significa",
+        "<i><b>back up</b></i> = fazer backup (<i>Back up the files before formatting</i>). Como substantivo, vira uma palavra: <i>a <b>backup</b></i>.",
+        "<i><b>fill out</b></i> / <i><b>fill in</b></i> = preencher (<i>Fill out the form</i>). <i>out</i> é mais americano, <i>in</i> mais britânico.",
+        "<i><b>take down</b></i> = tirar do ar, remover (<i>They took down the post</i>) e também anotar (<i>take down a number</i>).",
+        "## Os que você vai usar todo dia",
+        "<i><b>log in</b></i> / <i><b>log out</b></i>, <i><b>sign up</b></i> = se cadastrar, <i><b>set up</b></i> = configurar, <i><b>shut down</b></i> = desligar, <i><b>plug in</b></i> = conectar na tomada, <i><b>upload</b></i> e <i><b>download</b></i>.",
+        "## A dica de leitura",
+        "A partícula quase sempre dá o rumo: <i>up</i> = completar ou aumentar, <i>out</i> = para fora ou até o fim, <i>down</i> = reduzir ou registrar, <i>off</i> = interromper ou separar."
+      ],
+      ex: [
+        ["Back up the files before formatting.", "Faça backup dos arquivos antes de formatar."],
+        ["Please fill out this form at the counter.", "Por favor, preencha este formulário no balcão."],
+        ["They took down the post after an hour.", "Eles tiraram o post do ar depois de uma hora."]
+      ]
+    }
+  ],
+
+  b2m3: [
+    {
+      def: "A passiva com <b>modal</b> mantém a estrutura: o modal fica, entra <b>be</b> e vem o particípio. É a forma de norma, contrato e instrução.",
+      form: "modal + be + particípio · must be signed, can be fixed",
+      marcar: ["must be signed"],
+      more: [
+        "## O molde",
+        "<i>must be done</i>, <i>can be fixed</i>, <i>should be sent</i>, <i>might be delayed</i>: <i>The contract <b>must be signed</b> by Friday</i>.",
+        "## No passado",
+        "Com <i>have been</i>: <i>It <b>should have been sent</b> yesterday</i> = deveria ter sido enviado. <i>It <b>could have been avoided</b></i> = poderia ter sido evitado.",
+        "## Por que essa forma é tão usada em documento",
+        "Ela descreve a obrigação sem apontar o responsável — útil em norma e termo de uso: <i>Payment <b>must be made</b> in advance</i>.",
+        "## O erro comum",
+        "Comer o <i>be</i>: <i>The contract must signed</i>. O modal precisa sempre de <i>be</i> antes do particípio."
+      ],
+      ex: [
+        ["The contract must be signed by Friday.", "O contrato tem que ser assinado até sexta."],
+        ["It should have been sent yesterday.", "Deveria ter sido enviado ontem."],
+        ["The problem can be fixed remotely.", "O problema pode ser resolvido remotamente."]
+      ]
+    },
+    {
+      def: "A passiva contínua mostra algo que <b>está sendo feito</b> agora ou que estava sendo feito então: <b>is / was being + particípio</b>.",
+      form: "is / was being + particípio · the report is being reviewed",
+      marcar: ["is being reviewed"],
+      more: [
+        "## As duas épocas",
+        "Agora: <i>The report <b>is being reviewed</b></i>. Então: <i>The room <b>was being</b> cleaned when we arrived</i>.",
+        "## Para que serve na prática",
+        "É a resposta profissional para \"está em andamento\": <i>Your request <b>is being processed</b></i>, <i>The site <b>is being updated</b></i> — diz que alguém está cuidando, sem dizer quem.",
+        "## As quatro peças",
+        "<i>is</i> + <i>being</i> + particípio. Sem o <i>being</i>, a frase muda de sentido: <i>The report is reviewed</i> virou rotina, não andamento.",
+        "## Não existe no perfect contínuo",
+        "<i>has been being reviewed</i> não se usa. Para isso, a passiva simples: <i>It <b>has been</b> reviewed</i>."
+      ],
+      ex: [
+        ["The report is being reviewed.", "O relatório está sendo revisado."],
+        ["Your request is being processed.", "Sua solicitação está sendo processada."],
+        ["The room was being cleaned when we arrived.", "O quarto estava sendo limpo quando chegamos."]
+      ]
+    },
+    {
+      def: "<b>Is said to</b> e <b>it is said that</b> atribuem a informação a uma fonte vaga — o equivalente do nosso \"dizem que\".",
+      form: "is said to + verbo · it is said that + frase",
+      marcar: ["is said to"],
+      more: [
+        "## As duas formas",
+        "<i>The new software <b>is said to</b> save a lot of time</i> e <i><b>It is said that</b> the new software saves a lot of time</i> dizem o mesmo; a primeira é mais enxuta.",
+        "## Os outros verbos do grupo",
+        "<i>is believed to</i>, <i>is thought to</i>, <i>is expected to</i>, <i>is known to</i>, <i>is reported to</i>: <i>The flight <b>is expected to</b> land at six</i>.",
+        "## Para falar do passado",
+        "<i>is said to <b>have</b></i> + particípio: <i>He <b>is said to have</b> left the company</i> = dizem que ele saiu.",
+        "## Onde aparece",
+        "Jornalismo, relatório e texto acadêmico — qualquer lugar onde se informa sem assumir a autoria do dado."
+      ],
+      ex: [
+        ["The new software is said to save a lot of time.", "Dizem que o novo software economiza muito tempo."],
+        ["The flight is expected to land at six.", "Espera-se que o voo pouse às seis."],
+        ["He is said to have left the company.", "Dizem que ele saiu da empresa."]
+      ]
+    },
+    {
+      def: "<b>Have / get something done</b> diz que você <b>mandou fazer</b>: a ação foi executada por outra pessoa, a seu pedido.",
+      form: "have / get + coisa + particípio · I had my laptop repaired",
+      marcar: ["had my laptop repaired"],
+      more: [
+        "## A ordem das peças",
+        "<i>have</i> + a coisa + particípio: <i>I <b>had my laptop repaired</b></i>, <i>She's <b>having her hair cut</b></i>, <i>We <b>had the office painted</b></i>.",
+        "## Have ou get",
+        "<i>get</i> é a versão informal e igual em sentido: <i>I <b>got</b> my laptop repaired</i>. <i>get</i> também sugere um pouco mais de esforço para conseguir o serviço.",
+        "## A diferença que importa",
+        "<i>I repaired my laptop</i> = eu mesmo consertei. <i>I had my laptop repaired</i> = levei a alguém. A segunda é a que descreve a maior parte da vida adulta.",
+        "## O sentido de coisa ruim",
+        "A mesma estrutura serve para o que você sofreu: <i>I <b>had my bag stolen</b></i> = minha mala foi roubada."
+      ],
+      ex: [
+        ["I had my laptop repaired.", "Mandei consertar meu notebook."],
+        ["We're getting the office painted next week.", "Vamos mandar pintar o escritório semana que vem."],
+        ["She had her bag stolen at the station.", "A bolsa dela foi roubada na estação."]
+      ]
+    }
+  ],
+
+  b2m4: [
+    {
+      def: "<b>Must have + particípio</b> é a <b>conclusão</b> sobre o passado: a evidência é tão forte que você afirma sem ter visto.",
+      form: "must have + particípio · he must have forgotten",
+      marcar: ["must have forgotten"],
+      more: [
+        "## Dedução, não obrigação",
+        "<i>He <b>must have</b> forgotten the meeting</i> = pelas evidências, esqueceu. Não há obrigação nenhuma na frase.",
+        "## A pista que sustenta",
+        "Essas frases costumam vir depois de um fato: <i>The light is off. She <b>must have</b> left</i>.",
+        "## Na fala",
+        "Soa <i>must've</i>, quase \"mustuv\". Em texto formal, escreve-se inteiro.",
+        "## O contrário",
+        "A dedução negativa não usa <i>mustn't</i>, e sim <i>can't have</i>: <i>He <b>can't have</b> finished already</i>."
+      ],
+      ex: [
+        ["He must have forgotten the meeting.", "Ele deve ter esquecido a reunião."],
+        ["The light is off. She must have left.", "A luz está apagada. Ela deve ter saído."],
+        ["They must have changed the gate.", "Eles devem ter mudado o portão."]
+      ]
+    },
+    {
+      def: "<b>Might / may / could have + particípio</b> é a <b>possibilidade</b> sobre o passado: talvez tenha sido assim, talvez não.",
+      form: "might / may / could have + particípio",
+      marcar: ["might have missed"],
+      more: [
+        "## As três equivalentes",
+        "<i>She <b>might have</b> missed the bus</i>, <i>She <b>may have</b> missed the bus</i>, <i>She <b>could have</b> missed the bus</i> — mesma dose de incerteza.",
+        "## A escala",
+        "<i>must have</i> (quase certeza) → <i>might / may / could have</i> (possível) → <i>can't have</i> (impossível).",
+        "## O outro sentido de could have",
+        "Também significa \"teria podido\": <i>We <b>could have</b> taken the earlier flight</i> — oportunidade perdida, não possibilidade.",
+        "## A negativa",
+        "<i>might not have</i> = talvez não tenha: <i>She <b>might not have</b> seen the email</i>. Diferente de <i>can't have</i>, que afirma a impossibilidade."
+      ],
+      ex: [
+        ["She might have missed the bus.", "Ela pode ter perdido o ônibus."],
+        ["The client may have changed his mind.", "O cliente pode ter mudado de ideia."],
+        ["We could have taken the earlier flight.", "Poderíamos ter pegado o voo mais cedo."]
+      ]
+    },
+    {
+      def: "<b>Can't have + particípio</b> descarta uma hipótese: pelas evidências, <b>não é possível</b> que tenha acontecido.",
+      form: "can't have + particípio · he can't have finished",
+      marcar: ["can't have finished"],
+      more: [
+        "## O oposto de must have",
+        "<i>He <b>must have</b> finished</i> (certeza que sim) × <i>He <b>can't have</b> finished already</i> (certeza que não).",
+        "## Couldn't have",
+        "<i>couldn't have</i> diz o mesmo, com tom mais suave ou mais formal: <i>She <b>couldn't have</b> known</i>.",
+        "## Não confundir com mustn't",
+        "<i>mustn't</i> é proibição no presente (<i>You mustn't tell anyone</i>), nunca dedução sobre o passado.",
+        "## O par completo",
+        "Para discutir uma hipótese: <i>It <b>must have</b> been the wifi</i> / <i>It <b>can't have</b> been the wifi — the others were online</i>."
+      ],
+      ex: [
+        ["He can't have finished already.", "Não é possível que ele já tenha terminado."],
+        ["She couldn't have known about the change.", "Ela não poderia ter sabido da mudança."],
+        ["It can't have been the wifi — the others were online.", "Não pode ter sido o wifi: os outros estavam online."]
+      ]
+    },
+    {
+      def: "<b>Should have + particípio</b> olha para trás com <b>crítica ou arrependimento</b>: era o certo a fazer, e não foi feito.",
+      form: "should have / shouldn't have + particípio",
+      marcar: ["should have called"],
+      more: [
+        "## Os dois lados",
+        "<i>I <b>should have</b> called you</i> = devia ter ligado e não liguei. <i>You <b>shouldn't have</b> sent that email</i> = não devia ter mandado, e mandou.",
+        "## Para si e para o outro",
+        "Sobre você, é arrependimento; sobre o outro, é crítica — e por isso convém escolher o tom: <i>Maybe we should have waited</i> soa menos acusatório que <i>You should have waited</i>.",
+        "## O agradecimento",
+        "<i>You shouldn't have!</i> sozinho é o que se diz ao receber um presente — \"não precisava\".",
+        "## A família completa",
+        "<i>could have</i> (teria podido), <i>would have</i> (teria), <i>should have</i> (deveria ter), <i>might have</i> (talvez tivesse). Todas com <i>have</i> + particípio."
+      ],
+      ex: [
+        ["I should have called you.", "Eu deveria ter te ligado."],
+        ["You shouldn't have sent that email.", "Você não deveria ter mandado aquele e-mail."],
+        ["We should have booked a later flight.", "Deveríamos ter reservado um voo mais tarde."]
+      ]
+    }
+  ],
+
+  s11: [
+    {
+      def: "<b>But</b> e <b>however</b> marcam contraste, mas em posições diferentes: <i>but</i> emenda duas metades da mesma frase; <i>however</i> abre uma frase nova.",
+      form: "..., but ... · ... . However, ...",
+      marcar: ["However"],
+      more: [
+        "## A posição de cada um",
+        "<i>The video is great, <b>but</b> it's too long</i> — uma frase só. <i>The video is great. <b>However</b>, it's too long</i> — duas frases, e o <i>however</i> pede vírgula depois.",
+        "## However no meio",
+        "Também cabe entre vírgulas: <i>The video, <b>however</b>, is too long</i> — tom mais formal, típico de relatório.",
+        "## Os parentes",
+        "<i>though</i> é o <i>but</i> informal e vai no fim: <i>It's too long, <b>though</b></i>. <i>nevertheless</i> e <i>on the other hand</i> são as versões formais do <i>however</i>.",
+        "## O erro comum",
+        "Usar <i>however</i> como <i>but</i>, sem pontuação: <i>The video is great however it's too long</i> precisa de ponto ou ponto e vírgula antes."
+      ],
+      ex: [
+        ["The video is great. However, it's too long.", "O vídeo está ótimo. Porém, está longo demais."],
+        ["I liked the hotel, but the location was bad.", "Gostei do hotel, mas a localização era ruim."],
+        ["It's more expensive. On the other hand, it lasts longer.", "É mais caro. Por outro lado, dura mais."]
+      ]
+    },
+    {
+      def: "<b>Although</b> e <b>even though</b> introduzem um contraste com uma <b>frase completa</b> — sujeito e verbo. <i>Even though</i> é a versão mais enfática.",
+      form: "although / even though + sujeito + verbo",
+      marcar: ["Although"],
+      more: [
+        "## O que vem depois",
+        "Uma oração inteira: <i><b>Although I was tired</b>, I finished the work</i>. Nunca só um substantivo — isso é trabalho de <i>despite</i>.",
+        "## A ordem e a vírgula",
+        "Se a parte com <i>although</i> vem primeiro, entra vírgula no meio; se vem depois, não: <i>I finished the work <b>although</b> I was tired</i>.",
+        "## Sem but na mesma frase",
+        "<i>Although I was tired, <b>but</b> I finished</i> é erro: um contraste, um conector.",
+        "## Os três do grupo",
+        "<i>although</i> (neutro), <i>even though</i> (mais forte), <i>though</i> (informal, e o único que pode fechar a frase)."
+      ],
+      ex: [
+        ["Although I was tired, I finished the work.", "Embora estivesse cansado, terminei o trabalho."],
+        ["Even though it rained, the shoot went well.", "Mesmo tendo chovido, a gravação foi bem."],
+        ["We took the trip though the tickets were expensive.", "Fizemos a viagem embora as passagens estivessem caras."]
+      ]
+    },
+    {
+      def: "<b>Despite</b> e <b>in spite of</b> dizem \"apesar de\" e pedem <b>substantivo</b> ou verbo em <b>-ing</b> — nunca uma frase com sujeito e verbo.",
+      form: "despite / in spite of + substantivo ou -ing",
+      marcar: ["Despite"],
+      more: [
+        "## O que vem depois",
+        "Substantivo: <i><b>Despite the rain</b>, the shoot went well</i>. Verbo em -ing: <i><b>Despite being tired</b>, I finished it</i>.",
+        "## Despite não leva of",
+        "<i>despite the rain</i> e <i>in spite <b>of</b> the rain</i>. Escrever <i>despite of</i> é o erro mais comum do assunto.",
+        "## Para usar com frase completa",
+        "Entra <i>the fact that</i>: <i>Despite <b>the fact that</b> I was tired, I finished</i> — ou se troca por <i>although</i>, que é mais leve.",
+        "## A equivalência",
+        "<i>Although it rained, the shoot went well</i> = <i>Despite the rain, the shoot went well</i>. Mesma ideia, estruturas diferentes."
+      ],
+      ex: [
+        ["Despite the rain, the shoot went well.", "Apesar da chuva, a gravação foi bem."],
+        ["In spite of the delay, we made the connection.", "Apesar do atraso, conseguimos a conexão."],
+        ["Despite being tired, I finished the edit.", "Apesar de estar cansado, terminei a edição."]
+      ]
+    },
+    {
+      def: "<b>So</b> apresenta a <b>consequência</b> e <b>because</b> apresenta a <b>causa</b>. A escolha depende de qual das duas metades vem depois do conector.",
+      form: "causa, so consequência · consequência because causa",
+      marcar: ["so"],
+      more: [
+        "## A ordem de cada um",
+        "<i>The bus was late, <b>so</b> I missed the meeting</i> (causa → consequência). <i>I missed the meeting <b>because</b> the bus was late</i> (consequência → causa).",
+        "## Os sinônimos formais",
+        "Para consequência: <i>therefore</i>, <i>as a result</i>, <i>consequently</i>. Para causa: <i>since</i>, <i>as</i>, <i>due to</i> (+ substantivo).",
+        "## Because of e due to",
+        "Com substantivo, o <i>because</i> ganha <i>of</i>: <i><b>because of</b> the rain</i>, <i><b>due to</b> the strike</i>. Com frase, é <i>because</i> sozinho.",
+        "## O erro comum",
+        "Pôr os dois na mesma frase: <i>Because the bus was late, so I missed it</i>. Escolha um."
+      ],
+      ex: [
+        ["The bus was late, so I missed the meeting.", "O ônibus atrasou, então perdi a reunião."],
+        ["We changed the plan because the client asked.", "Mudamos o plano porque o cliente pediu."],
+        ["The flight was cancelled due to the strike.", "O voo foi cancelado por causa da greve."]
+      ]
+    },
+    {
+      def: "<b>As soon as</b> marca o instante seguinte a um acontecimento. Como todo conector de tempo, ele <b>não aceita will</b>: o futuro vira presente.",
+      form: "as soon as + presente, will + verbo",
+      marcar: ["As soon as", "I'll"],
+      more: [
+        "## A regra do tempo",
+        "<i><b>As soon as</b> the client <b>replies</b>, I<b>'ll</b> let you know</i> — presente na primeira metade, futuro na segunda. <i>As soon as he will reply</i> é erro.",
+        "## Os outros conectores da mesma regra",
+        "<i>when</i>, <i>before</i>, <i>after</i>, <i>until</i>, <i>while</i>, <i>once</i>: <i>I'll call you <b>when I arrive</b></i>, <i>Wait <b>until</b> they <b>confirm</b></i>.",
+        "## Com present perfect, para marcar a conclusão",
+        "<i>As soon as I <b>have finished</b> the report, I'll send it</i> — reforça que uma coisa termina antes da outra.",
+        "## No passado",
+        "Os dois verbos vão para o passado: <i><b>As soon as</b> he <b>called</b>, we <b>started</b></i>."
+      ],
+      ex: [
+        ["As soon as the client replies, I'll let you know.", "Assim que o cliente responder, eu te aviso."],
+        ["I'll text you when I land.", "Te mando mensagem quando eu pousar."],
+        ["Wait here until they call your name.", "Espere aqui até chamarem seu nome."]
+      ]
+    }
+  ],
+
+  s12: [
+    {
+      def: "A escolha do tempo verbal depende de uma pergunta: o momento da ação <b>importa</b> e está fechado, ou o que importa é o efeito até agora?",
+      form: "passado simples · have + particípio · had + particípio",
+      marcar: ["I've already posted"],
+      more: [
+        "## O mapa",
+        "Momento definido (<i>yesterday</i>, <i>last week</i>, <i>in 2023</i>) → passado simples: <i>I <b>posted</b> it yesterday</i>.",
+        "Sem momento, com efeito agora (<i>already</i>, <i>just</i>, <i>yet</i>, <i>ever</i>) → <i>have</i> + particípio: <i>I<b>'ve already posted</b> it</i>.",
+        "Algo anterior a outro momento do passado → <i>had</i> + particípio: <i>When I arrived, they <b>had</b> already <b>left</b></i>.",
+        "## O que o português entrega",
+        "O \"tinha feito\" aponta o <i>had</i> + particípio. O \"-ria\" (faria, seria) aponta o <i>would</i>. O \"estava fazendo\" aponta <i>was</i> + -ing.",
+        "## Em andamento ou concluído",
+        "<i>I've been writing all day</i> (a atividade) × <i>I've written three reports</i> (o resultado)."
+      ],
+      ex: [
+        ["I've already posted it.", "Já postei."],
+        ["I posted it yesterday morning.", "Postei ontem de manhã."],
+        ["When I arrived, they had already left.", "Quando cheguei, eles já tinham saído."]
+      ]
+    },
+    {
+      def: "Os três condicionais se escolhem pela <b>realidade</b> da situação: pode acontecer, é imaginação sobre agora, ou já passou e não foi.",
+      form: "if + presente / passado / had + particípio",
+      marcar: ["If I had known", "would have"],
+      more: [
+        "## As três linhas",
+        "Real: <i>If it <b>rains</b>, I<b>'ll</b> take an Uber</i>.",
+        "Imaginário: <i>If I <b>had</b> a car, I <b>would</b> drive</i>.",
+        "Perdido: <i>If I <b>had known</b>, I <b>would have</b> helped</i>.",
+        "## A regra que vale para os três",
+        "O <i>if</i> nunca leva <i>will</i> nem <i>would</i>: esses pertencem só à outra metade.",
+        "## Misturado",
+        "Causa no passado, efeito agora: <i>If I <b>had taken</b> that job, I <b>would be</b> in London now</i>.",
+        "## Os parentes",
+        "<i>unless</i> = se não (<i><b>Unless</b> they confirm, we won't go</i>), <i>in case</i> = por precaução (<i>Take the charger <b>in case</b> the battery dies</i>)."
+      ],
+      ex: [
+        ["If I had known, I would have helped.", "Se eu soubesse, teria ajudado."],
+        ["If the client agrees, we'll start on Monday.", "Se o cliente concordar, começamos segunda."],
+        ["Unless they confirm today, we won't book the room.", "Se eles não confirmarem hoje, não reservamos a sala."]
+      ]
+    },
+    {
+      def: "Para contar o que alguém disse, o verbo <b>recua um tempo</b> e a estrutura perde a cara de fala direta. <i>Said</i> vai sem pessoa, <i>told</i> com pessoa.",
+      form: "said / told + recuo do verbo",
+      marcar: ["told me"],
+      more: [
+        "## O recuo",
+        "<i>is</i> → <i>was</i>, <i>works</i> → <i>worked</i>, <i>will</i> → <i>would</i>, <i>can</i> → <i>could</i>, <i>did / has done</i> → <i>had done</i>.",
+        "## A pessoa",
+        "<i>She <b>told me</b> she was busy</i> × <i>She <b>said</b> she was busy</i>. <i>said me</i> não existe.",
+        "## Pergunta contada",
+        "Sem <i>do/did</i> e na ordem normal: <i>He asked <b>where I lived</b></i>, <i>He asked <b>if</b> I was coming</i>.",
+        "## Pedido contado",
+        "<i>asked / told + pessoa + to + verbo</i>: <i>She <b>asked me to</b> wait</i>, <i>He <b>told me not to</b> call</i>."
+      ],
+      ex: [
+        ["She told me she was busy.", "Ela me disse que estava ocupada."],
+        ["He asked if we had sent the invoice.", "Ele perguntou se tínhamos mandado a nota."],
+        ["My boss told me to wait for the client.", "Meu chefe me disse para esperar o cliente."]
+      ]
+    },
+    {
+      def: "As preposições de tempo e lugar seguem o mesmo princípio em todos os níveis: <b>at</b> para o ponto, <b>on</b> para o dia e a superfície, <b>in</b> para o que envolve.",
+      form: "at ponto · on dia e superfície · in período e interior",
+      marcar: ["on Monday", "at 9"],
+      more: [
+        "## Tempo",
+        "<i><b>at</b> 9</i>, <i><b>at</b> night</i>, <i><b>at</b> noon</i>. <i><b>on</b> Monday</i>, <i><b>on</b> March 3rd</i>. <i><b>in</b> March</i>, <i><b>in</b> 2027</i>, <i><b>in</b> the morning</i>, <i><b>in</b> two hours</i>.",
+        "## Lugar",
+        "<i><b>at</b> the bus stop</i>, <i><b>at</b> work</i>. <i><b>on</b> the table</i>, <i><b>on</b> the bus</i>, <i><b>on</b> Instagram</i>. <i><b>in</b> São Paulo</i>, <i><b>in</b> a car</i>, <i><b>in</b> the drawer</i>.",
+        "## As que vivem com verbo",
+        "<i>depend <b>on</b></i>, <i>wait <b>for</b></i>, <i>listen <b>to</b></i>, <i>arrive <b>at</b></i> (lugar pequeno) / <i>arrive <b>in</b></i> (cidade e país), <i>apply <b>for</b></i> a job, <i>interested <b>in</b></i>.",
+        "## Sem preposição",
+        "<i>today</i>, <i>tomorrow</i>, <i>next week</i>, <i>last year</i>, <i>home</i> (<i>go home</i>)."
+      ],
+      ex: [
+        ["See you on Monday at 9.", "Até segunda às 9."],
+        ["We arrive in Lisbon in the morning.", "Chegamos a Lisboa de manhã."],
+        ["It depends on the budget.", "Depende do orçamento."]
+      ]
+    },
+    {
+      def: "A escolha entre <b>-ing</b> e <b>to</b> depende do verbo anterior — e, depois de preposição, é sempre <b>-ing</b>.",
+      form: "enjoy + -ing · want + to · preposição + -ing",
+      marcar: ["for helping"],
+      more: [
+        "## Os três grupos",
+        "<i>-ing</i>: <i>enjoy</i>, <i>finish</i>, <i>avoid</i>, <i>keep</i>, <i>mind</i>, <i>suggest</i>, <i>recommend</i>.",
+        "<i>to</i>: <i>want</i>, <i>need</i>, <i>decide</i>, <i>plan</i>, <i>hope</i>, <i>learn</i>, <i>try</i>, <i>offer</i>, <i>would like</i>.",
+        "Os dois: <i>like</i>, <i>love</i>, <i>hate</i>, <i>start</i>, <i>continue</i>.",
+        "## Depois de preposição",
+        "Sem exceção: <i>Thanks <b>for</b> help<b>ing</b></i>, <i>good <b>at</b> speak<b>ing</b></i>, <i><b>before</b> leav<b>ing</b></i>, <i>look forward <b>to</b> meet<b>ing</b></i>.",
+        "## Os que mudam de sentido",
+        "<i>stop</i>, <i>remember</i>, <i>forget</i> e <i>try</i>: <i>stop <b>smoking</b></i> (parar de) × <i>stop <b>to smoke</b></i> (parar para)."
+      ],
+      ex: [
+        ["Thanks for helping me.", "Obrigado por me ajudar."],
+        ["We decided to postpone the launch.", "Decidimos adiar o lançamento."],
+        ["I avoid scheduling calls before nine.", "Evito marcar ligações antes das nove."]
+      ]
+    },
+    {
+      def: "Modais, passiva e conectores completam o repertório do B2: o modal traz o verbo puro, a passiva traz o particípio, e o conector escolhe o que vem depois dele.",
+      form: "modal + verbo puro · be + particípio · although frase, despite nome",
+      marcar: ["was edited by"],
+      more: [
+        "## Modais",
+        "<i>should</i>, <i>might</i>, <i>must</i>, <i>could</i> + verbo puro. No passado, <i>have</i> + particípio: <i>should <b>have</b> sent</i>, <i>must <b>have</b> forgotten</i>.",
+        "## Passiva",
+        "<i>is / was / has been / will be / must be</i> + particípio: <i>The video <b>was edited</b> by our team</i>. O <i>by</i> só entra quando o autor importa.",
+        "## Conectores",
+        "<i>although</i> + frase; <i>despite</i> + substantivo ou -ing; <i>however</i> abre frase nova com vírgula; <i>so</i> traz consequência, <i>because</i> traz causa.",
+        "## O que revisar primeiro",
+        "Se tiver pouco tempo, confira três coisas em qualquer texto seu: o tempo verbal combina com o momento? o <i>if</i> está livre de <i>will</i>? o conector está com o tipo certo de complemento?"
+      ],
+      ex: [
+        ["The video was edited by our team.", "O vídeo foi editado pela nossa equipe."],
+        ["The form must be signed before the trip.", "O formulário tem que ser assinado antes da viagem."],
+        ["Despite the delay, the client was happy.", "Apesar do atraso, o cliente ficou satisfeito."]
+      ]
+    }
   ]
 
 };
