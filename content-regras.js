@@ -2774,6 +2774,1003 @@ window.REGRAS = {
         ["Despite the delay, the client was happy.", "Apesar do atraso, o cliente ficou satisfeito."]
       ]
     }
+  ],
+
+  c1m1: [
+    {
+      def: "Quando uma palavra <b>negativa</b> abre a frase, o inglês inverte a ordem: entra o auxiliar antes do sujeito, como numa pergunta. É recurso de ênfase, típico da escrita cuidada.",
+      form: "negativa no início + auxiliar + sujeito · never have I seen",
+      marcar: ["Never have I seen"],
+      more: [
+        "## As palavras que disparam a inversão",
+        "<i>never</i>, <i>rarely</i>, <i>seldom</i>, <i>little</i>, <i>nowhere</i>, <i>at no time</i>: <i><b>Never have I</b> seen such a good result</i>, <i><b>Rarely do we</b> get this kind of feedback</i>.",
+        "## Como se monta",
+        "Pegue a frase normal (<i>I have never seen...</i>), leve a negativa para a frente e inverta o par sujeito-auxiliar: <i>Never <b>have I</b> seen...</i>. Se não havia auxiliar, entra <i>do / does / did</i>: <i>We rarely get</i> → <i>Rarely <b>do we</b> get</i>.",
+        "## Sem segunda negativa",
+        "A negação já está na primeira palavra: <i>Never have I <b>not</b> seen</i> está errado.",
+        "## O efeito e o lugar certo",
+        "É formal e enfático — ótimo em abertura de texto, discurso e apresentação; fora de lugar numa mensagem rápida, onde <i>I've never seen this before</i> é o natural."
+      ],
+      ex: [
+        ["Never have I seen such a good result.", "Nunca vi um resultado tão bom."],
+        ["Rarely do we get this kind of feedback.", "Raramente recebemos esse tipo de retorno."],
+        ["Little did we know how long it would take.", "Mal sabíamos quanto tempo ia levar."]
+      ]
+    },
+    {
+      def: "<b>Not only ... but also</b> soma duas informações e dá peso às duas. Quando abre a frase, o <i>not only</i> também provoca a inversão.",
+      form: "Not only + auxiliar + sujeito, but ... also",
+      marcar: ["Not only did she"],
+      more: [
+        "## A estrutura completa",
+        "<i><b>Not only did she</b> finish early, <b>but</b> she <b>also</b> helped the team</i>. O <i>also</i> fica junto do verbo da segunda metade.",
+        "## Sem inversão, no meio da frase",
+        "<i>She <b>not only</b> finished early <b>but also</b> helped the team</i> — mesma ideia, registro mais leve, sem inversão.",
+        "## O par equilibrado",
+        "O que vem depois de <i>not only</i> e de <i>but also</i> deve ser do mesmo tipo: dois verbos, dois substantivos, duas orações. <i>Not only the price but also the delivery</i>.",
+        "## As variantes",
+        "<i>but ... as well</i> e <i>but ... too</i> substituem o <i>also</i>. E <i>Not only that, but ...</i> emenda uma frase nova."
+      ],
+      ex: [
+        ["Not only did she finish early, but she also helped the team.", "Ela não só terminou cedo, mas também ajudou a equipe."],
+        ["Not only is it cheaper, but it's also faster.", "Não só é mais barato, mas também é mais rápido."],
+        ["The hotel not only was full but also cost double.", "O hotel não só estava cheio, mas também custava o dobro."]
+      ]
+    },
+    {
+      def: "<b>Hardly ... when</b> e <b>no sooner ... than</b> dizem que uma coisa aconteceu <b>imediatamente antes</b> da outra — e as duas pedem inversão.",
+      form: "Hardly had I ... when · No sooner had I ... than",
+      marcar: ["No sooner had I", "than"],
+      more: [
+        "## Os dois moldes",
+        "<i><b>Hardly had I</b> sent the email <b>when</b> I noticed the mistake</i>.",
+        "<i><b>No sooner had I</b> sent the email <b>than</b> I noticed the mistake</i>.",
+        "## O par que não se troca",
+        "<i>hardly</i> anda com <b>when</b>; <i>no sooner</i> anda com <b>than</b>. Trocar os pares é o erro clássico.",
+        "## A sequência dos tempos",
+        "A primeira ação vai para <i>had</i> + particípio (ela é anterior), a segunda para o passado simples.",
+        "## O equivalente simples",
+        "Na conversa, diz-se <i>As soon as I sent the email, I noticed the mistake</i> ou <i>I had just sent it when...</i>"
+      ],
+      ex: [
+        ["No sooner had I sent the email than I noticed the mistake.", "Assim que mandei o e-mail, percebi o erro."],
+        ["Hardly had we landed when they called.", "Mal tínhamos pousado quando eles ligaram."],
+        ["As soon as I sent it, I saw the typo.", "Assim que mandei, vi o erro de digitação."]
+      ]
+    },
+    {
+      def: "Com <b>only</b> e <b>not until</b> na frente, a inversão não cai na primeira metade: ela aparece na <b>segunda</b>, depois da vírgula.",
+      form: "Only after ..., auxiliar + sujeito · Not until ..., auxiliar + sujeito",
+      marcar: ["did I understand"],
+      more: [
+        "## Onde a inversão acontece",
+        "<i><b>Only after the call did I</b> understand the problem</i> — a parte invertida é <i>did I understand</i>, não o começo.",
+        "## As variantes",
+        "<i>Only when</i>, <i>Only then</i>, <i>Only by</i>, <i>Not until</i>: <i><b>Only when</b> we tested it <b>did we find</b> the bug</i>, <i><b>Not until</b> Friday <b>will we have</b> an answer</i>.",
+        "## Por que a ênfase funciona",
+        "Pondo a condição na frente, a frase prende a atenção: só depois daquilo é que algo mudou. É recurso de narrativa e de relatório.",
+        "## O equivalente neutro",
+        "<i>I only understood the problem after the call</i> diz o mesmo sem inversão — o que convém numa mensagem rápida."
+      ],
+      ex: [
+        ["Only after the call did I understand the problem.", "Só depois da ligação eu entendi o problema."],
+        ["Only when we tested it did we find the bug.", "Só quando testamos é que achamos o bug."],
+        ["Not until Friday will we have an answer.", "Só na sexta teremos uma resposta."]
+      ]
+    },
+    {
+      def: "Expressões negativas fixas como <b>under no circumstances</b> e <b>at no time</b> abrem a frase com peso de norma — e levam inversão.",
+      form: "Under no circumstances + modal + sujeito",
+      marcar: ["Under no circumstances should you"],
+      more: [
+        "## As expressões",
+        "<i>under no circumstances</i> (em hipótese nenhuma), <i>at no time</i> (em momento algum), <i>in no way</i> (de modo algum), <i>on no account</i> (de jeito nenhum).",
+        "## A estrutura",
+        "Expressão + modal ou auxiliar + sujeito: <i><b>Under no circumstances should you</b> share this password</i>, <i><b>At no time was the client</b> informed</i>.",
+        "## Onde aparecem",
+        "Política de segurança, termo de uso, aviso legal e comunicado interno. São a forma mais enfática de proibir em inglês.",
+        "## A alternativa direta",
+        "<i>Please never share this password</i> ou <i>Do not share this password under any circumstances</i> — mesmo conteúdo, sem inversão."
+      ],
+      ex: [
+        ["Under no circumstances should you share this password.", "Em hipótese nenhuma compartilhe esta senha."],
+        ["At no time was the client informed.", "Em momento algum o cliente foi informado."],
+        ["In no way does this change the contract.", "Isso não altera o contrato de modo algum."]
+      ]
+    }
+  ],
+
+  c1m2: [
+    {
+      def: "Um verbo em <b>-ing</b> no começo da frase encurta uma oração: diz o que acontecia <b>ao mesmo tempo</b> ou a <b>causa</b> do que vem depois.",
+      form: "verbo-ing + vírgula + frase principal",
+      marcar: ["Walking into the office"],
+      more: [
+        "## Os dois sentidos",
+        "Simultaneidade: <i><b>Walking into the office</b>, I saw the new team</i> = enquanto eu entrava. Causa: <i><b>Not knowing what to say</b>, I stayed quiet</i> = como eu não sabia.",
+        "## O que ela substitui",
+        "<i>While I was walking into the office, I saw...</i> → a versão em <i>-ing</i> é mais curta e mais fluida; é o recurso de quem escreve bem em inglês.",
+        "## A negativa",
+        "<i>Not</i> vem antes do <i>-ing</i>: <i><b>Not having</b> the file, I couldn't check</i>.",
+        "## O sujeito tem de ser o mesmo",
+        "Essa é a regra que quebra a frase quando ignorada. <i>Walking into the office, the lights were off</i> diz que as luzes entraram no escritório."
+      ],
+      ex: [
+        ["Walking into the office, I saw the new team.", "Entrando no escritório, vi a equipe nova."],
+        ["Not knowing what to say, I stayed quiet.", "Não sabendo o que dizer, fiquei calado."],
+        ["Looking at the numbers, I realized the mistake.", "Olhando os números, percebi o erro."]
+      ]
+    },
+    {
+      def: "<b>Having + particípio</b> marca o que veio <b>antes</b>: a primeira ação terminou e só então a segunda aconteceu.",
+      form: "Having + particípio + vírgula + frase",
+      marcar: ["Having finished the report"],
+      more: [
+        "## A diferença em relação ao -ing simples",
+        "<i><b>Finishing</b> the report, he went home</i> sugere ao mesmo tempo; <i><b>Having finished</b> the report, he went home</i> deixa claro que primeiro terminou, depois foi.",
+        "## O que ela substitui",
+        "<i>After he had finished the report, he went home</i> — a forma com <i>having</i> economiza metade das palavras.",
+        "## A negativa",
+        "<i><b>Not having</b> received an answer, we called again</i>.",
+        "## Na voz passiva",
+        "<i><b>Having been</b> approved, the budget went to finance</i> = depois de ter sido aprovado."
+      ],
+      ex: [
+        ["Having finished the report, he went home.", "Tendo terminado o relatório, ele foi para casa."],
+        ["Not having received an answer, we called again.", "Não tendo recebido resposta, ligamos de novo."],
+        ["Having checked in, we went straight to the gate.", "Depois de fazer o check-in, fomos direto para o portão."]
+      ]
+    },
+    {
+      def: "O <b>particípio</b> sozinho no começo da frase tem sentido <b>passivo</b>: a coisa de que se fala recebeu a ação.",
+      form: "particípio + vírgula + frase · built in 1990, the building...",
+      marcar: ["Built in 1990"],
+      more: [
+        "## Como se lê",
+        "<i><b>Built in 1990</b>, the building needs repairs</i> = o prédio, que foi construído em 1990... O particípio se refere sempre ao sujeito da frase principal.",
+        "## O que ela substitui",
+        "<i>Because it was built in 1990</i> ou <i>The building, which was built in 1990,</i> — a versão curta serve para abrir parágrafo em texto jornalístico e técnico.",
+        "## Os verbos frequentes",
+        "<i>Written</i>, <i>founded</i>, <i>designed</i>, <i>based</i>, <i>given</i>, <i>faced with</i>: <i><b>Based in Lisbon</b>, the company serves all of Europe</i>, <i><b>Faced with</b> the delay, we rebooked</i>.",
+        "## O sujeito, de novo",
+        "A mesma regra vale: o particípio tem de descrever o sujeito. <i>Built in 1990, we bought the building</i> diz que nós fomos construídos em 1990."
+      ],
+      ex: [
+        ["Built in 1990, the building needs repairs.", "Construído em 1990, o prédio precisa de reformas."],
+        ["Based in Lisbon, the company serves all of Europe.", "Com sede em Lisboa, a empresa atende toda a Europa."],
+        ["Faced with the delay, we rebooked the flight.", "Diante do atraso, remarcamos o voo."]
+      ]
+    },
+    {
+      def: "Relativas se encurtam: quando o <i>who / which / that</i> vem seguido de <b>to be</b>, os dois podem sair e sobra o <b>-ing</b> ou o <b>particípio</b>.",
+      form: "sem who/which + -ing ou particípio",
+      marcar: ["sitting by the window"],
+      more: [
+        "## Os dois cortes",
+        "Ativo: <i>the woman <b>who is sitting</b> there</i> → <i>the woman <b>sitting</b> there</i>.",
+        "Passivo: <i>the products <b>that are sold</b> online</i> → <i>the products <b>sold</b> online</i>.",
+        "## Por que importa",
+        "É o que deixa o texto profissional enxuto: <i>a report <b>written</b> by the team</i>, <i>the people <b>waiting</b> at the gate</i>, <i>items <b>included</b> in the price</i>.",
+        "## Quando não dá para cortar",
+        "Se o verbo não é <i>to be</i>: <i>the woman <b>who works</b> here</i> não vira <i>the woman working here</i> com o mesmo sentido — essa segunda sugere algo temporário.",
+        "## Com infinitivo",
+        "Depois de superlativo e de <i>the only</i>, usa-se <i>to</i>: <i>the first person <b>to arrive</b></i> = a primeira que chegou."
+      ],
+      ex: [
+        ["The woman sitting by the window is our CEO.", "A mulher sentada junto à janela é nossa CEO."],
+        ["The products sold online have a discount.", "Os produtos vendidos online têm desconto."],
+        ["She was the first person to arrive.", "Ela foi a primeira pessoa a chegar."]
+      ]
+    },
+    {
+      def: "Toda frase que começa com <b>-ing</b>, <b>having</b> ou particípio tem uma condição: o <b>sujeito</b> das duas partes precisa ser o mesmo. Quando não é, a frase diz outra coisa.",
+      form: "mesmo sujeito nas duas partes",
+      marcar: ["Not knowing what to say"],
+      more: [
+        "## O erro e o que ele produz",
+        "<i>Walking into the office, the lights were off</i> — quem entrou? As luzes. <i>Having finished the report, the client called</i> — quem terminou? O cliente.",
+        "## Como consertar",
+        "Duas saídas: trocar o sujeito da principal (<i>Walking into the office, <b>I noticed</b> the lights were off</i>) ou devolver a conjunção (<i><b>When I walked</b> into the office, the lights were off</i>).",
+        "## O teste rápido",
+        "Leia só a primeira parte e pergunte \"quem?\". A resposta tem de ser o sujeito que vem depois da vírgula.",
+        "## Onde esse erro aparece mais",
+        "Em e-mail e relatório traduzidos do português, porque o nosso gerúndio é mais solto. Em inglês, ele cola no sujeito."
+      ],
+      ex: [
+        ["Not knowing what to say, I stayed quiet.", "Não sabendo o que dizer, fiquei calado."],
+        ["When I walked into the office, the lights were off.", "Quando entrei no escritório, as luzes estavam apagadas."],
+        ["Having read the contract, we asked for two changes.", "Tendo lido o contrato, pedimos duas mudanças."]
+      ]
+    }
+  ],
+
+  c1m3: [
+    {
+      def: "A <b>cleft sentence</b> com <i>what</i> divide a frase em duas para pôr holofote sobre uma parte: o que importa vem no fim.",
+      form: "What + frase + is / was + o foco",
+      marcar: ["What we need is"],
+      more: [
+        "## Como se monta",
+        "<i>We need more time</i> → <i><b>What we need is</b> more time</i>. A informação importante fica depois do verbo <i>to be</i>, onde o inglês naturalmente põe o peso.",
+        "## As variações",
+        "<i>What I like about it is...</i>, <i>What happened was...</i>, <i>What surprised me was...</i>, <i>What she did was call the client</i> (com verbo puro depois).",
+        "## No passado",
+        "<i><b>What we needed was</b> more time</i>. O <i>to be</i> acompanha o tempo da frase.",
+        "## O efeito",
+        "Serve para contrastar com o que o outro disse: <i>— You need more people. — <b>What we need is</b> more time</i>."
+      ],
+      ex: [
+        ["What we need is more time.", "O que precisamos é de mais tempo."],
+        ["What surprised me was the price.", "O que me surpreendeu foi o preço."],
+        ["What she did was call the client directly.", "O que ela fez foi ligar direto para o cliente."]
+      ]
+    },
+    {
+      def: "<b>It is / It was ... who / that</b> destaca uma pessoa ou uma coisa específica, como quem aponta o dedo: foi essa, e não outra.",
+      form: "It is / was + foco + who / that + resto",
+      marcar: ["It was Ana who"],
+      more: [
+        "## Como se monta",
+        "<i>Ana closed the deal</i> → <i><b>It was Ana who</b> closed the deal</i>. O destaque vai logo depois do <i>It was</i>.",
+        "## Who ou that",
+        "<i>who</i> para pessoa, <i>that</i> para o resto: <i><b>It was the price that</b> killed the deal</i>, <i><b>It's the timing that</b> worries me</i>.",
+        "## Para qualquer parte da frase",
+        "Pode destacar o tempo, o lugar ou o motivo: <i><b>It was on Friday that</b> they called</i>, <i><b>It was because of the strike that</b> we cancelled</i>.",
+        "## O uso corretivo",
+        "É a estrutura de desfazer um engano: <i>— So João signed it? — No, <b>it was Ana who</b> signed it</i>."
+      ],
+      ex: [
+        ["It was Ana who closed the deal.", "Foi a Ana que fechou o negócio."],
+        ["It was the price that killed the deal.", "Foi o preço que derrubou o negócio."],
+        ["It was on Friday that they finally called.", "Foi na sexta que eles finalmente ligaram."]
+      ]
+    },
+    {
+      def: "Outras aberturas de destaque: <b>All I want is</b>, <b>The thing is</b> e <b>The reason why</b> organizam o que você vai dizer antes de dizê-lo.",
+      form: "All ... is · The thing is, ... · The reason why ... is",
+      marcar: ["All I want is"],
+      more: [
+        "## All, no sentido de só",
+        "<i><b>All I want is</b> a clear answer</i> = tudo o que quero é. Com verbo: <i><b>All you have to do is</b> send the link</i> — depois do <i>is</i> vem o verbo puro.",
+        "## The thing is",
+        "<i><b>The thing is</b>, we don't have the budget</i> — anuncia a complicação. Vizinhos: <i>The problem is...</i>, <i>The point is...</i>, <i>The fact is...</i>",
+        "## The reason why",
+        "<i><b>The reason why</b> we changed it <b>is</b> the feedback</i>. Em texto formal, prefere-se <i>The reason <b>that</b></i> ou só <i>The reason</i>.",
+        "## O efeito comum aos três",
+        "Eles preparam o ouvinte e dão tempo ao falante — por isso aparecem tanto em reunião e negociação."
+      ],
+      ex: [
+        ["All I want is a clear answer.", "Tudo o que eu quero é uma resposta clara."],
+        ["All you have to do is send the link.", "Você só precisa mandar o link."],
+        ["The thing is, we don't have the budget for it.", "A questão é que não temos orçamento para isso."]
+      ]
+    },
+    {
+      def: "O <b>do</b> de ênfase entra numa frase afirmativa só para reforçá-la: equivale ao nosso \"sim\" no fim da frase.",
+      form: "do / does / did + verbo puro · I do understand",
+      marcar: ["I do understand"],
+      more: [
+        "## Como funciona",
+        "<i>I understand</i> → <i>I <b>do</b> understand your concern</i> = entendo, sim. <i>She <b>did</b> call</i> = ela ligou, sim.",
+        "## Quando usar",
+        "Para contrariar uma dúvida (<i>— You don't care. — I <b>do</b> care</i>), para reconhecer antes de discordar (<i>It <b>does</b> look expensive, but...</i>) e para insistir num convite (<i><b>Do</b> let me know</i>).",
+        "## A forma",
+        "<i>do</i> / <i>does</i> no presente, <i>did</i> no passado, e o verbo principal fica puro: <i>She <b>did</b> send it</i>, nunca <i>did sent</i>.",
+        "## Na fala",
+        "A ênfase mora no <i>do</i>, que recebe a força da voz. Sem isso, a frase soa só esquisita."
+      ],
+      ex: [
+        ["I do understand your concern.", "Eu entendo sua preocupação, sim."],
+        ["She did send the invoice on Monday.", "Ela mandou a nota na segunda, sim."],
+        ["Do let me know if anything changes.", "Me avise, por favor, se algo mudar."]
+      ]
+    }
+  ],
+
+  c1m4: [
+    {
+      def: "<b>Unless</b> significa \"a menos que\" e funciona como <i>if not</i>: apresenta a <b>única condição</b> que evita o resultado.",
+      form: "unless + presente · we'll lose the client unless...",
+      marcar: ["unless"],
+      more: [
+        "## A equivalência",
+        "<i>We'll lose the client <b>unless</b> we lower the price</i> = <i><b>if we don't</b> lower the price</i>. As duas dizem o mesmo.",
+        "## Não leva outra negativa",
+        "O <i>unless</i> já é negativo: <i>unless we <b>don't</b> lower</i> inverte o sentido sem querer.",
+        "## O tempo depois dele",
+        "Como todo conector de condição, não aceita <i>will</i>: <i>unless we <b>lower</b></i>, nunca <i>unless we will lower</i>.",
+        "## Quando if not é melhor",
+        "Para possibilidades múltiplas e para dúvida, prefere-se <i>if not</i>: <i>I'll be surprised <b>if</b> she <b>doesn't</b> call</i> soa melhor que a versão com <i>unless</i>."
+      ],
+      ex: [
+        ["We'll lose the client unless we lower the price.", "Vamos perder o cliente a menos que baixemos o preço."],
+        ["Unless they confirm today, we'll cancel the room.", "Se eles não confirmarem hoje, cancelamos a sala."],
+        ["I won't travel unless the client pays in advance.", "Não viajo a menos que o cliente pague adiantado."]
+      ]
+    },
+    {
+      def: "<b>As long as</b> e <b>provided that</b> dizem \"desde que\": estabelecem a condição sob a qual algo é permitido.",
+      form: "as long as / provided that + presente",
+      marcar: ["as long as"],
+      more: [
+        "## Os três do grupo",
+        "<i>as long as</i> (o mais comum na fala), <i>provided that</i> e <i>providing that</i> (formais, de contrato), <i>on condition that</i> (o mais formal de todos).",
+        "## Como soam",
+        "<i>You can work from home <b>as long as</b> you meet the deadlines</i>, <i>We'll extend the deadline <b>provided that</b> you tell us today</i>.",
+        "## O that é opcional",
+        "<i>provided you tell us</i> funciona igual.",
+        "## O tempo",
+        "Presente, nunca futuro: <i>as long as you <b>meet</b></i>. E, no passado, passado simples: <i>as long as it <b>didn't</b> rain</i>."
+      ],
+      ex: [
+        ["You can work from home as long as you meet the deadlines.", "Você pode trabalhar de casa desde que cumpra os prazos."],
+        ["We'll extend the deadline provided that you tell us today.", "Vamos estender o prazo desde que você nos avise hoje."],
+        ["I'll take the later flight as long as there's wifi.", "Pego o voo mais tarde desde que tenha wifi."]
+      ]
+    },
+    {
+      def: "<b>Otherwise</b> aponta o que acontece se a condição <b>não</b> for cumprida — o nosso \"senão\", \"caso contrário\".",
+      form: "frase; otherwise, consequência",
+      marcar: ["otherwise"],
+      more: [
+        "## Como se escreve",
+        "Depois de ponto e vírgula ou de ponto, com vírgula: <i>Send it today; <b>otherwise</b>, we'll miss the deadline</i>.",
+        "## O que ele resume",
+        "Equivale a <i>if you don't</i>: a frase inteira anterior vira a condição, sem precisar repeti-la.",
+        "## O outro sentido",
+        "<i>otherwise</i> também significa \"de outro modo, no mais\": <i>The hotel was noisy; <b>otherwise</b>, it was fine</i>.",
+        "## Os parentes",
+        "<i>or else</i> é a versão informal e um pouco ameaçadora (<i>Send it, <b>or else</b>...</i>); <i>failing that</i> é a formal (<i><b>Failing that</b>, we'll reschedule</i>)."
+      ],
+      ex: [
+        ["Send it today; otherwise, we'll miss the deadline.", "Mande hoje; senão, vamos perder o prazo."],
+        ["Book now, otherwise the price goes up.", "Reserve agora, senão o preço sobe."],
+        ["The flight was delayed; otherwise, the trip was perfect.", "O voo atrasou; no mais, a viagem foi perfeita."]
+      ]
+    },
+    {
+      def: "<b>In case</b> fala de <b>precaução</b>: você faz algo <i>porque</i> talvez a outra coisa aconteça. Não é a mesma ideia de <i>if</i>.",
+      form: "in case + presente · take your laptop in case...",
+      marcar: ["in case"],
+      more: [
+        "## A diferença com if",
+        "<i>Take your laptop <b>in case</b> the meeting goes online</i> = leve de qualquer forma, por precaução. <i>Take your laptop <b>if</b> the meeting goes online</i> = leve só se isso acontecer.",
+        "## O tempo depois dele",
+        "Presente, mesmo falando do futuro: <i>in case it <b>rains</b></i>, nunca <i>in case it will rain</i>.",
+        "## In case of + substantivo",
+        "Em aviso, aparece a forma curta: <i><b>In case of</b> fire, use the stairs</i>. Com frase completa, é só <i>in case</i>.",
+        "## Just in case",
+        "No fim da frase, sozinho: <i>I'll bring the charger, <b>just in case</b></i>."
+      ],
+      ex: [
+        ["Take your laptop in case the meeting goes online.", "Leve seu notebook caso a reunião vire online."],
+        ["I'll print the tickets in case the app doesn't work.", "Vou imprimir as passagens caso o app não funcione."],
+        ["In case of fire, use the stairs.", "Em caso de incêndio, use as escadas."]
+      ]
+    },
+    {
+      def: "Em registro formal, o <i>if</i> pode <b>desaparecer</b>: o auxiliar vai para a frente do sujeito e sustenta a condição sozinho.",
+      form: "Had I known · Should you need · Were I you",
+      marcar: ["Should you need"],
+      more: [
+        "## As três formas",
+        "<i><b>Had I known</b></i> = if I had known. <i><b>Should you need</b></i> = if you need. <i><b>Were I you</b></i> = if I were you.",
+        "## Onde aparecem",
+        "<i>Should you need any help, please contact me</i> é fórmula de e-mail corporativo; <i>Had we known about the delay, we would have rebooked</i> é de relatório e carta formal.",
+        "## A negativa não se contrai",
+        "<i><b>Had we not</b> known</i>, não <i>Hadn't we known</i> — a contração transformaria a frase em pergunta.",
+        "## O equivalente neutro",
+        "Em mensagem do dia a dia, <i>If you need anything, let me know</i> é o que se escreve. A inversão é para quando o tom precisa ser formal."
+      ],
+      ex: [
+        ["Should you need any help, please contact me.", "Se precisar de ajuda, entre em contato."],
+        ["Had we known about the delay, we would have rebooked.", "Se soubéssemos do atraso, teríamos remarcado."],
+        ["Were I you, I'd ask for a written confirmation.", "Se eu fosse você, pediria confirmação por escrito."]
+      ]
+    }
+  ],
+
+  c1m5: [
+    {
+      def: "<b>Make</b> acompanha o que se <b>produz</b> ou se gera: decisão, erro, esforço, progresso. A combinação é fixa e não se deduz.",
+      form: "make + decision, mistake, effort, progress",
+      marcar: ["make a decision"],
+      more: [
+        "## As combinações frequentes",
+        "<i>make a decision</i>, <i>make a mistake</i>, <i>make an effort</i>, <i>make progress</i>, <i>make an appointment</i>, <i>make a suggestion</i>, <i>make a profit</i>, <i>make a difference</i>, <i>make sure</i>, <i>make money</i>.",
+        "## A lógica, quando existe",
+        "<i>make</i> tende a criar algo que não existia antes: uma decisão, um plano, um erro, um lucro.",
+        "## Os que confundem com do",
+        "<i>make a decision</i>, não <i>do a decision</i>. <i>do research</i>, não <i>make research</i>. <i>make an exam</i> não existe: prova é <i>take an exam</i>.",
+        "## Make + alguém + verbo puro",
+        "Outro uso: obrigar ou causar. <i>The delay <b>made us miss</b> the connection</i>, <i>It <b>makes me think</b> about the budget</i>."
+      ],
+      ex: [
+        ["We need to make a decision this week.", "Precisamos tomar uma decisão esta semana."],
+        ["They've made a lot of progress since January.", "Eles progrediram muito desde janeiro."],
+        ["Make sure you confirm the booking.", "Confirme a reserva, sem falta."]
+      ]
+    },
+    {
+      def: "<b>Do</b> acompanha <b>atividade</b> e <b>trabalho</b>: negócio, pesquisa, favor, o seu melhor. É o verbo do que se executa.",
+      form: "do + business, research, a favour, your best",
+      marcar: ["do business"],
+      more: [
+        "## As combinações frequentes",
+        "<i>do business</i>, <i>do research</i>, <i>do a favour</i>, <i>do your best</i>, <i>do the paperwork</i>, <i>do an exercise</i>, <i>do harm</i>, <i>do well</i>, <i>do a course</i>, <i>do the dishes</i>.",
+        "## A lógica, quando existe",
+        "<i>do</i> cobre tarefa e ocupação — o que se faz, não o que se cria.",
+        "## O par que todo mundo erra",
+        "<i>do</i> + trabalho em geral (<i>I have a lot of work to <b>do</b></i>) × <i>make</i> + resultado (<i>make a plan</i>).",
+        "## Nas expressões de trabalho",
+        "<i>do overtime</i> = fazer hora extra. <i>do the math</i> = fazer a conta. <i>do a good job</i> = fazer um bom trabalho."
+      ],
+      ex: [
+        ["We do business in five countries.", "Fazemos negócios em cinco países."],
+        ["Could you do me a favour?", "Você poderia me fazer um favor?"],
+        ["They did a great job on the launch.", "Eles fizeram um ótimo trabalho no lançamento."]
+      ]
+    },
+    {
+      def: "<b>Take</b> acompanha o que se <b>assume</b> ou se leva em consideração: responsabilidade, parte, providência, tempo.",
+      form: "take + into account, part, responsibility, action",
+      marcar: ["take the budget into account"],
+      more: [
+        "## As combinações frequentes",
+        "<i>take into account</i>, <i>take part in</i>, <i>take responsibility for</i>, <i>take action</i>, <i>take a decision</i> (britânico), <i>take a look</i>, <i>take notes</i>, <i>take a break</i>, <i>take advantage of</i>, <i>take place</i> (acontecer).",
+        "## A ordem de take into account",
+        "O objeto pode ficar no meio ou no fim: <i>take <b>the budget</b> into account</i> ou <i>take into account <b>the budget</b></i>. Com pronome, só no meio: <i>take <b>it</b> into account</i>.",
+        "## O take de tempo",
+        "<i>It <b>takes</b> two hours</i> = leva duas horas. <i>How long does it <b>take</b>?</i> é a pergunta padrão sobre duração.",
+        "## Os falsos pares",
+        "<i>take a photo</i>, não <i>make a photo</i>. <i>take an exam</i>, não <i>do an exam</i> (embora <i>do well in an exam</i> exista)."
+      ],
+      ex: [
+        ["Please take the budget into account.", "Por favor, leve o orçamento em consideração."],
+        ["Everyone took part in the discussion.", "Todos participaram da discussão."],
+        ["The meeting takes place on the 12th.", "A reunião acontece no dia 12."]
+      ]
+    },
+    {
+      def: "O vocabulário de <b>prazo, meta e acordo</b> também anda em pares fixos — e usá-los certo é o que faz o inglês soar profissional.",
+      form: "meet a deadline · set a goal · reach an agreement",
+      marcar: ["meet the deadline"],
+      more: [
+        "## As combinações",
+        "<i>meet a deadline</i> = cumprir o prazo. <i>miss a deadline</i> = perder o prazo. <i>extend a deadline</i> = estender. <i>set a goal</i> = definir uma meta. <i>reach an agreement</i> = chegar a um acordo. <i>raise a concern</i> = levantar uma preocupação.",
+        "## Mais do mesmo campo",
+        "<i>meet expectations</i>, <i>meet requirements</i>, <i>hit a target</i>, <i>cut costs</i>, <i>close a deal</i>, <i>launch a product</i>, <i>run a meeting</i>, <i>attend a meeting</i>, <i>submit a proposal</i>.",
+        "## Os que não existem",
+        "<i>accomplish a deadline</i>, <i>arrive to an agreement</i>, <i>put a goal</i> — todos traduções literais que soam estranhas.",
+        "## Como aprender",
+        "Collocation não se deduz: anote em pares, não em palavras isoladas. Vale guardar \"meet a deadline\" inteiro, como se fosse uma única palavra."
+      ],
+      ex: [
+        ["We worked all weekend to meet the deadline.", "Trabalhamos o fim de semana todo para cumprir o prazo."],
+        ["They reached an agreement on Friday.", "Eles chegaram a um acordo na sexta."],
+        ["I'd like to raise a concern about the timeline.", "Gostaria de levantar uma preocupação sobre o cronograma."]
+      ]
+    }
+  ],
+
+  c1m6: [
+    {
+      def: "Os conectores formais organizam o texto escrito: eles dizem ao leitor se o que vem é soma, contraste ou conclusão. Vão no começo da frase, com vírgula.",
+      form: "moreover · nevertheless · whereas · hence",
+      marcar: ["Nevertheless"],
+      more: [
+        "## Por função",
+        "Somar: <i>moreover</i>, <i>furthermore</i>, <i>in addition</i>.",
+        "Contrastar: <i>nevertheless</i>, <i>nonetheless</i>, <i>however</i>, <i>on the contrary</i>.",
+        "Comparar lado a lado: <i>whereas</i>, <i>while</i> (no meio da frase, sem vírgula antes em texto britânico).",
+        "Concluir: <i>hence</i>, <i>thus</i>, <i>therefore</i>, <i>consequently</i>, <i>as a result</i>.",
+        "## A pontuação",
+        "No início, vírgula depois: <i><b>Nevertheless</b>, the event was a success</i>. No meio, entre vírgulas: <i>The event, <b>however</b>, was a success</i>.",
+        "## O cuidado com o excesso",
+        "Um conector por ideia basta. Texto cheio de <i>moreover</i> e <i>furthermore</i> soa artificial — e, em e-mail curto, <i>also</i> e <i>but</i> fazem o serviço.",
+        "## Whereas é só de contraste",
+        "<i>Sales grew in Brazil, <b>whereas</b> they fell in Chile</i> — compara dois fatos opostos, nunca marca tempo."
+      ],
+      ex: [
+        ["The budget was small. Nevertheless, the event was a success.", "O orçamento era pequeno. Ainda assim, o evento foi um sucesso."],
+        ["Sales grew in Brazil, whereas they fell in Chile.", "As vendas cresceram no Brasil, enquanto caíram no Chile."],
+        ["The supplier missed two deadlines; hence the change.", "O fornecedor perdeu dois prazos; daí a mudança."]
+      ]
+    },
+    {
+      def: "O e-mail formal em inglês funciona com <b>fórmulas prontas</b>. Usá-las não é falta de criatividade: é o que o leitor espera encontrar.",
+      form: "I am writing to... · Please find attached... · I look forward to...",
+      marcar: ["Please find attached"],
+      more: [
+        "## A abertura",
+        "<i>I am writing to <b>confirm</b> / <b>ask about</b> / <b>follow up on</b>...</i>, <i>I hope this email finds you well</i> (neutro), <i>Thank you for your prompt reply</i>.",
+        "## O meio",
+        "<i><b>Please find attached</b> the signed contract</i>, <i><b>I would appreciate it if you could</b> send it by Friday</i>, <i><b>Could you please</b> confirm the details?</i>, <i><b>As discussed</b>, we'll start in March</i>.",
+        "## O fecho",
+        "<i>I look forward to hearing from you</i>, <i>Please let me know if you need anything else</i>, <i>Best regards</i> / <i>Kind regards</i>.",
+        "## O detalhe do look forward",
+        "Depois dele vem <i>-ing</i>, porque o <i>to</i> é preposição: <i>I look forward to <b>hearing</b> from you</i>, nunca <i>to hear</i>.",
+        "## O nome e a saudação",
+        "<i>Dear Ms Silva</i> (formal), <i>Dear Ana</i> (formal e próximo), <i>Hi Ana</i> (do dia a dia). Sem nome: <i>Dear Sir or Madam</i> ou <i>To whom it may concern</i>."
+      ],
+      ex: [
+        ["Please find attached the signed contract.", "Segue em anexo o contrato assinado."],
+        ["I would appreciate it if you could reply by Friday.", "Eu agradeceria se você pudesse responder até sexta."],
+        ["I look forward to hearing from you.", "Fico no aguardo do seu retorno."]
+      ]
+    },
+    {
+      def: "Para subir o registro, troca-se a palavra do dia a dia pela de origem latina. O sentido é o mesmo; muda o <b>tom</b>.",
+      form: "ask → request · need → require · buy → purchase",
+      marcar: ["request"],
+      more: [
+        "## A tabela de troca",
+        "<i>ask → <b>request</b></i>, <i>need → <b>require</b></i>, <i>help → <b>assist</b></i>, <i>buy → <b>purchase</b></i>, <i>get → <b>receive</b></i>, <i>show → <b>demonstrate</b></i>, <i>start → <b>commence</b></i>, <i>end → <b>conclude</b></i>, <i>tell → <b>inform</b></i>, <i>use → <b>utilise</b></i>, <i>check → <b>verify</b></i>, <i>fix → <b>resolve</b></i>.",
+        "## O outro lado da moeda",
+        "Em excesso, essa troca deixa o texto frio e difícil. O inglês corporativo moderno prefere clareza: <i>We need a meeting</i> costuma ser melhor que <i>We require a meeting</i>.",
+        "## Os phrasal verbs caem no formal",
+        "O registro formal troca o phrasal por um verbo único: <i>find out → <b>discover</b></i>, <i>put off → <b>postpone</b></i>, <i>set up → <b>establish</b></i>, <i>go over → <b>review</b></i>, <i>come up with → <b>propose</b></i>.",
+        "## O que mais marca o registro",
+        "Mais do que a palavra, a estrutura: evitar contrações (<i>I am</i> em vez de <i>I'm</i>), usar passiva (<i>It was decided</i>) e frases completas em vez de fragmentos."
+      ],
+      ex: [
+        ["We would like to request a meeting next week.", "Gostaríamos de solicitar uma reunião na semana que vem."],
+        ["The client requires a written confirmation.", "O cliente exige uma confirmação por escrito."],
+        ["The launch has been postponed to June.", "O lançamento foi adiado para junho."]
+      ]
+    }
+  ],
+
+  c2m1: [
+    {
+      def: "Expressões de <b>começo e alinhamento</b>: o inglês de trabalho usa imagens fixas para dizer que algo vai começar ou que as pessoas estão de acordo.",
+      form: "get the ball rolling · touch base · on the same page",
+      marcar: ["get the ball rolling"],
+      more: [
+        "## O que cada uma diz",
+        "<i><b>get the ball rolling</b></i> = dar o pontapé inicial, fazer a coisa andar.",
+        "<i><b>touch base</b></i> = dar uma conversada rápida para alinhar (<i>Let's touch base on Monday</i>).",
+        "<i><b>on the same page</b></i> = alinhados, com o mesmo entendimento (<i>I want to make sure we're on the same page</i>).",
+        "## Os vizinhos",
+        "<i><b>kick off</b></i> = iniciar (daí <i>a kick-off meeting</i>). <i><b>circle back</b></i> = voltar a um assunto depois. <i><b>loop in</b></i> = incluir alguém na conversa. <i><b>align on</b></i> = alinhar sobre.",
+        "## Onde não usar",
+        "Em texto formal escrito, idioma de escritório soa informal. Em contrato e relatório, prefira <i>begin</i>, <i>discuss</i>, <i>agree on</i>.",
+        "## O cuidado com a tradução",
+        "Idioma não se traduz palavra por palavra: <i>touch base</i> não tem nada a ver com tocar base. Guarde a expressão inteira e a situação em que ela cabe."
+      ],
+      ex: [
+        ["Let's get the ball rolling today.", "Vamos dar o pontapé inicial hoje."],
+        ["I'll touch base with the client on Monday.", "Vou alinhar com o cliente na segunda."],
+        ["I want to make sure we're on the same page.", "Quero garantir que estamos alinhados."]
+      ]
+    },
+    {
+      def: "Expressões de <b>problema</b>: quando o trabalho volta ao começo, quando se economiza no lugar errado e quando a chance é remota.",
+      form: "back to square one · cut corners · a long shot",
+      marcar: ["back to square one"],
+      more: [
+        "## O que cada uma diz",
+        "<i><b>back to square one</b></i> = de volta à estaca zero.",
+        "<i><b>cut corners</b></i> = economizar tempo ou dinheiro sacrificando a qualidade.",
+        "<i><b>a long shot</b></i> = uma tentativa com pouca chance (<i>It's a long shot, but let's try</i>).",
+        "## Os vizinhos",
+        "<i><b>drop the ball</b></i> = deixar a peteca cair. <i><b>a bottleneck</b></i> = o gargalo. <i><b>up in the air</b></i> = ainda em aberto. <i><b>a tight deadline</b></i> = prazo apertado. <i><b>behind schedule</b></i> = atrasado no cronograma.",
+        "## Como soam na conversa",
+        "São a forma honesta e leve de dar má notícia: <i>We're a bit behind schedule</i> abre a conversa melhor que <i>We failed</i>.",
+        "## A versão neutra",
+        "Em e-mail formal, o mesmo conteúdo vira <i>We will need to restart the process</i> ou <i>The project is currently delayed</i>."
+      ],
+      ex: [
+        ["We're back to square one.", "Estamos de volta à estaca zero."],
+        ["We can't cut corners on security.", "Não podemos economizar na segurança."],
+        ["It's a long shot, but let's send the proposal.", "A chance é pequena, mas vamos mandar a proposta."]
+      ]
+    },
+    {
+      def: "Expressões de <b>número e resultado</b>: o vocabulário de quem fala de custo, estimativa e ponto de equilíbrio.",
+      form: "the bottom line · a ballpark figure · break even",
+      marcar: ["a ballpark figure"],
+      more: [
+        "## O que cada uma diz",
+        "<i><b>the bottom line</b></i> = o que importa no fim (e, na contabilidade, o resultado final).",
+        "<i><b>a ballpark figure</b></i> = um número aproximado (<i>Can you give me a ballpark figure?</i>).",
+        "<i><b>break even</b></i> = empatar receita e custo, sem lucro nem prejuízo.",
+        "## Os vizinhos",
+        "<i><b>in the black</b></i> / <i><b>in the red</b></i> = no lucro / no prejuízo. <i><b>cash flow</b></i> = fluxo de caixa. <i><b>a rough estimate</b></i> = uma estimativa aproximada. <i><b>the ROI</b></i> = o retorno sobre o investimento.",
+        "## A fórmula de abertura",
+        "<i>The bottom line is</i> ... serve para resumir uma discussão longa: <i><b>The bottom line is</b> we can't afford it this quarter</i>.",
+        "## Em reunião de números",
+        "<i>off the top of my head</i> = de cabeça, sem consultar: <i>Off the top of my head, around twenty thousand</i>."
+      ],
+      ex: [
+        ["Can you give me a ballpark figure?", "Você pode me dar um número aproximado?"],
+        ["The bottom line is we need more time.", "No fim das contas, precisamos de mais tempo."],
+        ["We expect to break even by December.", "Esperamos empatar os custos até dezembro."]
+      ]
+    },
+    {
+      def: "Expressões do <b>dia a dia</b> de escritório: encerrar, manter alguém informado e nomear o assunto que ninguém quer tocar.",
+      form: "call it a day · keep in the loop · the elephant in the room",
+      marcar: ["call it a day"],
+      more: [
+        "## O que cada uma diz",
+        "<i><b>call it a day</b></i> = encerrar por hoje.",
+        "<i><b>keep someone in the loop</b></i> = manter alguém informado (<i>Keep me in the loop</i>).",
+        "<i><b>the elephant in the room</b></i> = o problema óbvio de que ninguém fala.",
+        "## Os vizinhos",
+        "<i><b>a heads-up</b></i> = um aviso prévio (<i>Thanks for the heads-up</i>). <i><b>on my plate</b></i> = na minha conta de tarefas. <i><b>burn out</b></i> = esgotar-se. <i><b>wear many hats</b></i> = acumular funções. <i><b>ASAP</b></i> = o quanto antes.",
+        "## O registro",
+        "Todas servem em conversa, chat de trabalho e reunião informal. Em comunicado oficial, prefira a versão direta: <i>Let's finish for today</i>, <i>Please keep me informed</i>.",
+        "## O ganho real",
+        "Quem reconhece essas expressões entende reunião em inglês com muito menos esforço — elas aparecem mais que o vocabulário técnico."
+      ],
+      ex: [
+        ["Let's call it a day.", "Vamos encerrar por hoje."],
+        ["Keep me in the loop, please.", "Me mantenha informado, por favor."],
+        ["Nobody mentioned the elephant in the room: the budget.", "Ninguém tocou no assunto óbvio: o orçamento."]
+      ]
+    }
+  ],
+
+  c2m2: [
+    {
+      def: "Para <b>suavizar</b> uma afirmação, o inglês coloca uma camada de distância entre você e o que diz: a informação continua, o compromisso diminui.",
+      form: "It seems that... · apparently · arguably",
+      marcar: ["It seems that"],
+      more: [
+        "## As fórmulas",
+        "<i><b>It seems that</b> the client is not happy</i>, <i><b>It would appear that</b> there was a misunderstanding</i> (mais formal ainda), <i><b>Apparently</b>, they changed the brief</i>, <i><b>Arguably</b>, this is the best option</i> (pode-se defender que).",
+        "## Por que isso importa",
+        "Em inglês profissional, afirmar demais soa agressivo. O hedging deixa espaço para o outro discordar sem confronto — e protege quem fala, caso o dado esteja incompleto.",
+        "## As versões leves",
+        "<i>I think</i>, <i>I'd say</i>, <i>it looks like</i>, <i>from what I understand</i>, <i>as far as I know</i>, <i>correct me if I'm wrong</i>.",
+        "## O limite",
+        "Em excesso, o texto perde força e parece esquivo. Uma camada por frase é o suficiente: <i>It seems the deadline will slip</i>, não <i>It would appear that it may possibly seem that...</i>"
+      ],
+      ex: [
+        ["It seems that the client is not happy.", "Parece que o cliente não está satisfeito."],
+        ["Apparently, they changed the brief without telling us.", "Ao que parece, mudaram o briefing sem nos avisar."],
+        ["Arguably, this is the best option we have.", "Pode-se dizer que esta é a melhor opção que temos."]
+      ]
+    },
+    {
+      def: "Para falar de <b>probabilidade</b>, o inglês tem uma escala própria de expressões — de \"é bem possível\" até \"com certeza vai\".",
+      form: "is likely to · may well · is bound to",
+      marcar: ["are likely to"],
+      more: [
+        "## A escala",
+        "<i>is unlikely to</i> (pouco provável) → <i>may / might</i> (possível) → <i>may well</i> (bem possível) → <i>is likely to</i> (provável) → <i>is bound to</i> (fatalmente vai).",
+        "## Como se constroem",
+        "<i>Sales <b>are likely to</b> grow next year</i> — depois de <i>likely</i> vem <i>to</i> + verbo. Também existe a forma com <i>that</i>: <i><b>It's likely that</b> sales will grow</i>.",
+        "## Os parentes",
+        "<i>there's a good chance</i>, <i>the odds are</i>, <i>in all likelihood</i>, <i>chances are</i>: <i><b>Chances are</b> they'll ask for a discount</i>.",
+        "## O detalhe de bound to",
+        "<i>is bound to</i> sugere algo inevitável, muitas vezes indesejado: <i>With this timeline, something <b>is bound to</b> go wrong</i>."
+      ],
+      ex: [
+        ["Sales are likely to grow next year.", "As vendas provavelmente vão crescer no ano que vem."],
+        ["The client may well ask for a discount.", "É bem possível que o cliente peça desconto."],
+        ["With this timeline, something is bound to go wrong.", "Com esse cronograma, algo fatalmente vai dar errado."]
+      ]
+    },
+    {
+      def: "Para concordar <b>em parte</b>, o inglês tem expressões que medem o grau: nem sim inteiro, nem não.",
+      form: "to some extent · to a certain degree · more or less",
+      marcar: ["to some extent"],
+      more: [
+        "## As expressões",
+        "<i>to some extent</i>, <i>to a certain degree</i>, <i>up to a point</i>, <i>in a way</i>, <i>more or less</i>, <i>broadly speaking</i>.",
+        "## Como abrir uma discordância educada",
+        "A fórmula clássica é concordar em parte e então apresentar a ressalva: <i>I agree <b>to some extent</b>, but the cost worries me</i>. Isso soa muito melhor que <i>I disagree</i>.",
+        "## As vizinhas de ressalva",
+        "<i>that said</i>, <i>having said that</i>, <i>then again</i>, <i>on the other hand</i>: <i><b>That said</b>, the timing is good</i>.",
+        "## Em texto acadêmico",
+        "<i>to a large extent</i> e <i>to a lesser extent</i> graduam a afirmação: <i>This explains the drop <b>to a large extent</b></i>."
+      ],
+      ex: [
+        ["I agree with you to some extent.", "Concordo com você até certo ponto."],
+        ["The new process works, more or less.", "O processo novo funciona, mais ou menos."],
+        ["That said, the timing is good.", "Dito isso, o momento é bom."]
+      ]
+    },
+    {
+      def: "Três estruturas frequentes do inglês avançado que não têm tradução direta: <b>tend to</b>, <b>might as well</b> e <b>can't help + -ing</b>.",
+      form: "tend to · might as well · can't help + -ing",
+      marcar: ["can't help thinking"],
+      more: [
+        "## tend to",
+        "Costumar, ter tendência: <i>Clients <b>tend to</b> reply faster in the morning</i>. É a forma elegante de generalizar sem afirmar demais.",
+        "## might as well",
+        "\"Já que é assim, melhor...\": <i>The meeting was cancelled, so we <b>might as well</b> go home</i>. Sugere que não há motivo para não fazer.",
+        "## can't help + -ing",
+        "Não conseguir evitar: <i>I <b>can't help thinking</b> we missed something</i>, <i>She <b>couldn't help laughing</b></i>. Depois dele, sempre <i>-ing</i>.",
+        "## As primas úteis",
+        "<i>be about to</i> = estar a ponto de. <i>be supposed to</i> = era esperado que. <i>used to</i> = costumava. <i>be likely to</i> = ter probabilidade de. <i>would rather</i> = preferir."
+      ],
+      ex: [
+        ["I can't help thinking we missed something.", "Não consigo deixar de pensar que esquecemos algo."],
+        ["Clients tend to reply faster in the morning.", "Os clientes costumam responder mais rápido de manhã."],
+        ["The meeting was cancelled, so we might as well go home.", "A reunião foi cancelada, então é melhor irmos para casa."]
+      ]
+    }
+  ],
+
+  c2m3: [
+    {
+      def: "Depois de <b>suggest, recommend e insist that</b>, o verbo fica na <b>forma pura</b>, sem <i>-s</i> e sem conjugar. É o subjuntivo do inglês.",
+      form: "suggest / recommend / insist that + verbo puro",
+      marcar: ["that he call"],
+      more: [
+        "## A forma",
+        "<i>I suggest that he <b>call</b> the client today</i> — não <i>calls</i>. Com <i>to be</i>, fica <i>be</i>: <i>I recommend that it <b>be</b> reviewed first</i>.",
+        "## Os verbos que pedem isso",
+        "<i>suggest</i>, <i>recommend</i>, <i>insist</i>, <i>demand</i>, <i>propose</i>, <i>request</i>, <i>require</i>, <i>urge</i>.",
+        "## A negativa",
+        "Só <i>not</i> antes do verbo, sem auxiliar: <i>I suggest that he <b>not call</b> until Monday</i>.",
+        "## A alternativa de todos os dias",
+        "No inglês britânico e na fala, usa-se <i>should</i>: <i>I suggest that he <b>should call</b></i>. E, mais simples ainda: <i>I suggest <b>calling</b> the client</i> — com <i>-ing</i>, sem o <i>that</i>."
+      ],
+      ex: [
+        ["I suggest that he call the client today.", "Sugiro que ele ligue para o cliente hoje."],
+        ["They insisted that the contract be reviewed.", "Eles insistiram que o contrato fosse revisado."],
+        ["I suggest calling the supplier first.", "Sugiro ligar primeiro para o fornecedor."]
+      ]
+    },
+    {
+      def: "As expressões de <b>necessidade</b> — <i>it is essential / vital / crucial that</i> — pedem a mesma forma pura do verbo.",
+      form: "It is essential / vital that + verbo puro",
+      marcar: ["that she attend"],
+      more: [
+        "## A forma",
+        "<i>It is essential that she <b>attend</b> the meeting</i> — não <i>attends</i>. <i>It is vital that everyone <b>be</b> informed</i>.",
+        "## As expressões do grupo",
+        "<i>it is essential</i>, <i>it is vital</i>, <i>it is crucial</i>, <i>it is important</i>, <i>it is necessary</i>, <i>it is advisable</i>, e o adjetivo sozinho em texto jurídico: <i>It is imperative that...</i>",
+        "## Onde aparece",
+        "Norma, contrato, parecer técnico e recomendação formal. Em e-mail do dia a dia, soa pesado — ali se escreve <i>She really needs to be at the meeting</i>.",
+        "## A versão com for",
+        "A alternativa leve é <i>for</i> + pessoa + <i>to</i>: <i>It's essential <b>for her to attend</b> the meeting</i>."
+      ],
+      ex: [
+        ["It is essential that she attend the meeting.", "É essencial que ela compareça à reunião."],
+        ["It is vital that everyone be informed today.", "É fundamental que todos sejam informados hoje."],
+        ["It's important for her to attend the meeting.", "É importante que ela compareça à reunião."]
+      ]
+    },
+    {
+      def: "<b>It's time</b> e <b>it's high time</b> pedem o verbo no <b>passado</b> — que aqui não marca tempo, e sim que a coisa já devia ter sido feita.",
+      form: "It's (high) time + passado · it's high time we changed",
+      marcar: ["It's high time we changed"],
+      more: [
+        "## A forma e o sentido",
+        "<i>It's <b>high time</b> we <b>changed</b> this system</i> = já passou da hora. O <i>high</i> acrescenta impaciência; sem ele, <i>It's time we changed</i> é mais neutro.",
+        "## As duas construções",
+        "Com passado (<i>It's time we <b>left</b></i>) ou com <i>to</i> + verbo, quando não se nomeia quem (<i>It's time <b>to leave</b></i>).",
+        "## Com to be",
+        "<i>It's high time this <b>were</b> fixed</i> em registro cuidado; <i>was</i> na fala.",
+        "## A prima about",
+        "<i>It's <b>about</b> time</i> diz o mesmo com tom de alívio ou ironia: <i>— They finally replied. — <b>About time</b></i>."
+      ],
+      ex: [
+        ["It's high time we changed this system.", "Já passou da hora de mudarmos este sistema."],
+        ["It's time we talked about the budget.", "É hora de falarmos do orçamento."],
+        ["It's about time they replied.", "Já era hora de eles responderem."]
+      ]
+    },
+    {
+      def: "<b>Would rather</b> + pessoa + <b>passado</b> expressa preferência sobre o que <b>outra pessoa</b> faz — um pedido educado e indireto.",
+      form: "would rather + pessoa + passado · I'd rather you didn't",
+      marcar: ["I'd rather you didn't"],
+      more: [
+        "## As duas construções",
+        "Sobre você mesmo: <i>would rather</i> + verbo puro — <i>I<b>'d rather work</b> from home</i>. Sobre outra pessoa: <i>would rather</i> + pessoa + passado — <i>I<b>'d rather you didn't</b> share this</i>.",
+        "## O passado que não é passado",
+        "Como no <i>wish</i> e no <i>it's time</i>, o passado aqui marca a distância da hipótese, não o tempo.",
+        "## Para comparar duas opções",
+        "<i>I'd rather take the early flight <b>than</b> wait all morning</i> — com <i>than</i>, e os dois verbos puros.",
+        "## O tom",
+        "<i>I'd rather you didn't</i> é a forma mais delicada de dizer \"por favor, não faça isso\" em inglês — bem mais aceitável que <i>Don't do that</i>."
+      ],
+      ex: [
+        ["I'd rather you didn't share this.", "Eu preferiria que você não compartilhasse isso."],
+        ["I'd rather work from home on Fridays.", "Eu preferiria trabalhar de casa nas sextas."],
+        ["I'd rather take the early flight than wait all morning.", "Prefiro pegar o voo cedo a esperar a manhã toda."]
+      ]
+    },
+    {
+      def: "Fórmulas fixas do inglês formal: frases curtas e prontas que não se desmontam nem se traduzem palavra por palavra.",
+      form: "if need be · be that as it may · come what may",
+      marcar: ["if need be"],
+      more: [
+        "## O que cada uma diz",
+        "<i><b>if need be</b></i> = se for necessário (<i>We'll work on Saturday, if need be</i>).",
+        "<i><b>be that as it may</b></i> = seja como for, ainda assim.",
+        "<i><b>come what may</b></i> = aconteça o que acontecer.",
+        "## As vizinhas que valem guardar",
+        "<i>as it were</i> = por assim dizer. <i>so be it</i> = que seja. <i>suffice it to say</i> = basta dizer que. <i>far be it from me</i> = longe de mim.",
+        "## Por que a forma é estranha",
+        "São restos do subjuntivo antigo, congelados na língua. Não aceitam variação: <i>if need was</i> ou <i>come what will</i> não existem.",
+        "## O registro",
+        "Formais e um pouco literárias. Em reunião, <i>if necessary</i> e <i>either way</i> fazem o mesmo serviço com metade do peso."
+      ],
+      ex: [
+        ["We'll work on Saturday, if need be.", "Trabalhamos no sábado, se for necessário."],
+        ["Be that as it may, the deadline hasn't changed.", "Seja como for, o prazo não mudou."],
+        ["We'll launch in March, come what may.", "Vamos lançar em março, aconteça o que acontecer."]
+      ]
+    }
+  ],
+
+  c2m4: [
+    {
+      def: "Os <b>sufixos de substantivo</b> transformam verbo e adjetivo em nome da ação ou da qualidade. Reconhecê-los multiplica o vocabulário sem decorar palavra nova.",
+      form: "-ment · -tion / -sion · -ness · -ity",
+      marcar: ["announcement"],
+      more: [
+        "## Os quatro principais",
+        "<b>-ment</b>, de verbo: <i>announce → announcement</i>, <i>agree → agreement</i>, <i>develop → development</i>, <i>pay → payment</i>.",
+        "<b>-tion / -sion</b>, de verbo: <i>decide → decision</i>, <i>inform → information</i>, <i>discuss → discussion</i>, <i>produce → production</i>.",
+        "<b>-ness</b>, de adjetivo: <i>aware → awareness</i>, <i>happy → happiness</i>, <i>dark → darkness</i>.",
+        "<b>-ity</b>, de adjetivo: <i>able → ability</i>, <i>responsible → responsibility</i>, <i>secure → security</i>.",
+        "## Os de pessoa",
+        "<b>-er / -or</b> (quem faz): <i>manage → manager</i>, <i>direct → director</i>. <b>-ee</b> (quem recebe): <i>employ → employee</i>, <i>interview → interviewee</i>. <b>-ist</b>: <i>special → specialist</i>.",
+        "## A acentuação muda",
+        "<i><b>a</b>ble → a<b>bi</b>lity</i>, <i>res<b>pon</b>sible → responsi<b>bi</b>lity</i>. Em <i>-ity</i> e <i>-tion</i>, a sílaba forte vem logo antes do sufixo: <i>informa<b>tion</b></i> → a tônica cai em <i>ma</i>."
+      ],
+      ex: [
+        ["The announcement was made this morning.", "O anúncio foi feito esta manhã."],
+        ["We reached an agreement on the payment terms.", "Chegamos a um acordo sobre as condições de pagamento."],
+        ["Security is the client's main concern.", "Segurança é a principal preocupação do cliente."]
+      ]
+    },
+    {
+      def: "Os <b>sufixos de adjetivo</b> dizem o que a coisa tem, permite ou produz — e vêm em pares que se opõem.",
+      form: "-ful / -less · -able · -ive",
+      marcar: ["reliable"],
+      more: [
+        "## Os principais",
+        "<b>-ful</b> (com) e <b>-less</b> (sem): <i>useful / useless</i>, <i>careful / careless</i>, <i>helpful / helpless</i>.",
+        "<b>-able / -ible</b> (que pode ser): <i>rely → reliable</i>, <i>afford → affordable</i>, <i>access → accessible</i>.",
+        "<b>-ive</b> (que produz o efeito): <i>effect → effective</i>, <i>produce → productive</i>, <i>create → creative</i>.",
+        "<b>-ous</b>, <b>-al</b>, <b>-ic</b>: <i>danger → dangerous</i>, <i>nation → national</i>, <i>strategy → strategic</i>.",
+        "## O par que engana",
+        "<i>-ed</i> fala de quem sente, <i>-ing</i> fala do que causa: <i>I'm <b>bored</b></i> (estou com tédio) × <i>The meeting is <b>boring</b></i> (a reunião causa tédio). O mesmo com <i>interested / interesting</i>, <i>tired / tiring</i>, <i>confused / confusing</i>.",
+        "## De adjetivo para advérbio",
+        "<b>-ly</b> fecha a cadeia: <i>effective → effectively</i>, <i>careful → carefully</i>. Com adjetivo em <i>-y</i>, vira <i>-ily</i>: <i>easy → easily</i>."
+      ],
+      ex: [
+        ["We need a more reliable supplier.", "Precisamos de um fornecedor mais confiável."],
+        ["The training was useful but a bit long.", "O treinamento foi útil, mas um pouco longo."],
+        ["The meeting was boring and I was bored.", "A reunião era chata e eu estava com tédio."]
+      ]
+    },
+    {
+      def: "Os <b>prefixos de oposição</b> invertem o sentido da palavra. Qual deles entra depende da palavra, e isso se aprende pelo uso.",
+      form: "un- · in- / im- · dis- · mis-",
+      marcar: ["misunderstood"],
+      more: [
+        "## Os quatro",
+        "<b>un-</b>: <i>unclear</i>, <i>unlikely</i>, <i>unable</i>, <i>unnecessary</i>, <i>unfair</i>.",
+        "<b>in- / im- / ir- / il-</b>: <i>inefficient</i>, <i>impossible</i>, <i>irrelevant</i>, <i>illegal</i> — a letra acompanha o som seguinte.",
+        "<b>dis-</b>: <i>disagree</i>, <i>dishonest</i>, <i>disappear</i>, <i>disadvantage</i>.",
+        "<b>mis-</b> (errado, não o contrário): <i>misunderstand</i>, <i>misspell</i>, <i>mislead</i>, <i>miscalculate</i>.",
+        "## A diferença que importa",
+        "<i>dis</i>- nega (<i>disagree</i> = não concordar), <i>mis</i>- erra (<i>misunderstand</i> = entender errado). <i>I misunderstood you</i> não é discordar: é ter entendido mal.",
+        "## Os que não têm par",
+        "<i>non-</i> é neutro e aparece em termos técnicos: <i>non-refundable</i>, <i>non-profit</i>, <i>non-smoking</i>."
+      ],
+      ex: [
+        ["I think you misunderstood me.", "Acho que você me entendeu mal."],
+        ["The brief was unclear and the process inefficient.", "O briefing estava confuso e o processo, ineficiente."],
+        ["The ticket is non-refundable.", "A passagem não é reembolsável."]
+      ]
+    },
+    {
+      def: "Os prefixos de <b>quantidade e repetição</b> ajustam a medida: demais, de menos, de novo — e aparecem muito no inglês de trabalho.",
+      form: "over- · under- · re-",
+      marcar: ["underestimate"],
+      more: [
+        "## Os três",
+        "<b>over-</b> (demais): <i>overestimate</i>, <i>overbook</i>, <i>overcharge</i>, <i>overload</i>, <i>oversleep</i>, <i>overwork</i>.",
+        "<b>under-</b> (de menos): <i>underestimate</i>, <i>understaffed</i>, <i>underpaid</i>, <i>underperform</i>.",
+        "<b>re-</b> (de novo): <i>rethink</i>, <i>rewrite</i>, <i>reschedule</i>, <i>renegotiate</i>, <i>resend</i>.",
+        "## Os de tempo e posição",
+        "<b>pre-</b> (antes): <i>preview</i>, <i>prepaid</i>. <b>post-</b> (depois): <i>postgraduate</i>. <b>co-</b> (junto): <i>cofounder</i>, <i>coworker</i>. <b>sub-</b> (abaixo): <i>subcontract</i>.",
+        "## O ganho de leitura",
+        "Reconhecer prefixo e sufixo permite entender palavra nunca vista: <i>underperforming</i> se decifra em três pedaços, sem dicionário.",
+        "## O hífen",
+        "Em geral não se usa (<i>reschedule</i>, <i>overbook</i>), mas ele aparece para evitar leitura ambígua: <i>re-sign</i> (assinar de novo) × <i>resign</i> (pedir demissão)."
+      ],
+      ex: [
+        ["Never underestimate the competition.", "Nunca subestime a concorrência."],
+        ["They overbooked the flight and we lost our seats.", "Eles venderam passagens além da capacidade e perdemos nossos assentos."],
+        ["Can we reschedule the call to Thursday?", "Podemos remarcar a ligação para quinta?"]
+      ]
+    }
+  ],
+
+  c2m5: [
+    {
+      def: "O <b>understatement</b> é o hábito inglês de dizer menos do que se pensa. A frase soa leve, mas o conteúdo é grave — e quem lê ao pé da letra entende o oposto.",
+      form: "not ideal · a bit of a problem · not bad",
+      marcar: ["a bit of a problem"],
+      more: [
+        "## A escala invertida",
+        "<i>It's <b>not ideal</b></i> = está ruim. <i><b>a bit of a problem</b></i> = um problema sério. <i><b>not bad</b></i> = muito bom. <i><b>quite good</b></i> = ótimo (no britânico). <i><b>I'm slightly concerned</b></i> = estou bem preocupado.",
+        "## Por que existe",
+        "Dizer pouco é forma de educação: evita alarme, protege quem errou e deixa espaço para resolver. É mais comum no inglês britânico, mas aparece em todo lugar.",
+        "## Como calibrar",
+        "Procure o advérbio: <i>slightly</i>, <i>a bit</i>, <i>somewhat</i> e <i>a little</i> quase sempre indicam que a coisa é maior do que a frase sugere.",
+        "## A armadilha para quem fala português",
+        "Nós tendemos a dizer exatamente o tamanho do problema. Se você responder <i>It's a disaster</i> onde um inglês diria <i>It's not ideal</i>, soará desproporcional — e se ouvir <i>a bit of a problem</i> e tratar como pequeno, vai subestimar o aviso."
+      ],
+      ex: [
+        ["We have a bit of a problem: the server is down.", "Temos um probleminha: o servidor caiu."],
+        ["The feedback was not bad at all.", "O retorno foi muito bom."],
+        ["I'm slightly concerned about the deadline.", "Estou bastante preocupado com o prazo."]
+      ]
+    },
+    {
+      def: "A <b>educação indireta</b> embrulha pedido e crítica em fórmulas longas. Quanto mais palavras, mais delicada é a mensagem.",
+      form: "I was wondering if... · That's an interesting idea · With all due respect",
+      marcar: ["I was wondering if you could"],
+      more: [
+        "## O pedido",
+        "<i><b>I was wondering if you could</b> send me the file</i> é mais suave que <i>Could you send me the file?</i>, que já é mais suave que <i>Send me the file</i>. O passado (<i>was wondering</i>) é parte da delicadeza.",
+        "## A discordância disfarçada",
+        "<i>That's an interesting idea</i> muitas vezes significa \"não gostei\". <i>I hear what you're saying, but...</i> = discordo. <i>That's one way of looking at it</i> = há outra, melhor.",
+        "## O aviso de crítica",
+        "<i><b>With all due respect</b></i> e <i><b>I don't mean to be difficult, but</b></i> anunciam que vem uma objeção. Quando você ouvir, prepare-se.",
+        "## O feedback em sanduíche",
+        "O elogio vem antes e depois: <i>The structure is strong. <b>I wonder if</b> the intro could be shorter. Overall, great work.</i> O miolo é a crítica."
+      ],
+      ex: [
+        ["I was wondering if you could send me the file.", "Eu queria saber se você poderia me mandar o arquivo."],
+        ["That's an interesting idea, but let's look at the cost.", "É uma ideia interessante, mas vamos olhar o custo."],
+        ["With all due respect, the timeline doesn't work.", "Com todo o respeito, o cronograma não funciona."]
+      ]
+    },
+    {
+      def: "Os <b>eufemismos</b> substituem a palavra dura pela neutra. São o vocabulário padrão de comunicado de empresa e de conversa delicada.",
+      form: "let go · between jobs · pass away · challenging",
+      marcar: ["were let go"],
+      more: [
+        "## No trabalho",
+        "<i><b>let go</b></i> / <i><b>laid off</b></i> = demitido (<i>Fifty employees were let go</i>). <i><b>between jobs</b></i> = desempregado. <i><b>restructuring</b></i> / <i><b>downsizing</b></i> = corte de pessoal. <i><b>challenging</b></i> = difícil. <i><b>room for improvement</b></i> = está ruim.",
+        "## Fora do trabalho",
+        "<i><b>pass away</b></i> = falecer. <i><b>senior</b></i> = idoso. <i><b>pre-owned</b></i> = usado. <i><b>economical</b></i> = barato.",
+        "## A diferença entre demitido e dispensado",
+        "<i>fired</i> implica falta cometida; <i>laid off</i> e <i>let go</i> implicam corte da empresa. Em currículo e conversa, a diferença importa muito.",
+        "## Quando não usar",
+        "Em texto que precisa ser claro — relatório de risco, instrução de segurança, diagnóstico — eufemismo atrapalha. Ali se escreve a palavra exata."
+      ],
+      ex: [
+        ["Fifty employees were let go last month.", "Cinquenta funcionários foram demitidos no mês passado."],
+        ["He's between jobs at the moment.", "Ele está sem emprego no momento."],
+        ["The project was challenging, to say the least.", "O projeto foi difícil, para dizer o mínimo."]
+      ]
+    },
+    {
+      def: "A <b>ironia</b> inverte o sentido pela entonação e pelo contexto. O texto escrito não traz essa marca — por isso ela é a maior fonte de mal-entendido em inglês.",
+      form: "Oh, great. · Thanks a lot. · Perfect timing.",
+      marcar: ["Oh, great"],
+      more: [
+        "## Como reconhecer",
+        "<i>Oh, <b>great</b>. Another meeting.</i> O elogio não combina com a situação — é esse desencaixe que revela a ironia.",
+        "## As frases mais usadas",
+        "<i>Thanks a lot</i> (irritado), <i>Perfect timing</i> (no pior momento), <i>Well, that went well</i> (foi um desastre), <i>Just what I needed</i> (era o que faltava), <i>Nice one</i> (que erro).",
+        "## O tom e a pontuação",
+        "Na fala, a voz cai e se alonga. Na escrita, só o contexto e, às vezes, um ponto final seco entregam. Em e-mail de trabalho, é melhor não arriscar.",
+        "## A diferença entre ironia e sarcasmo",
+        "Ironia diz o contrário do que pensa; sarcasmo faz isso para ferir. Em ambiente profissional, ambos pesam — e, com interlocutor de outra cultura, costumam não funcionar.",
+        "## O conselho prático",
+        "Ouvindo, procure o desencaixe entre a frase e a situação. Escrevendo em inglês com quem você não conhece, prefira ser literal."
+      ],
+      ex: [
+        ["Another meeting? Oh, great.", "Mais uma reunião? Que ótimo."],
+        ["The wifi died mid-call. Perfect timing.", "O wifi caiu no meio da ligação. Hora perfeita."],
+        ["Well, that went well.", "Pois é, foi um sucesso."]
+      ]
+    }
   ]
 
 };

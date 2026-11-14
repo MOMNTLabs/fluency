@@ -1,5 +1,5 @@
 // Mude a versão a cada atualização de conteúdo para o iPhone baixar os arquivos novos.
-const VERSION = "2026-11-14-61";
+const VERSION = "2026-11-14-62";
 const CACHE = "ingles-" + VERSION;
 const FILES = ["./", "index.html", "privacy.html", "termos.html", "app.js", "content.js", "content-m1.js", "content-m2.js", "content-m3.js", "content-a2.js", "content-b1.js", "content-a1.js", "content-b2.js", "content-c1.js", "content-c2.js", "content-mix.js", "content-regras.js", "content-frases.js", "content-a1-alt.js", "content-a2-alt.js", "content-b1-alt.js", "content-b2-alt.js", "content-c1-alt.js", "content-c2-alt.js", "content-glossario.js", "content-exemplos.js", "course.js", "manifest.webmanifest",
   "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "fonts/bricolage.woff2"];

@@ -2177,5 +2177,5 @@
   updateTabAvatar();
   checkOffline();
   loadApiConfig();
-  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
+  window.__audit = { SECTIONS: SECTIONS, WEEKS: WEEKS, abrir: openSection, corrigeFrase, formasF, redoIds: redoIds, secRuns: secRuns, isRight: isRight, optionsFor: optionsFor, verbForms: verbForms, pastOf: pastOf, ppOf: ppOf, ingOf: ingOf, sOf: sOf, tilesFor: tilesFor };
 })();
